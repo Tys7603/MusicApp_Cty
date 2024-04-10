@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/music_menu"
+        android:icon="@drawable/ic_music_for_you_no"
+        android:title="Dành cho bạn"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/explore_menu"
+        android:icon="@drawable/ic_explore_no"
+        android:title="Khám phá"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/user_menu"
+        android:icon="@drawable/ic_user_no"
+        android:title="Của Tui"
+        app:showAsAction="always" />
+</menu>
