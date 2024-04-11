@@ -3,10 +3,14 @@ package com.example.musicapp.until
 import android.app.Service
 import android.content.Intent
 import android.media.AudioAttributes
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
+import android.util.Log
 import android.widget.Toast
+import java.io.IOException
+
 
 class MusicService: Service() {
 
@@ -19,6 +23,7 @@ class MusicService: Service() {
 
     override fun onCreate() {
         super.onCreate()
+        Log.d("TAG", "onCreate: ")
         mediaPlayer = MediaPlayer().apply {
             setAudioAttributes(
                 AudioAttributes.Builder()

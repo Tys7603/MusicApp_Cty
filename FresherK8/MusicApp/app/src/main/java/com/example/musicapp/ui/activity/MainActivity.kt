@@ -1,5 +1,6 @@
 package com.example.musicapp.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -14,6 +15,7 @@ import com.example.musicapp.ui.fragment.ExploreFragment
 import com.example.musicapp.ui.fragment.MusicFragment
 import com.example.musicapp.ui.fragment.UserFragment
 import com.example.musicapp.until.MessageEnum
+import com.example.musicapp.until.MusicService
 
 @Suppress("UNUSED_EXPRESSION")
 class MainActivity : AppCompatActivity() {
@@ -28,8 +30,10 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         switchFragment()
         fragmentManager(MusicFragment())
+        createService()
     }
 
     private fun fragmentManager(fragment: Fragment){
@@ -60,5 +64,10 @@ class MainActivity : AppCompatActivity() {
                    else -> false
                }
        }
+    }
+
+    private fun createService(){
+        val serviceIntent = Intent(this, MusicService::class.java)
+        startService(serviceIntent)
     }
 }

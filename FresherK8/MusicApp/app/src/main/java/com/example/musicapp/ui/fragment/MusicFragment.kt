@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.musicapp.R
 import com.example.musicapp.databinding.FragmentMusicBinding
 import com.example.musicapp.until.MusicService
@@ -19,11 +20,6 @@ class MusicFragment : Fragment() {
     private var musicService: MusicService? = null
     private var isServiceBound = false
     private val URL_SONG = "https://storage.googleapis.com/ikara-storage/tmp/beat.mp3"
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,19 +45,21 @@ class MusicFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val playIntent = Intent(context, MusicFragment::class.java)
-        context?.bindService(playIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+        val playIntent = Intent(requireContext(), MusicFragment::class.java)
+        requireActivity().bindService(playIntent, serviceConnection, Context.BIND_AUTO_CREATE)
 
         binding.btnPlay.setOnClickListener {
-            musicService?.play(URL_SONG)
+            if (isServiceBound){
+                musicService?.play(URL_SONG)
+            }
         }
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         if (isServiceBound) {
-            context?.unbindService(serviceConnection)
+            requireContext().unbindService(serviceConnection)
             isServiceBound = false
         }
     }
