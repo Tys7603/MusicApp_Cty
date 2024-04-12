@@ -36,6 +36,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:background="@color/white"
         app:menu="@menu/navigation_menu"
+        android:backgroundTint="@color/black"
         >
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 
