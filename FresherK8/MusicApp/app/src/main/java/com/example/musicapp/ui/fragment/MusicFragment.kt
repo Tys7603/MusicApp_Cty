@@ -21,14 +21,9 @@ class MusicFragment : Fragment() {
     private lateinit var binding: FragmentMusicBinding
     private lateinit var musicService: MusicService
     private var isServiceBound = false // kiểm tra kết nối service
-    private var isImgSelected = false
-//    private val sharedPreferences: SharedPreferences by lazy {
-//        PreferenceManager.getDefaultSharedPreferences(requireContext())
-//    }
-
-//    private val sharedPreferences =
-//        context?.getSharedPreferences("Mode", Context.MODE_PRIVATE)
-//    private var isImgSelected : Boolean by BooleanProperty(sharedPreferences!!, "IMG", false) // kiểm tra nút play
+    private val sharedPreferences: SharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(requireContext())
+    }
 
     private val URL_SONG =
         "https://ia800304.us.archive.org/33/items/muon-anh-dau-winno-hustlang-robber-13672897_202404/BuonHayVuiFeatRptMckObitoRonboogz-VSOULRPTMCKObitoRonboogz-13159599.mp3"
@@ -36,7 +31,7 @@ class MusicFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentMusicBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -57,21 +52,35 @@ class MusicFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        onClick()
+        initView()
+    }
 
-        binding.btnPlay.setOnClickListener {
-            if (isServiceBound) { // kiểm tra đã kết nối chưa
-                if (!isImgSelected) { // kiểm tra xem đã play chưa
-                    musicService.play(URL_SONG)
-                    binding.btnPlay.setImageResource(R.drawable.ic_pause_music)
-                    isImgSelected = true
-                } else {
-                    musicService.pause()
-                    binding.btnPlay.setImageResource(R.drawable.ic_play_button)
-                    isImgSelected = false
-                }
-            }
+    private fun initView() {
+        if (sharedPreferences.getBoolean(KEY_PLAY_CLICK, false)){
+            binding.btnPlay.setImageResource(R.drawable.ic_pause_music)
+        }else{
+            binding.btnPlay.setImageResource(R.drawable.ic_play_button)
         }
     }
+
+    private fun onClick(){
+       binding.btnPlay.setOnClickListener {
+           var isImgSelected: Boolean by BooleanProperty(sharedPreferences, KEY_PLAY_CLICK, false)
+
+           if (isServiceBound) { // kiểm tra đã kết nối chưa
+               isImgSelected = if (!isImgSelected) { // kiểm tra xem đã play chưa
+                   musicService.play(URL_SONG)
+                   binding.btnPlay.setImageResource(R.drawable.ic_pause_music)
+                   true
+               } else {
+                   musicService.pause()
+                   binding.btnPlay.setImageResource(R.drawable.ic_play_button)
+                   false
+               }
+           }
+       }
+   }
 
     override fun onStart() {
         super.onStart()
@@ -89,6 +98,9 @@ class MusicFragment : Fragment() {
         }
     }
 
-}
+    companion object {
+        const val KEY_PLAY_CLICK = "play_music"
+    }
 
+}
 

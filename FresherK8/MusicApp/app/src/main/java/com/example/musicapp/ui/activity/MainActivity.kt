@@ -14,7 +14,6 @@ import com.example.musicapp.ui.fragment.MusicFragment
 import com.example.musicapp.ui.fragment.UserFragment
 import com.example.musicapp.service.MusicService
 
-@Suppress("UNUSED_EXPRESSION")
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
