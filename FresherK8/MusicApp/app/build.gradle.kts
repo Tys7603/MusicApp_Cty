@@ -53,4 +53,5 @@ dependencies {
 
     //noinspection UseTomlInstead
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+    implementation ("androidx.preference:preference-ktx:1.2.1")
 }

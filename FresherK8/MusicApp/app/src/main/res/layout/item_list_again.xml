@@ -14,8 +14,8 @@
 
       <ImageView
           android:id="@+id/imageView9"
-          android:layout_width="115dp"
-          android:layout_height="115dp"
+          android:layout_width="100dp"
+          android:layout_height="100dp"
           android:layout_weight="1"
           app:srcCompat="@drawable/song" />
   </androidx.cardview.widget.CardView>

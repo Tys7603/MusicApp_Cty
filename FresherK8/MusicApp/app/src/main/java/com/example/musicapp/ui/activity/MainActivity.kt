@@ -2,8 +2,6 @@ package com.example.musicapp.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -14,8 +12,7 @@ import com.example.musicapp.databinding.ActivityMainBinding
 import com.example.musicapp.ui.fragment.ExploreFragment
 import com.example.musicapp.ui.fragment.MusicFragment
 import com.example.musicapp.ui.fragment.UserFragment
-import com.example.musicapp.until.MessageEnum
-import com.example.musicapp.until.MusicService
+import com.example.musicapp.service.MusicService
 
 @Suppress("UNUSED_EXPRESSION")
 class MainActivity : AppCompatActivity() {
