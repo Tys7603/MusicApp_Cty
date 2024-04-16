@@ -34,7 +34,7 @@ class MusicService : Service() {
         }
     }
 
-    fun play(url: String) {
+    fun playFromUrl(url: String) {
         mediaPlayer?.apply {
             reset()
             setDataSource(url)
@@ -44,6 +44,12 @@ class MusicService : Service() {
             }
         }
     }
+
+    fun start(){
+        mediaPlayer?.start()
+    }
+
+    fun isPlaying() = mediaPlayer!!.isPlaying
 
     fun pause() {
         if (mediaPlayer!!.isPlaying) {

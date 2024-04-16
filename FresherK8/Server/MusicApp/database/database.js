@@ -1,33 +1,25 @@
+require('dotenv').config();
 const mysql = require('mysql');
 
-const pool = mysql.createPool({
-    host: 'localhost',  // MySQL server host
-    user: 'your_username',  // MySQL username
-    password: 'your_password',  // MySQL password
-    database: 'your_database',  // MySQL database name
-})
+const con = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    port: process.env.DB_PORT,
+    database: process.env.DB_NAME
+});
 
-// Function to execute SQL queries
-function executeQuery(query, values, callback) {
 
-    pool.getConnection((err, connection) => {
-        if (err) {
-            console.error('Error getting MySQL connection:', err);
-            return callback(err, null);
-        }
-
-        connection.query(query, values, (err, results) => {
-            connection.release(); // Release the connection
-
+// Truy xuất dữ liệu
+const queryDatabase = (query, values) => {
+    return new Promise((resolve, reject) => {
+        con.query(query, values, (err, results, fields) => {
             if (err) {
-                console.error('Error executing MySQL query:', err);
-                return callback(err, null);
-            }
-
-            callback(null, results);
+                reject(err);
+                return;
+            } 
+            resolve(results);
         });
     });
-}
+};
 
-module.exports =  executeQuery
-
+module.exports = queryDatabase

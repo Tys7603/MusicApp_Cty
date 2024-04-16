@@ -10,7 +10,7 @@ class BooleanProperty(
     defaultValue: Boolean,
 ) : ReadWriteProperty<Any, Boolean> {
 
-    private var value: Boolean = sharedPreferences.getBoolean(key, defaultValue)
+    var value: Boolean = sharedPreferences.getBoolean(key, defaultValue)
 
     override fun getValue(thisRef: Any, property: KProperty<*>): Boolean = value
 

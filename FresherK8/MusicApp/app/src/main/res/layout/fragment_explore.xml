@@ -141,24 +141,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/listen_again"
+                    android:text="@string/you_listen"
                     style="@style/TextTile"
                     app:layout_constraintStart_toStartOf="@+id/constraintLayout"
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView2"
+                    android:id="@+id/rcv_playlist"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:orientation="horizontal"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView10"
-                    app:spanCount="2"
                     tools:itemCount="6"
-                    tools:listitem="@layout/item_list_again">
+                    tools:listitem="@layout/item_play_list">
 
                 </androidx.recyclerview.widget.RecyclerView>
 
@@ -170,7 +169,7 @@
                     android:text="@string/topic_category"
                     style="@style/TextTile"
                     app:layout_constraintStart_toStartOf="@+id/textView10"
-                    app:layout_constraintTop_toBottomOf="@+id/recyclerView2" />
+                    app:layout_constraintTop_toBottomOf="@+id/rcv_playlist" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView3"

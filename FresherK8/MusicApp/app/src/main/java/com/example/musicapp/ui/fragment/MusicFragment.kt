@@ -7,6 +7,7 @@ import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import androidx.preference.PreferenceManager
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import com.example.musicapp.R
 import com.example.musicapp.databinding.FragmentMusicBinding
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.until.BooleanProperty
+import com.example.musicapp.until.SharedPreferencesManager
 
 class MusicFragment : Fragment() {
     private lateinit var binding: FragmentMusicBinding
@@ -57,30 +59,44 @@ class MusicFragment : Fragment() {
     }
 
     private fun initView() {
-        if (sharedPreferences.getBoolean(KEY_PLAY_CLICK, false)){
+        if (sharedPreferences.getBoolean(KEY_PLAY_CLICK, false)) {
             binding.btnPlay.setImageResource(R.drawable.ic_pause_music)
-        }else{
+        } else {
             binding.btnPlay.setImageResource(R.drawable.ic_play_button)
         }
     }
 
-    private fun onClick(){
-       binding.btnPlay.setOnClickListener {
-           var isImgSelected: Boolean by BooleanProperty(sharedPreferences, KEY_PLAY_CLICK, false)
+    private fun onClick() {
+        binding.btnPlay.setOnClickListener {
+            var isPlaySelected: Boolean by BooleanProperty(sharedPreferences, KEY_PLAY_CLICK, false)
+            var isPlayFirtSelected: Boolean by BooleanProperty(
+                sharedPreferences,
+                KEY_IS_PLAY_CLICK,
+                false
+            )
 
-           if (isServiceBound) { // kiểm tra đã kết nối chưa
-               isImgSelected = if (!isImgSelected) { // kiểm tra xem đã play chưa
-                   musicService.play(URL_SONG)
-                   binding.btnPlay.setImageResource(R.drawable.ic_pause_music)
-                   true
-               } else {
-                   musicService.pause()
-                   binding.btnPlay.setImageResource(R.drawable.ic_play_button)
-                   false
-               }
-           }
-       }
-   }
+            Log.d("TAG", "isPlaySelected: " + isPlaySelected)
+            Log.d("TAG", "isPlayFirtSelected: " + isPlayFirtSelected)
+
+            if (isServiceBound) { // kiểm tra đã kết nối chưa
+                isPlaySelected = if (!musicService.isPlaying()) { // kiểm tra xem đã play chưa
+                    if (!isPlayFirtSelected) { // kiểm tra xem đã play đọc từ internet chưa
+                        musicService.playFromUrl(URL_SONG)
+                        isPlayFirtSelected = false
+                    } else {
+                        musicService.start()
+                    }
+                    binding.btnPlay.setImageResource(R.drawable.ic_pause_music)
+                    true
+                } else {
+                    musicService.pause()
+                    binding.btnPlay.setImageResource(R.drawable.ic_play_button)
+                    false
+                }
+
+            }
+        }
+    }
 
     override fun onStart() {
         super.onStart()
@@ -100,7 +116,7 @@ class MusicFragment : Fragment() {
 
     companion object {
         const val KEY_PLAY_CLICK = "play_music"
+        const val KEY_IS_PLAY_CLICK = "is_play_music"
     }
-
 }
 
