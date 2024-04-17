@@ -4,7 +4,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- TODO: Explore Fragment -->
     <string name="listen_again">Nghe gần đây</string>
-    <string name="topic_category">Chủ đề &amp; Thể loại</string>
+    <string name="topic">Chủ đề</string>
+    <string name="category">Thể loại</string>
     <string name="you_listen">Có thể bạn muốn nghe</string>
     <string name="social_rank">Bảng xếp hạng</string>
     <string name="add">Thêm</string>
@@ -12,4 +13,7 @@
     <string name="doing_love">Đang được yêu thích</string>
     <string name="album_new">Album mới phát hành</string>
     <string name="are_you_dont_login">Bạn chưa đăng nhập</string>
+    <string name="loading">Loading…</string>
+
+
 </resources>

@@ -1,9 +1,11 @@
-const connection = require("../database/database.js")
+const queryDatabase = require("../database/database.js")
 
-const insertUser = async () => {
-  const query = "INSERT INTO NguoiDung(id) VALUE (?)";
-  return await connection.queryDatabase(query, [id])
+const getListSongAgain = async (id) => {
+  const query = "SELECT sa.song_again_id, s.song_name, s.song_image, s.song_url FROM SONG_AGAIN as sa " +
+  "INNER JOIN SONG AS s ON sa.song_id = s.song_id " +
+  "WHERE sa.user_id = ?"
+  return await queryDatabase(query, [id])
 }
 module.exports = {
-  insertUser
+  getListSongAgain
 }

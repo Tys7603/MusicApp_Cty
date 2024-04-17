@@ -14,10 +14,20 @@ app.use((req, res, next) => {
 //
 
 var playListRouter = require('../MusicApp/routers/playlistRoter.js')
-var topicAndCategoryRouter = require('../MusicApp/routers/topicAndCategoryRouter.js')
+var topicRouter = require('./routers/topicRouter.js')
+var categoryRouter = require('./routers/categoryRouter.js')
+var songAgainRouter = require('./routers/songAgainRouter.js')
+var albumLoveRouter = require('./routers/albumLoveRouter.js')
+var albumRouter = require('./routers/albumRouter.js')
+
 // routers
 app.use("/api", playListRouter)
-app.use("/api", topicAndCategoryRouter)
+app.use("/api", topicRouter)
+app.use("/api", categoryRouter)
+app.use("/api", songAgainRouter)
+app.use("/api", albumLoveRouter)
+app.use("/api", albumRouter)
+
 const port = 3000 || process.env.DB_PORT;
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
