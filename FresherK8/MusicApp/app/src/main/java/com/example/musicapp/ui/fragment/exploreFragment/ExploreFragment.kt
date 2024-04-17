@@ -118,5 +118,6 @@ class ExploreFragment : Fragment(), ExploreContract.View {
         binding.rcvAlbumNew.adapter = adapter
     }
     // test
+
 }
 
