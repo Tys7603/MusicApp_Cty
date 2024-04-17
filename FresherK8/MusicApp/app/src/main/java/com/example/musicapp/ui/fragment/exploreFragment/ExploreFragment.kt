@@ -117,5 +117,6 @@ class ExploreFragment : Fragment(), ExploreContract.View {
         binding.rcvAlbumNew.layoutManager = linearLayoutManager
         binding.rcvAlbumNew.adapter = adapter
     }
+    // test
 }
 
