@@ -24,14 +24,6 @@ class MainActivity : AppCompatActivity() {
         PreferenceManager.getDefaultSharedPreferences(this)
     }
 
-    // Khai báo các thuộc tính BooleanProperty
-    private val isPlaySelectedProperty by lazy {
-        BooleanProperty(sharedPreferences, MusicFragment.KEY_PLAY_CLICK, false)
-    }
-
-    private val isPlayFirtSelectedProperty by lazy {
-        BooleanProperty(sharedPreferences, MusicFragment.KEY_IS_PLAY_CLICK, false)
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -53,6 +45,7 @@ class MainActivity : AppCompatActivity() {
             .replace(binding.frameLayout.id, fragment)
             .commit()
     }
+
 
     private fun switchFragment() {
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->

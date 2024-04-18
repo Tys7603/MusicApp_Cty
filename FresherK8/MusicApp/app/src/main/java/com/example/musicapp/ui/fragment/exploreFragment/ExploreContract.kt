@@ -4,6 +4,7 @@ import com.example.musicapp.model.AlbumLove
 import com.example.musicapp.model.AlbumNew
 import com.example.musicapp.model.Category
 import com.example.musicapp.model.Playlist
+import com.example.musicapp.model.Song
 import com.example.musicapp.model.SongAgain
 import com.example.musicapp.model.Topic
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositorySongAgain
@@ -18,6 +19,7 @@ interface ExploreContract {
         fun onListListenAgain(songAgain: ArrayList<SongAgain>)
         fun onListAlbumLove(albumLove: ArrayList<AlbumLove>)
         fun onListAlbumNew(albumNew: ArrayList<AlbumNew>)
+        fun onListSong(songs: ArrayList<Song>)
     }
 
     interface Presenter {
@@ -28,5 +30,6 @@ interface ExploreContract {
         fun getListListenAgain(userID : Int)
         fun getListAlbumLove()
         fun getListAlbumNew()
+        fun getListSong()
     }
 }

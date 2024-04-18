@@ -20,4 +20,6 @@ object ManagerUrl {
     //album new
     const val GET_ALBUM_NEW= "albums/new"
 
+    //album new
+    const val GET_SONG= "songs"
 }

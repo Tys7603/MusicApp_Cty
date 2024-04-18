@@ -69,20 +69,12 @@ class MusicFragment : Fragment() {
     private fun onClick() {
         binding.btnPlay.setOnClickListener {
             var isPlaySelected: Boolean by BooleanProperty(sharedPreferences, KEY_PLAY_CLICK, false)
-            var isPlayFirtSelected: Boolean by BooleanProperty(
-                sharedPreferences,
-                KEY_IS_PLAY_CLICK,
-                false
-            )
 
-            Log.d("TAG", "isPlaySelected: " + isPlaySelected)
-            Log.d("TAG", "isPlayFirtSelected: " + isPlayFirtSelected)
 
             if (isServiceBound) { // kiểm tra đã kết nối chưa
                 isPlaySelected = if (!musicService.isPlaying()) { // kiểm tra xem đã play chưa
-                    if (!isPlayFirtSelected) { // kiểm tra xem đã play đọc từ internet chưa
+                    if (!musicService.isMediaPrepared()) {
                         musicService.playFromUrl(URL_SONG)
-                        isPlayFirtSelected = false
                     } else {
                         musicService.start()
                     }
@@ -116,7 +108,6 @@ class MusicFragment : Fragment() {
 
     companion object {
         const val KEY_PLAY_CLICK = "play_music"
-        const val KEY_IS_PLAY_CLICK = "is_play_music"
     }
 }
 
