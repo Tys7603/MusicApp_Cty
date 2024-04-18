@@ -1,4 +1,4 @@
-package com.example.musicapp.ui.fragment.exploreFragment.repository
+package com.example.musicapp.ui.fragment.musicFragment.repository
 
 import com.example.musicapp.model.Song
 

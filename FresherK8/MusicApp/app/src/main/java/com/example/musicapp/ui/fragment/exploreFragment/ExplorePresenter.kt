@@ -6,7 +6,6 @@ import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryAlb
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryAlbumNew
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryCategories
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryPlaylist
-import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositorySong
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositorySongAgain
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryTopic
 import com.example.musicapp.until.Constant
@@ -186,28 +185,5 @@ class ExplorePresenter (val mView : ExploreContract.View) : ExploreContract.Pres
         })
     }
 
-    override fun getListSong() {
-        ApiClient.getApiService()?.getListSong()?.enqueue(object : Callback<RepositorySong> {
-            override fun onResponse(
-                call: Call<RepositorySong>,
-                response: Response<RepositorySong>
-            ) {
-                if (response.isSuccessful){
-                    if (Constant.STATUS == response.body()?.status){
-                        mView.onListSong(response.body()!!.songs)
-                    }else{
-                        Log.e(Constant.TAG_ERROR, "Call other api status 200")
-                    }
-                }else{
-                    Log.e(Constant.TAG_ERROR, "Call api failure")
-                }
-            }
-
-            override fun onFailure(call: Call<RepositorySong>, t: Throwable) {
-                Log.e(Constant.TAG_ERROR, t.toString())
-            }
-
-        })
-    }
 
 }

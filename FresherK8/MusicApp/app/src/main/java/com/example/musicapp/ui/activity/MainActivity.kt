@@ -12,10 +12,9 @@ import androidx.preference.PreferenceManager
 import com.example.musicapp.R
 import com.example.musicapp.databinding.ActivityMainBinding
 import com.example.musicapp.ui.fragment.exploreFragment.ExploreFragment
-import com.example.musicapp.ui.fragment.MusicFragment
-import com.example.musicapp.ui.fragment.UserFragment
+import com.example.musicapp.ui.fragment.musicFragment.MusicFragment
+import com.example.musicapp.ui.fragment.userFragment.UserFragment
 import com.example.musicapp.service.MusicService
-import com.example.musicapp.until.BooleanProperty
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -45,7 +44,6 @@ class MainActivity : AppCompatActivity() {
             .replace(binding.frameLayout.id, fragment)
             .commit()
     }
-
 
     private fun switchFragment() {
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->

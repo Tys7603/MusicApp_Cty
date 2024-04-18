@@ -12,7 +12,7 @@ import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryAlb
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryAlbumNew
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryCategories
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryPlaylist
-import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositorySong
+import com.example.musicapp.ui.fragment.musicFragment.repository.RepositorySong
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositorySongAgain
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryTopic
 import retrofit2.Call

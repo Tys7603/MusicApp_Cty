@@ -19,7 +19,6 @@ interface ExploreContract {
         fun onListListenAgain(songAgain: ArrayList<SongAgain>)
         fun onListAlbumLove(albumLove: ArrayList<AlbumLove>)
         fun onListAlbumNew(albumNew: ArrayList<AlbumNew>)
-        fun onListSong(songs: ArrayList<Song>)
     }
 
     interface Presenter {
@@ -30,6 +29,5 @@ interface ExploreContract {
         fun getListListenAgain(userID : Int)
         fun getListAlbumLove()
         fun getListAlbumNew()
-        fun getListSong()
     }
 }

@@ -56,6 +56,16 @@ class MusicService : Service() {
         return isMediaPrepared
     }
 
+    fun setMediaPrepared( mediaPrepared: Boolean) {
+        isMediaPrepared = mediaPrepared
+    }
+    fun setOnCompletionListener(){
+        mediaPlayer?.setOnCompletionListener { MediaPlayer.OnCompletionListener {
+
+        } }
+    }
+
+
     fun isPlaying() = mediaPlayer!!.isPlaying
 
     fun pause() {
@@ -66,7 +76,6 @@ class MusicService : Service() {
 
     fun stop() {
         mediaPlayer?.stop()
-        mediaPlayer?.prepareAsync()
     }
 
     fun getDuration(): Int {

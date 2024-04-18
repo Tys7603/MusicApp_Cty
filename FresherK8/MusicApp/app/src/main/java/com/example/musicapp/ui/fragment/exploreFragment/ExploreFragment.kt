@@ -44,7 +44,6 @@ class ExploreFragment : Fragment(), ExploreContract.View {
         mPresenter.getListCategory()
         mPresenter.getListAlbumLove()
         mPresenter.getListAlbumNew()
-        mPresenter.getListSong()
         checkUserLogin()
     }
 
@@ -118,10 +117,6 @@ class ExploreFragment : Fragment(), ExploreContract.View {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rcvAlbumNew.layoutManager = linearLayoutManager
         binding.rcvAlbumNew.adapter = adapter
-    }
-
-    override fun onListSong(songs: ArrayList<Song>) {
-
     }
 }
 
