@@ -19,6 +19,7 @@ import com.example.musicapp.model.AlbumLove
 import com.example.musicapp.model.AlbumNew
 import com.example.musicapp.model.Category
 import com.example.musicapp.model.Playlist
+import com.example.musicapp.model.Song
 import com.example.musicapp.model.SongAgain
 import com.example.musicapp.model.Topic
 import java.util.Random
@@ -117,7 +118,5 @@ class ExploreFragment : Fragment(), ExploreContract.View {
         binding.rcvAlbumNew.layoutManager = linearLayoutManager
         binding.rcvAlbumNew.adapter = adapter
     }
-    // test
-
 }
 

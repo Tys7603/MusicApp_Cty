@@ -13,6 +13,7 @@ import android.widget.Toast
 class MusicService : Service() {
     private var mediaPlayer: MediaPlayer? = null
     private val binder: IBinder = LocalBinder()
+    private var isMediaPrepared = false // Thêm biến này để theo dõi trạng thái chuẩn bị âm thanh
 
     inner class LocalBinder : Binder() {
         fun getService(): MusicService = this@MusicService
@@ -31,6 +32,7 @@ class MusicService : Service() {
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .build()
             )
+
         }
     }
 
@@ -39,7 +41,8 @@ class MusicService : Service() {
             reset()
             setDataSource(url)
             prepareAsync()
-            setOnPreparedListener {
+            mediaPlayer?.setOnPreparedListener {
+                isMediaPrepared = true // Đánh dấu rằng âm thanh đã được chuẩn bị
                 start()
             }
         }
@@ -48,6 +51,20 @@ class MusicService : Service() {
     fun start(){
         mediaPlayer?.start()
     }
+
+    fun isMediaPrepared(): Boolean {
+        return isMediaPrepared
+    }
+
+    fun setMediaPrepared( mediaPrepared: Boolean) {
+        isMediaPrepared = mediaPrepared
+    }
+    fun setOnCompletionListener(){
+        mediaPlayer?.setOnCompletionListener { MediaPlayer.OnCompletionListener {
+
+        } }
+    }
+
 
     fun isPlaying() = mediaPlayer!!.isPlaying
 
@@ -59,7 +76,6 @@ class MusicService : Service() {
 
     fun stop() {
         mediaPlayer?.stop()
-        mediaPlayer?.prepareAsync()
     }
 
     fun getDuration(): Int {

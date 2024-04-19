@@ -12,10 +12,9 @@ import androidx.preference.PreferenceManager
 import com.example.musicapp.R
 import com.example.musicapp.databinding.ActivityMainBinding
 import com.example.musicapp.ui.fragment.exploreFragment.ExploreFragment
-import com.example.musicapp.ui.fragment.MusicFragment
-import com.example.musicapp.ui.fragment.UserFragment
+import com.example.musicapp.ui.fragment.musicFragment.MusicFragment
+import com.example.musicapp.ui.fragment.userFragment.UserFragment
 import com.example.musicapp.service.MusicService
-import com.example.musicapp.until.BooleanProperty
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -24,14 +23,6 @@ class MainActivity : AppCompatActivity() {
         PreferenceManager.getDefaultSharedPreferences(this)
     }
 
-    // Khai báo các thuộc tính BooleanProperty
-    private val isPlaySelectedProperty by lazy {
-        BooleanProperty(sharedPreferences, MusicFragment.KEY_PLAY_CLICK, false)
-    }
-
-    private val isPlayFirtSelectedProperty by lazy {
-        BooleanProperty(sharedPreferences, MusicFragment.KEY_IS_PLAY_CLICK, false)
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

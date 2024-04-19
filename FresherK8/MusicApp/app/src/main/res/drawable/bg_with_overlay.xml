@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Foreground overlay for blurring effect -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#00FFFFFF"
+                android:centerColor="#55808080"
+                android:endColor="#FF808080"
+                android:angle="90" />
+        </shape>
+    </item>
+</layer-list>
