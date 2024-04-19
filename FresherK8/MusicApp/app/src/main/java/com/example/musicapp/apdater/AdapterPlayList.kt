@@ -22,7 +22,7 @@ class AdapterPlayList(private var listPlayList: ArrayList<Playlist>) :
     }
 
     override fun getItemCount(): Int {
-         return min(listPlayList.size, 5)
+        return min(listPlayList.size, 5)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -34,14 +34,12 @@ class AdapterPlayList(private var listPlayList: ArrayList<Playlist>) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(playlist: Playlist) {
             binding.tvNamePlaylist.text = playlist.name
-            Handler(Looper.getMainLooper()!!).postDelayed({
-                Glide
-                    .with(binding.root.context)
-                    .load(playlist.image)
-                    .centerCrop()
-                    .placeholder(R.drawable.img_placeholder)
-                    .into(binding.imgPlaylist);
-            }, 1000)
+            Glide
+                .with(binding.root.context)
+                .load(playlist.image)
+                .centerCrop()
+                .placeholder(R.drawable.img_placeholder)
+                .into(binding.imgPlaylist);
         }
     }
 

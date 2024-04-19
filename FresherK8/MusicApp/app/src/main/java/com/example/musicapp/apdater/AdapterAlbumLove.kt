@@ -19,6 +19,10 @@ class AdapterAlbumLove(private val albumLove: ArrayList<AlbumLove>) :
         return ViewHolder(binding)
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return super.getItemViewType(position)
+    }
+
 
     override fun getItemCount(): Int {
         return min(albumLove.size, 8)

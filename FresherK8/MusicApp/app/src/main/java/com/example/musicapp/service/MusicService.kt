@@ -7,13 +7,13 @@ import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
-import android.widget.Toast
+import com.example.musicapp.until.Constant
 
 
-class MusicService : Service() {
+class MusicService() : Service() {
     private var mediaPlayer: MediaPlayer? = null
     private val binder: IBinder = LocalBinder()
-    private var isMediaPrepared = false // Thêm biến này để theo dõi trạng thái chuẩn bị âm thanh
+    private var isMediaPrepared = false // Biến này để theo dõi trạng thái chuẩn bị âm thanh
 
     inner class LocalBinder : Binder() {
         fun getService(): MusicService = this@MusicService
@@ -36,6 +36,7 @@ class MusicService : Service() {
         }
     }
 
+
     fun playFromUrl(url: String) {
         mediaPlayer?.apply {
             reset()
@@ -43,7 +44,6 @@ class MusicService : Service() {
             prepareAsync()
             mediaPlayer?.setOnPreparedListener {
                 isMediaPrepared = true // Đánh dấu rằng âm thanh đã được chuẩn bị
-                start()
             }
         }
     }
@@ -60,9 +60,10 @@ class MusicService : Service() {
         isMediaPrepared = mediaPrepared
     }
     fun setOnCompletionListener(){
-        mediaPlayer?.setOnCompletionListener { MediaPlayer.OnCompletionListener {
-
-        } }
+        mediaPlayer?.setOnCompletionListener {
+            sendBroadcast(Intent(Constant.SONG_COMPLETED))
+            Log.d("TAG", "onReceive: nhạn dc ở service")
+        }
     }
 
 
