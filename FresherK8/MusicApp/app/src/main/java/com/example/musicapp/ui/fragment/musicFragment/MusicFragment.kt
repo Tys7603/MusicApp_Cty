@@ -188,6 +188,7 @@ class MusicFragment : Fragment(), MusicContract.View {
             handler.postDelayed({ updateTimeSong() }, 500)
         }, 100)
     }
+    
 
     override fun onStart() {
         super.onStart()
