@@ -1,7 +1,7 @@
 package com.example.musicapp.network
 
 object ManagerUrl {
-     const val BASE_URL = "http://10.20.23.239:3000/api/"
+     const val BASE_URL = "http://192.168.1.29:3000/api/"
 
     // playlist
     const val GET_PLAYLIST = "playlists"
@@ -13,6 +13,9 @@ object ManagerUrl {
 
     //song again
     const val GET_SONG_AGAIN= "songs/Again/{userID}"
+
+    //song again
+    const val GET_SONG_RANK= "songs/rank"
 
     //album love
     const val GET_ALBUM_LOVE= "albums/love"

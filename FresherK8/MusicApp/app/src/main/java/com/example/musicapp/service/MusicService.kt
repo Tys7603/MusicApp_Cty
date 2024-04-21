@@ -7,6 +7,7 @@ import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
+import com.example.musicapp.ui.fragment.musicFragment.MusicContract
 import com.example.musicapp.until.Constant
 
 
@@ -14,6 +15,14 @@ class MusicService() : Service() {
     private var mediaPlayer: MediaPlayer? = null
     private val binder: IBinder = LocalBinder()
     private var isMediaPrepared = false // Biến này để theo dõi trạng thái chuẩn bị âm thanh
+    private lateinit var mView: MusicContract.View
+    private var onCompletionListener: (() -> Unit)? = null // kết thúc bài hát
+    private var isAutoRestart = false //  lập lại bài hát
+    private var isNext = false //  qua bài mới
+
+    fun musicService(mView : MusicContract.View){
+        this.mView = mView
+    }
 
     inner class LocalBinder : Binder() {
         fun getService(): MusicService = this@MusicService
@@ -26,24 +35,31 @@ class MusicService() : Service() {
     override fun onCreate() {
         super.onCreate()
         if (mediaPlayer == null) {
-            mediaPlayer = MediaPlayer()
-            mediaPlayer?.setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build()
-            )
-
+            mediaPlayer = MediaPlayer().apply {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build()
+                )
+                setOnCompletionListener {
+                    if (isAutoRestart){
+                        start()
+                    }else{
+                        onCompletionListener?.invoke()
+                    }
+                }
+            }
         }
     }
-
 
     fun playFromUrl(url: String) {
         mediaPlayer?.apply {
             reset()
             setDataSource(url)
             prepareAsync()
-            mediaPlayer?.setOnPreparedListener {
+            setOnPreparedListener {
                 isMediaPrepared = true // Đánh dấu rằng âm thanh đã được chuẩn bị
+                mView.onMediaPrepared()
             }
         }
     }
@@ -59,13 +75,21 @@ class MusicService() : Service() {
     fun setMediaPrepared( mediaPrepared: Boolean) {
         isMediaPrepared = mediaPrepared
     }
-    fun setOnCompletionListener(){
-        mediaPlayer?.setOnCompletionListener {
-            sendBroadcast(Intent(Constant.SONG_COMPLETED))
-            Log.d("TAG", "onReceive: nhạn dc ở service")
-        }
+    fun setOnCompletionListener(listener: () -> Unit){
+       onCompletionListener = listener
     }
 
+    fun isAutoRestart() = isAutoRestart
+
+    fun setAutoRestart(isAutoRestart : Boolean) {
+        this.isAutoRestart = isAutoRestart
+    }
+
+    fun isNextMusic() = isNext
+
+    fun setNextMusic(isNext : Boolean) {
+        this.isNext = isNext
+    }
 
     fun isPlaying() = mediaPlayer!!.isPlaying
 

@@ -7,6 +7,7 @@ import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryAlb
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryCategories
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryPlaylist
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositorySongAgain
+import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositorySongRank
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryTopic
 import com.example.musicapp.until.Constant
 import retrofit2.Call
@@ -179,6 +180,30 @@ class ExplorePresenter (val mView : ExploreContract.View) : ExploreContract.Pres
             }
 
             override fun onFailure(call: Call<RepositoryAlbumNew>, t: Throwable) {
+                Log.e(Constant.TAG_ERROR, t.toString())
+            }
+
+        })
+    }
+
+    override fun getListSongRank() {
+        ApiClient.getApiService()?.getListSongRank()?.enqueue(object : Callback<RepositorySongRank> {
+            override fun onResponse(
+                call: Call<RepositorySongRank>,
+                response: Response<RepositorySongRank>
+            ) {
+                if (response.isSuccessful){
+                    if (Constant.STATUS == response.body()?.status){
+                        mView.onListSongRank(response.body()!!.songRanks)
+                    }else{
+                        Log.e(Constant.TAG_ERROR, "Call other api status 200")
+                    }
+                }else{
+                    Log.e(Constant.TAG_ERROR, "Call api failure")
+                }
+            }
+
+            override fun onFailure(call: Call<RepositorySongRank>, t: Throwable) {
                 Log.e(Constant.TAG_ERROR, t.toString())
             }
 

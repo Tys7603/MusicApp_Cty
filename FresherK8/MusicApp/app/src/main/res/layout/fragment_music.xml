@@ -109,7 +109,7 @@
         android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="32dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
