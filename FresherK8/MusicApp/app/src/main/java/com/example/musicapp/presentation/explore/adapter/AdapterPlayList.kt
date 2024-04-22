@@ -3,14 +3,16 @@ package com.example.musicapp.presentation.explore.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.musicapp.R
 import com.example.musicapp.databinding.ItemPlayListBinding
 import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.shared.extension.loadImageUrl
+import com.example.musicapp.shared.utils.OnItemClickListener
 import kotlin.math.min
 
-class AdapterPlayList(private var listPlayList: ArrayList<Playlist>) :
+class AdapterPlayList(
+    private var listPlayList: ArrayList<Playlist>,
+    private var mListener : OnItemClickListener
+    ) :
     RecyclerView.Adapter<AdapterPlayList.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -25,6 +27,9 @@ class AdapterPlayList(private var listPlayList: ArrayList<Playlist>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val playlist = listPlayList[position]
         holder.bind(playlist)
+        holder.itemView.setOnClickListener{
+            mListener.onItemClick(playlist)
+        }
     }
 
     class ViewHolder(private val binding: ItemPlayListBinding) :

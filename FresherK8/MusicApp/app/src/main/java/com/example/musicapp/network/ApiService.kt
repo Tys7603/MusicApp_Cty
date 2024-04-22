@@ -17,6 +17,7 @@ import com.example.musicapp.data.repositories.SongRepository
 import com.example.musicapp.data.repositories.SongAgainRepository
 import com.example.musicapp.data.repositories.SongRankRepository
 import com.example.musicapp.data.repositories.TopicRepository
+import com.example.musicapp.network.ManagerUrl.GET_SONG_BY_PLAYLIST_ID
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -35,23 +36,22 @@ interface ApiService {
     @GET(GET_CATEGORIES)
     fun getListCategory(): Call<CategoriesRepository>
 
-    //song again
+    //song
     @GET(GET_SONG_AGAIN)
     fun getListSongAgain(@Path("userID") user: Int): Call<SongAgainRepository>
 
-    //song love
     @GET(GET_ALBUM_LOVE)
     fun getListAlbumLove(): Call<AlbumLoveRepository>
 
-    //song new
     @GET(GET_ALBUM_NEW)
     fun getListAlbumNew(): Call<AlbumNewRepository>
 
-    //song
     @GET(GET_SONG)
     fun getListSong(): Call<SongRepository>
 
-    //song rank
     @GET(GET_SONG_RANK)
     fun getListSongRank(): Call<SongRankRepository>
+
+    @GET(GET_SONG_BY_PLAYLIST_ID)
+    fun getListSongPlaylistById(@Path("playlistId") playlistId: Int): Call<SongRepository>
 }

@@ -1,6 +1,7 @@
 package com.example.musicapp.presentation.explore
 
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -29,11 +30,13 @@ import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.data.model.SongRank
 import com.example.musicapp.data.model.Topic
+import com.example.musicapp.presentation.song.SongActivity
 import com.example.musicapp.shared.extension.loadImageUrl
+import com.example.musicapp.shared.utils.OnItemClickListener
 import com.google.gson.Gson
 import java.util.Random
 
-class ExploreFragment : Fragment(), ExploreContract.View {
+class ExploreFragment : Fragment(), ExploreContract.View, OnItemClickListener {
 
     private val binding by lazy {
         FragmentExploreBinding.inflate(layoutInflater)
@@ -69,7 +72,7 @@ class ExploreFragment : Fragment(), ExploreContract.View {
             getListCategory()
             getListAlbumLove()
             getListAlbumNew()
-            getListSongRank()
+//            getListSongRank()
         }
     }
 
@@ -85,7 +88,7 @@ class ExploreFragment : Fragment(), ExploreContract.View {
     }
 
     override fun onListPlaylist(playlists: ArrayList<Playlist>) {
-        val adapterPlayList = AdapterPlayList(playlists.shuffled(Random()) as ArrayList<Playlist>)
+        val adapterPlayList = AdapterPlayList(playlists.shuffled(Random()) as ArrayList<Playlist>, this)
         val linearLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rcvPlaylist.layoutManager = linearLayoutManager
@@ -93,7 +96,7 @@ class ExploreFragment : Fragment(), ExploreContract.View {
     }
 
     override fun onListPlaylistMoodToday(playlists: ArrayList<Playlist>) {
-        val adapterPlayList = AdapterPlayList(playlists.shuffled(Random()) as ArrayList<Playlist>)
+        val adapterPlayList = AdapterPlayList(playlists.shuffled(Random()) as ArrayList<Playlist>, this)
         val linearLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rcvAlbumMoodToday.layoutManager = linearLayoutManager
@@ -147,13 +150,13 @@ class ExploreFragment : Fragment(), ExploreContract.View {
     }
 
     override fun onListSongRank(songRanks: ArrayList<SongRank>) {
-        val snapHelper = LinearSnapHelper()
-        val adapter = AdapterSongRank(songRanks)
-        val linearLayoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.rcvSongRank.layoutManager = linearLayoutManager
-        binding.rcvSongRank.adapter = adapter
-        snapHelper.attachToRecyclerView(binding.rcvSongRank)
+           val snapHelper = LinearSnapHelper()
+           val adapter = AdapterSongRank(songRanks)
+           val linearLayoutManager =
+               LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+           binding.rcvSongRank.layoutManager = linearLayoutManager
+           binding.rcvSongRank.adapter = adapter
+           snapHelper.attachToRecyclerView(binding.rcvSongRank)
     }
 
     private fun initSongView(){
@@ -172,6 +175,12 @@ class ExploreFragment : Fragment(), ExploreContract.View {
     override fun onDestroy() {
         super.onDestroy()
         mPresenter.onDestroy()
+    }
+
+    override fun onItemClick(item: Any) {
+        val intent = Intent(requireContext(), SongActivity::class.java)
+        intent.putExtra(Constant.KEY_INTENT_ITEM, item is Song)
+        startActivity(intent)
     }
 }
 

@@ -19,7 +19,6 @@ interface ExploreContract {
         fun onListAlbumLove(albumLove: ArrayList<AlbumLove>)
         fun onListAlbumNew(albumNew: ArrayList<AlbumNew>)
         fun onListSongRank(songRanks: ArrayList<SongRank>)
-        fun onItemClickListener()
     }
 
     interface Presenter :BasePresenter<View> {
@@ -31,6 +30,5 @@ interface ExploreContract {
         fun getListAlbumLove()
         fun getListAlbumNew()
         fun getListSongRank()
-        fun onItemClickListener(id : Int)
     }
 }
