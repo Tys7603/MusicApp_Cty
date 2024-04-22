@@ -1,15 +1,9 @@
 package com.example.musicapp.ui.fragment.musicFragment
-
-import SharedPreferencesDelegate
-import android.app.ProgressDialog
-import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
@@ -20,17 +14,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.SeekBar
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import com.bumptech.glide.Glide
 import com.example.musicapp.R
 import com.example.musicapp.databinding.FragmentMusicBinding
 import com.example.musicapp.model.Song
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.until.BooleanProperty
-import com.example.musicapp.until.Constant
 import com.example.musicapp.until.FormatUntil
 
 class MusicFragment : Fragment(), MusicContract.View {
@@ -38,6 +28,7 @@ class MusicFragment : Fragment(), MusicContract.View {
     private lateinit var musicService: MusicService
     private lateinit var musicPresenter: MusicPresenter
     private lateinit var mSongs: ArrayList<Song>
+    private lateinit var mSongsDefault: ArrayList<Song>
     private var position = 0
     private var isServiceBound = false // kiểm tra kết nối service
 
@@ -49,9 +40,9 @@ class MusicFragment : Fragment(), MusicContract.View {
         const val KEY_PLAY_CLICK = "play_music"
         const val VALUE_DEFAULT = "00:00"
         const val KEY_POSITION = "position"
+        const val KEY_AUTO_RESTART = "auto_restart"
+        const val KEY_SHUFFLE = "shuffle"
     }
-
-//    var myIntPreference by SharedPreferencesDelegate(sharedPreferences, "my_int_key", 0)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -123,6 +114,7 @@ class MusicFragment : Fragment(), MusicContract.View {
         binding.btnNext.setOnClickListener { nextMusic() }
         binding.btnBack.setOnClickListener { backMusic() }
         binding.btnLoop.setOnClickListener { autoRestart() }
+        binding.btnShuffle.setOnClickListener{shuffleMusic()}
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
 
@@ -191,14 +183,49 @@ class MusicFragment : Fragment(), MusicContract.View {
     // nghe lại bài nhạc
     private fun autoRestart(){
        if (musicService.isAutoRestart()){
+           // auto restart tắt
            musicService.setAutoRestart(false)
-           binding.btnLoop.setImageResource(R.drawable.ic_repeat_black)
+           binding.btnLoop.setImageResource(R.drawable.ic_loop)
        }else{
+           // auto restart bật
            musicService.setAutoRestart(true)
            binding.btnLoop.setImageResource(R.drawable.ic_loop_color)
-
+//           // kiểm tra để dùng 1 chức năng
+           if (musicService.isShuffleMusic()){
+               // shuffle tắt
+               mSongs = mSongsDefault
+               musicService.setShuffleMusic(false)
+               binding.btnShuffle.setImageResource(R.drawable.ic_shuffle)
+           }
        }
+        sharedPreferences.edit().putBoolean(KEY_AUTO_RESTART, musicService.isAutoRestart()).apply()
     }
+    // nghe ngẫu nhiên
+    private fun shuffleMusic() {
+        if (musicService.isShuffleMusic()){
+            // shuffle tắt
+            mSongs = mSongsDefault.toList() as ArrayList<Song>
+            mSongs.clear()
+            mSongs.addAll(mSongsDefault)
+            musicService.setShuffleMusic(false)
+            binding.btnShuffle.setImageResource(R.drawable.ic_shuffle)
+        }else{
+            // shuffle bật
+            mSongs = mSongsDefault.toList() as ArrayList<Song>
+            mSongs.shuffle()
+            musicService.setShuffleMusic(true)
+            binding.btnShuffle.setImageResource(R.drawable.ic_shuffle_color)
+//            // kiểm tra để dùng 1 chức năng
+            if (musicService.isAutoRestart()){
+                // auto restart tắt
+                musicService.setAutoRestart(false)
+                binding.btnLoop.setImageResource(R.drawable.ic_loop)
+            }
+        }
+
+        sharedPreferences.edit().putBoolean(KEY_SHUFFLE, musicService.isShuffleMusic()).apply()
+    }
+
 
     // set thời gian tổng cho tv và gán max của skbar = time của bài hát
     private fun setTimeTotal() {
@@ -248,8 +275,21 @@ class MusicFragment : Fragment(), MusicContract.View {
 
     override fun onListSong(songs: ArrayList<Song>) {
         mSongs = songs
+        mSongsDefault = songs
         if (isServiceBound){
             initValueSong()
+            initFunc()
+        }
+    }
+
+    private fun initFunc() {
+        val shuffle = sharedPreferences.getBoolean(KEY_SHUFFLE, false)
+        val autoRestart = sharedPreferences.getBoolean(KEY_AUTO_RESTART, false)
+        if (shuffle){
+            binding.btnShuffle.setImageResource(R.drawable.ic_shuffle_color)
+        }
+        if (autoRestart){
+            binding.btnLoop.setImageResource(R.drawable.ic_loop_color)
         }
     }
 

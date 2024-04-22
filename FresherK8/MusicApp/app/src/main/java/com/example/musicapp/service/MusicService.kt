@@ -6,9 +6,7 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
-import android.util.Log
 import com.example.musicapp.ui.fragment.musicFragment.MusicContract
-import com.example.musicapp.until.Constant
 
 
 class MusicService() : Service() {
@@ -19,6 +17,7 @@ class MusicService() : Service() {
     private var onCompletionListener: (() -> Unit)? = null // kết thúc bài hát
     private var isAutoRestart = false //  lập lại bài hát
     private var isNext = false //  qua bài mới
+    private var isShuffle= false //  đảo bài hài
 
     fun musicService(mView : MusicContract.View){
         this.mView = mView
@@ -89,6 +88,12 @@ class MusicService() : Service() {
 
     fun setNextMusic(isNext : Boolean) {
         this.isNext = isNext
+    }
+
+    fun isShuffleMusic() = isShuffle
+
+    fun setShuffleMusic(isShuffle : Boolean) {
+        this.isShuffle = isShuffle
     }
 
     fun isPlaying() = mediaPlayer!!.isPlaying
