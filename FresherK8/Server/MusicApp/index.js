@@ -20,6 +20,7 @@ var songAgainRouter = require('./routers/songAgainRouter.js')
 var albumLoveRouter = require('./routers/albumLoveRouter.js')
 var albumRouter = require('./routers/albumRouter.js')
 var songRouter = require('./routers/songRouter.js')
+var songRankRouter = require('./routers/songRankRouter.js')
 
 // routers
 app.use("/api", playListRouter)
@@ -29,6 +30,7 @@ app.use("/api", songAgainRouter)
 app.use("/api", albumLoveRouter)
 app.use("/api", albumRouter)
 app.use("/api", songRouter)
+app.use("/api", songRankRouter)
 
 const port = 3000 || process.env.DB_PORT;
 server.listen(port, () => {

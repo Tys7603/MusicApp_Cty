@@ -8,11 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.SnapHelper
 import com.example.musicapp.apdater.AdapterAlbumLove
 import com.example.musicapp.apdater.AdapterAlbumNew
 import com.example.musicapp.apdater.AdapterCategories
 import com.example.musicapp.apdater.AdapterPlayList
 import com.example.musicapp.apdater.AdapterSongAgain
+import com.example.musicapp.apdater.AdapterSongRank
 import com.example.musicapp.apdater.AdapterTopic
 import com.example.musicapp.databinding.FragmentExploreBinding
 import com.example.musicapp.model.AlbumLove
@@ -21,6 +24,7 @@ import com.example.musicapp.model.Category
 import com.example.musicapp.model.Playlist
 import com.example.musicapp.model.Song
 import com.example.musicapp.model.SongAgain
+import com.example.musicapp.model.SongRank
 import com.example.musicapp.model.Topic
 import java.util.Random
 
@@ -44,6 +48,7 @@ class ExploreFragment : Fragment(), ExploreContract.View {
         mPresenter.getListCategory()
         mPresenter.getListAlbumLove()
         mPresenter.getListAlbumNew()
+        mPresenter.getListSongRank()
         checkUserLogin()
     }
 
@@ -117,6 +122,16 @@ class ExploreFragment : Fragment(), ExploreContract.View {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rcvAlbumNew.layoutManager = linearLayoutManager
         binding.rcvAlbumNew.adapter = adapter
+    }
+
+    override fun onListSongRank(songRanks: ArrayList<SongRank>) {
+        val snapHelper = LinearSnapHelper()
+        val adapter = AdapterSongRank(songRanks)
+        val linearLayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rcvSongRank.layoutManager = linearLayoutManager
+        binding.rcvSongRank.adapter = adapter
+        snapHelper.attachToRecyclerView(binding.rcvSongRank)
     }
 }
 

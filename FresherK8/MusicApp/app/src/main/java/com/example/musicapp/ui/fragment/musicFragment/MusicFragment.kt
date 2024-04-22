@@ -1,26 +1,36 @@
 package com.example.musicapp.ui.fragment.musicFragment
 
+import SharedPreferencesDelegate
+import android.app.ProgressDialog
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.preference.PreferenceManager
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.SeekBar
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.bumptech.glide.Glide
 import com.example.musicapp.R
 import com.example.musicapp.databinding.FragmentMusicBinding
 import com.example.musicapp.model.Song
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.until.BooleanProperty
+import com.example.musicapp.until.Constant
 import com.example.musicapp.until.FormatUntil
 
 class MusicFragment : Fragment(), MusicContract.View {
@@ -37,7 +47,11 @@ class MusicFragment : Fragment(), MusicContract.View {
 
     companion object {
         const val KEY_PLAY_CLICK = "play_music"
+        const val VALUE_DEFAULT = "00:00"
+        const val KEY_POSITION = "position"
     }
+
+//    var myIntPreference by SharedPreferencesDelegate(sharedPreferences, "my_int_key", 0)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,6 +67,7 @@ class MusicFragment : Fragment(), MusicContract.View {
             val binder = service as MusicService.LocalBinder
             musicService = binder.getService()
             isServiceBound = true
+            musicService.musicService(this@MusicFragment)
         }
 
         // ngắt kết nối music service
@@ -66,16 +81,32 @@ class MusicFragment : Fragment(), MusicContract.View {
         musicPresenter = MusicPresenter(this)
         musicPresenter.getListSong()
         onClick()
-        initViewButton()
     }
 
+    // hiển thị tên, ảnh bài hát, tên ca sĩ, bg
     private fun initValueSong() {
+        position = sharedPreferences.getInt(KEY_POSITION, 0)
         Glide.with(requireContext()).load(mSongs[position].image).centerCrop()
             .placeholder(R.drawable.img_placeholder).into(binding.imgSong)
         binding.tvNameArtistSong.text = mSongs[position].nameArtis
         binding.tvNameSong.text = mSongs[position].name
+        binding.tvTotalTimeSong.text = VALUE_DEFAULT
         Glide.with(requireContext()).load(mSongs[position].image).centerCrop()
             .placeholder(R.drawable.img_placeholder).into(binding.imgBg)
+        if (isServiceBound) {
+            if (!musicService.isMediaPrepared()) {
+                musicService.playFromUrl(mSongs[position].url)
+                musicService.setOnCompletionListener {
+                    // Xử lý khi bài hát kết thúc, chuyển sang bài hát tiếp theo
+                    nextMusic()
+                }
+            }else{
+                // khi bài hát đã được chuẩn bị -> khi bấm qua fragment khác
+                setTimeTotal()
+                updateTimeSong()
+            }
+        }
+        initViewButton()
     }
 
     // kiểm tra xem nhạc có đang phát không -> hiển thị nút play, pause
@@ -88,9 +119,10 @@ class MusicFragment : Fragment(), MusicContract.View {
     }
 
     private fun onClick() {
-        binding.btnPlay.setOnClickListener { playMusic(mSongs[position].url) }
+        binding.btnPlay.setOnClickListener { playMusic() }
         binding.btnNext.setOnClickListener { nextMusic() }
         binding.btnBack.setOnClickListener { backMusic() }
+        binding.btnLoop.setOnClickListener { autoRestart() }
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
 
@@ -105,9 +137,7 @@ class MusicFragment : Fragment(), MusicContract.View {
                     musicService.seekTo(binding.seekBar.progress)
                 }
             }
-        }
-
-        )
+        })
     }
 
     // next sang bài nhạc tiếp
@@ -116,42 +146,36 @@ class MusicFragment : Fragment(), MusicContract.View {
         if (position > mSongs.size - 1) {
             position = 0
         }
-        var isPlaySelected: Boolean by BooleanProperty(sharedPreferences, KEY_PLAY_CLICK, false)
-        isPlaySelected = false
-        initViewButton()
-        initValueSong()
-        musicService.setMediaPrepared(false)
-        musicService.stop()
-        setTimeTotal()
+        sharedPreferences.edit().putInt(KEY_POSITION, position).apply()
+        setFuncMusic()
+        musicService.setNextMusic(true)
     }
 
-    // quay lại bài nhạc
+    //    // quay lại bài nhạc
     private fun backMusic() {
         position--
         if (position < 0) {
             position = mSongs.size - 1
         }
-        var isPlaySelected: Boolean by BooleanProperty(sharedPreferences, KEY_PLAY_CLICK, false)
-        isPlaySelected = false
-        initViewButton()
-        initValueSong()
-        musicService.setMediaPrepared(false)
+        sharedPreferences.edit().putInt(KEY_POSITION, position).apply()
+        setFuncMusic()
+    }
+
+    private fun setFuncMusic() {
         musicService.stop()
-        setTimeTotal()
+        musicService.setMediaPrepared(false)
+        var isPlaySelected: Boolean by BooleanProperty(sharedPreferences, KEY_PLAY_CLICK, false)
+        isPlaySelected = true
+        initValueSong()
     }
 
     // phát nhạc
-    private fun playMusic(url: String) {
+    private fun playMusic() {
         var isPlaySelected: Boolean by BooleanProperty(sharedPreferences, KEY_PLAY_CLICK, false)
 
         if (isServiceBound) { // kiểm tra đã kết nối chưa
             isPlaySelected = if (!musicService.isPlaying()) { // kiểm tra xem đã play chưa
-                if (!musicService.isMediaPrepared()) {
-                    musicService.playFromUrl(url)
-                } else {
-                    musicService.start()
-                }
-                setTimeTotal()
+                musicService.start()
                 updateTimeSong()
                 binding.btnPlay.setImageResource(R.drawable.ic_pause_music)
                 true
@@ -162,6 +186,18 @@ class MusicFragment : Fragment(), MusicContract.View {
             }
 
         }
+    }
+
+    // nghe lại bài nhạc
+    private fun autoRestart(){
+       if (musicService.isAutoRestart()){
+           musicService.setAutoRestart(false)
+           binding.btnLoop.setImageResource(R.drawable.ic_repeat_black)
+       }else{
+           musicService.setAutoRestart(true)
+           binding.btnLoop.setImageResource(R.drawable.ic_loop_color)
+
+       }
     }
 
     // set thời gian tổng cho tv và gán max của skbar = time của bài hát
@@ -176,19 +212,23 @@ class MusicFragment : Fragment(), MusicContract.View {
     private fun updateTimeSong() {
         // Tạo một Handler liên kết với Looper của luồng chính
         val handler = Handler(Looper.getMainLooper())
+
         // Đặt một hành động trì hoãn để cập nhật UI sau 100 mili giây
         handler.postDelayed({
+
             // Cập nhật UI với vị trí hiện tại của trình phát nhạc
             binding.tvTimeSong.text = FormatUntil.formatTime(musicService.getCurrentPosition())
+
             // set progress cho seekbar
             binding.seekBar.progress = musicService.getCurrentPosition()
-            // kiểm tra bài hát kết thúc sẽ chuyển qua bài khác
-            musicService
+
             // Đặt một hành động trì hoãn khác để gọi lại updateTimeSong sau 500 mili giây
             handler.postDelayed({ updateTimeSong() }, 500)
+
         }, 100)
     }
     
+
 
     override fun onStart() {
         super.onStart()
@@ -208,7 +248,18 @@ class MusicFragment : Fragment(), MusicContract.View {
 
     override fun onListSong(songs: ArrayList<Song>) {
         mSongs = songs
-        initValueSong()
+        if (isServiceBound){
+            initValueSong()
+        }
     }
+
+    override fun onMediaPrepared() {
+        setTimeTotal()
+        if (musicService.isNextMusic()){
+            musicService.start()
+            updateTimeSong()
+        }
+    }
+
 }
 

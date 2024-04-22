@@ -7,6 +7,7 @@ import com.example.musicapp.network.ManagerUrl.GET_PLAYLIST
 import com.example.musicapp.network.ManagerUrl.GET_PLAYLIST_MODE_TODAY
 import com.example.musicapp.network.ManagerUrl.GET_SONG
 import com.example.musicapp.network.ManagerUrl.GET_SONG_AGAIN
+import com.example.musicapp.network.ManagerUrl.GET_SONG_RANK
 import com.example.musicapp.network.ManagerUrl.GET_TOPICS
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryAlbumLove
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryAlbumNew
@@ -14,6 +15,7 @@ import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryCat
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryPlaylist
 import com.example.musicapp.ui.fragment.musicFragment.repository.RepositorySong
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositorySongAgain
+import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositorySongRank
 import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryTopic
 import retrofit2.Call
 import retrofit2.http.GET
@@ -48,4 +50,8 @@ interface ApiService {
     //song
     @GET(GET_SONG)
     fun getListSong(): Call<RepositorySong>
+
+    //song rank
+    @GET(GET_SONG_RANK)
+    fun getListSongRank(): Call<RepositorySongRank>
 }

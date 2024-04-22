@@ -14,6 +14,9 @@ object ManagerUrl {
     //song again
     const val GET_SONG_AGAIN= "songs/Again/{userID}"
 
+    //song again
+    const val GET_SONG_RANK= "songs/rank"
+
     //album love
     const val GET_ALBUM_LOVE= "albums/love"
 
