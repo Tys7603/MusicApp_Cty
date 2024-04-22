@@ -9,14 +9,14 @@ import com.example.musicapp.network.ManagerUrl.GET_SONG
 import com.example.musicapp.network.ManagerUrl.GET_SONG_AGAIN
 import com.example.musicapp.network.ManagerUrl.GET_SONG_RANK
 import com.example.musicapp.network.ManagerUrl.GET_TOPICS
-import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryAlbumLove
-import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryAlbumNew
-import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryCategories
-import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryPlaylist
-import com.example.musicapp.ui.fragment.musicFragment.repository.RepositorySong
-import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositorySongAgain
-import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositorySongRank
-import com.example.musicapp.ui.fragment.exploreFragment.repository.RepositoryTopic
+import com.example.musicapp.data.repositories.AlbumLoveRepository
+import com.example.musicapp.data.repositories.AlbumNewRepository
+import com.example.musicapp.data.repositories.CategoriesRepository
+import com.example.musicapp.data.repositories.PlaylistRepository
+import com.example.musicapp.data.repositories.SongRepository
+import com.example.musicapp.data.repositories.SongAgainRepository
+import com.example.musicapp.data.repositories.SongRankRepository
+import com.example.musicapp.data.repositories.TopicRepository
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -24,34 +24,34 @@ import retrofit2.http.Path
 interface ApiService {
     // Playlist
     @GET(GET_PLAYLIST)
-    fun getListPlaylist(): Call<RepositoryPlaylist>
+    fun getListPlaylist(): Call<PlaylistRepository>
     @GET(GET_PLAYLIST_MODE_TODAY)
-    fun getListPlaylistMoodToday(): Call<RepositoryPlaylist>
+    fun getListPlaylistMoodToday(): Call<PlaylistRepository>
 
     // Categories and topic
     @GET(GET_TOPICS)
-    fun getListTopic(): Call<RepositoryTopic>
+    fun getListTopic(): Call<TopicRepository>
 
     @GET(GET_CATEGORIES)
-    fun getListCategory(): Call<RepositoryCategories>
+    fun getListCategory(): Call<CategoriesRepository>
 
     //song again
     @GET(GET_SONG_AGAIN)
-    fun getListSongAgain(@Path("userID") user: Int): Call<RepositorySongAgain>
+    fun getListSongAgain(@Path("userID") user: Int): Call<SongAgainRepository>
 
     //song love
     @GET(GET_ALBUM_LOVE)
-    fun getListAlbumLove(): Call<RepositoryAlbumLove>
+    fun getListAlbumLove(): Call<AlbumLoveRepository>
 
     //song new
     @GET(GET_ALBUM_NEW)
-    fun getListAlbumNew(): Call<RepositoryAlbumNew>
+    fun getListAlbumNew(): Call<AlbumNewRepository>
 
     //song
     @GET(GET_SONG)
-    fun getListSong(): Call<RepositorySong>
+    fun getListSong(): Call<SongRepository>
 
     //song rank
     @GET(GET_SONG_RANK)
-    fun getListSongRank(): Call<RepositorySongRank>
+    fun getListSongRank(): Call<SongRankRepository>
 }

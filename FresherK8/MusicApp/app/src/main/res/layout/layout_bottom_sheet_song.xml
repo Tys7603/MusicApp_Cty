@@ -21,28 +21,28 @@
         app:layout_constraintTop_toTopOf="@+id/imageView22">
 
         <TextView
-            android:id="@+id/textView27"
+            android:id="@+id/tv_layout_bottom_name_song"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="80dp"
             android:text="Princess Diana"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imageView23"
+            app:layout_constraintEnd_toStartOf="@+id/btn_layout_bottom_love"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView23"
+            android:id="@+id/btn_layout_bottom_love"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView24"
-            app:layout_constraintEnd_toStartOf="@+id/imageView24"
-            app:layout_constraintTop_toTopOf="@+id/imageView24"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_layout_bottom_pause"
+            app:layout_constraintEnd_toStartOf="@+id/btn_layout_bottom_pause"
+            app:layout_constraintTop_toTopOf="@+id/btn_layout_bottom_pause"
             app:srcCompat="@drawable/ic_heart_black" />
 
         <ImageView
-            android:id="@+id/imageView24"
+            android:id="@+id/btn_layout_bottom_pause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"

@@ -6,7 +6,8 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
-import com.example.musicapp.ui.fragment.musicFragment.MusicContract
+import android.util.Log
+import com.example.musicapp.presentation.music.MusicContract
 
 
 class MusicService() : Service() {
@@ -126,5 +127,6 @@ class MusicService() : Service() {
             mediaPlayer?.stop()
         }
         mediaPlayer?.release()
+        Log.d("TAG", "onDestroy: ")
     }
 }

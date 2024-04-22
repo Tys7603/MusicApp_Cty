@@ -6,7 +6,7 @@
     android:background="@color/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.SongActivity">
+    tools:context=".presentation.song.SongActivity">
 
     <ImageView
         android:id="@+id/imageView17"

@@ -61,4 +61,6 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     //noinspection UseTomlInstead
     implementation ("com.github.bumptech.glide:glide:4.16.0")
+    //noinspection UseTomlInstead
+    implementation ("com.google.code.gson:gson:2.10.1")
 }
