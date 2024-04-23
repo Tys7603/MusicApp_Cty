@@ -1,12 +1,17 @@
 package com.example.musicapp.data.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
-data class Topic (
+@Parcelize
+data class Topic(
     @SerializedName("topic_id")
-    val id : Int,
+    val id: Int,
     @SerializedName("topic_name")
-    val name : String,
+    val name: String,
     @SerializedName("topic_image")
-    val image : String
-)
+    val image: String,
+    @SerializedName("category_id")
+    val categoryId: Int
+) : Parcelable

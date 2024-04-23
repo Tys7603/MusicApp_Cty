@@ -16,7 +16,20 @@ const getListSongByPlaylistId = async (playlistId) => {
 
   return await queryDatabase(query, [playlistId])
 }
+
+const getListSongByTopicId = async (topicId) => {
+
+  const query = "SELECT s.song_id, s.song_name, s.song_image, s.song_url, a.name_artist " +
+    "FROM Song as s " +
+    "INNER JOIN Topic as t ON s.topic_id = t.topic_id " +
+    "INNER JOIN Album as a ON s.album_id = a.album_id " +
+    "WHERE t.topic_id = ?"
+
+  return await queryDatabase(query, [topicId])
+}
+
 module.exports = {
   getListSong,
-  getListSongByPlaylistId
+  getListSongByPlaylistId,
+  getListSongByTopicId
 }

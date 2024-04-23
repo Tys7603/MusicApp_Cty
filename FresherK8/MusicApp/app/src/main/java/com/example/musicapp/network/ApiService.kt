@@ -18,11 +18,14 @@ import com.example.musicapp.data.repositories.SongAgainRepository
 import com.example.musicapp.data.repositories.SongRankRepository
 import com.example.musicapp.data.repositories.TopicRepository
 import com.example.musicapp.network.ManagerUrl.GET_SONG_BY_PLAYLIST_ID
+import com.example.musicapp.network.ManagerUrl.GET_SONG_BY_TOPIC_ID
+import com.example.musicapp.network.ManagerUrl.GET_TOPIC_BY_CATEGORY_ID
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface ApiService {
+
     // Playlist
     @GET(GET_PLAYLIST)
     fun getListPlaylist(): Call<PlaylistRepository>
@@ -36,15 +39,12 @@ interface ApiService {
     @GET(GET_CATEGORIES)
     fun getListCategory(): Call<CategoriesRepository>
 
+    @GET(GET_TOPIC_BY_CATEGORY_ID)
+    fun getListTopicByIdCategory(@Path("categoryId") categoryId: Int): Call<TopicRepository>
+
     //song
     @GET(GET_SONG_AGAIN)
     fun getListSongAgain(@Path("userID") user: Int): Call<SongAgainRepository>
-
-    @GET(GET_ALBUM_LOVE)
-    fun getListAlbumLove(): Call<AlbumLoveRepository>
-
-    @GET(GET_ALBUM_NEW)
-    fun getListAlbumNew(): Call<AlbumNewRepository>
 
     @GET(GET_SONG)
     fun getListSong(): Call<SongRepository>
@@ -54,4 +54,14 @@ interface ApiService {
 
     @GET(GET_SONG_BY_PLAYLIST_ID)
     fun getListSongPlaylistById(@Path("playlistId") playlistId: Int): Call<SongRepository>
+
+    @GET(GET_SONG_BY_TOPIC_ID)
+    fun getListSongTopicById(@Path("topicId") topicId: Int): Call<SongRepository>
+
+    // album
+    @GET(GET_ALBUM_LOVE)
+    fun getListAlbumLove(): Call<AlbumLoveRepository>
+
+    @GET(GET_ALBUM_NEW)
+    fun getListAlbumNew(): Call<AlbumNewRepository>
 }

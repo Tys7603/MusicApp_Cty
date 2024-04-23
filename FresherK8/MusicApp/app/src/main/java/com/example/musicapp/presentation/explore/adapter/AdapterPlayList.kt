@@ -11,12 +11,13 @@ import kotlin.math.min
 
 class AdapterPlayList(
     private var listPlayList: ArrayList<Playlist>,
-    private var mListener : OnItemClickListener
-    ) :
+    private var mListener: OnItemClickListener
+) :
     RecyclerView.Adapter<AdapterPlayList.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemPlayListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemPlayListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -27,7 +28,7 @@ class AdapterPlayList(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val playlist = listPlayList[position]
         holder.bind(playlist)
-        holder.itemView.setOnClickListener{
+        holder.itemView.setOnClickListener {
             mListener.onItemClick(playlist)
         }
     }
@@ -37,6 +38,7 @@ class AdapterPlayList(
         fun bind(playlist: Playlist) {
             binding.tvNamePlaylist.text = playlist.name
             binding.imgPlaylist.loadImageUrl(playlist.image)
+            binding.tvNameArtistItem.text = playlist.nameArtist
         }
     }
 

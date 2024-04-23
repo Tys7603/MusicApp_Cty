@@ -8,8 +8,12 @@ import com.example.musicapp.R
 import com.example.musicapp.databinding.ItemSongAgianBinding
 import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.shared.extension.loadImageUrl
+import com.example.musicapp.shared.utils.OnItemClickListener
 
-class AdapterSongAgain(private val songAgain: ArrayList<SongAgain>) :
+class AdapterSongAgain(
+    private val songAgain: ArrayList<SongAgain>,
+    private var mListener: OnItemClickListener
+) :
     RecyclerView.Adapter<AdapterSongAgain.ViewHolder>() {
 
     private lateinit var binding: ItemSongAgianBinding
@@ -25,6 +29,9 @@ class AdapterSongAgain(private val songAgain: ArrayList<SongAgain>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(songAgain[position])
+        holder.itemView.setOnClickListener {
+            mListener.onItemClick(songAgain[position])
+        }
     }
 
     class ViewHolder(private val binding: ItemSongAgianBinding) :

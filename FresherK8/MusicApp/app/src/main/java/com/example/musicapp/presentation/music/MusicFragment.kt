@@ -147,6 +147,7 @@ class MusicFragment : Fragment(), MusicContract.View {
 
     // next sang bài nhạc tiếp
     private fun nextMusic() {
+        position = sharedPreferences.getInt(KEY_POSITION, 0)
         position++
         if (position > mSongs!!.size - 1) {
             position = 0

@@ -6,5 +6,6 @@ object Constant {
     const val SONG_COMPLETED = "song_completed"
     const val KEY_SONG = "song"
     const val KEY_INTENT_ITEM = "item"
+    const val KEY_BUNDLE_ITEM = "bundle"
     // bỏ enum ở đây
 }

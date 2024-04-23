@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import com.bumptech.glide.Glide
 import com.example.musicapp.R
 import com.example.musicapp.contants.Constant
+import com.example.musicapp.contants.Constant.KEY_BUNDLE_ITEM
 import com.example.musicapp.presentation.explore.adapter.AdapterAlbumLove
 import com.example.musicapp.presentation.explore.adapter.AdapterAlbumNew
 import com.example.musicapp.presentation.explore.adapter.AdapterCategories
@@ -30,8 +31,10 @@ import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.data.model.SongRank
 import com.example.musicapp.data.model.Topic
+import com.example.musicapp.presentation.music.MusicFragment
 import com.example.musicapp.presentation.song.SongActivity
-import com.example.musicapp.shared.extension.loadImageUrl
+import com.example.musicapp.presentation.songList.SongListActivity
+import com.example.musicapp.presentation.topic.TopicActivity
 import com.example.musicapp.shared.utils.OnItemClickListener
 import com.google.gson.Gson
 import java.util.Random
@@ -58,22 +61,22 @@ class ExploreFragment : Fragment(), ExploreContract.View, OnItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkUserLogin()
-        initSongView()
-    }
-
-    override fun onStart() {
-        super.onStart()
         mPresenter.run {
-            setView(this@ExploreFragment)
             getListPlaylist()
             getListPlaylistMoodToday()
             getListTopic()
             getListCategory()
             getListAlbumLove()
             getListAlbumNew()
-//            getListSongRank()
+            getListSongRank()
         }
+        checkUserLogin()
+        initSongView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mPresenter.setView(this@ExploreFragment)
     }
 
     // kiểm tra xem người dùng đã đăng nhập chưa
@@ -88,7 +91,8 @@ class ExploreFragment : Fragment(), ExploreContract.View, OnItemClickListener {
     }
 
     override fun onListPlaylist(playlists: ArrayList<Playlist>) {
-        val adapterPlayList = AdapterPlayList(playlists.shuffled(Random()) as ArrayList<Playlist>, this)
+        val adapterPlayList =
+            AdapterPlayList(playlists.shuffled(Random()) as ArrayList<Playlist>, this)
         val linearLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rcvPlaylist.layoutManager = linearLayoutManager
@@ -96,7 +100,8 @@ class ExploreFragment : Fragment(), ExploreContract.View, OnItemClickListener {
     }
 
     override fun onListPlaylistMoodToday(playlists: ArrayList<Playlist>) {
-        val adapterPlayList = AdapterPlayList(playlists.shuffled(Random()) as ArrayList<Playlist>, this)
+        val adapterPlayList =
+            AdapterPlayList(playlists.shuffled(Random()) as ArrayList<Playlist>, this)
         val linearLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rcvAlbumMoodToday.layoutManager = linearLayoutManager
@@ -104,18 +109,14 @@ class ExploreFragment : Fragment(), ExploreContract.View, OnItemClickListener {
     }
 
     override fun onListTopic(topics: ArrayList<Topic>) {
-        val adapter = AdapterTopic(topics.shuffled(Random()) as ArrayList<Topic>)
-        val gridLayoutManager =
-            GridLayoutManager(requireContext(), 2, GridLayoutManager.HORIZONTAL, false)
-        binding.rcvTopic.layoutManager = gridLayoutManager
+        val adapter = AdapterTopic(topics.shuffled(Random()) as ArrayList<Topic>, this)
+        binding.rcvTopic.layoutManager =  LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rcvTopic.adapter = adapter
     }
 
     override fun onListCategory(categories: ArrayList<Category>) {
-        val adapter = AdapterCategories(categories.shuffled(Random()) as ArrayList<Category>)
-        val linearLayoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.rcvCategory.layoutManager = linearLayoutManager
+        val adapter = AdapterCategories(categories.shuffled(Random()) as ArrayList<Category>, this)
+        binding.rcvCategory.layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.HORIZONTAL, false)
         binding.rcvCategory.adapter = adapter
     }
 
@@ -126,7 +127,7 @@ class ExploreFragment : Fragment(), ExploreContract.View, OnItemClickListener {
             binding.rcvListenAgain.visibility = View.VISIBLE
         }
 
-        val adapter = AdapterSongAgain(songAgain)
+        val adapter = AdapterSongAgain(songAgain, this)
         val linearLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rcvListenAgain.layoutManager = linearLayoutManager
@@ -150,18 +151,18 @@ class ExploreFragment : Fragment(), ExploreContract.View, OnItemClickListener {
     }
 
     override fun onListSongRank(songRanks: ArrayList<SongRank>) {
-           val snapHelper = LinearSnapHelper()
-           val adapter = AdapterSongRank(songRanks)
-           val linearLayoutManager =
-               LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-           binding.rcvSongRank.layoutManager = linearLayoutManager
-           binding.rcvSongRank.adapter = adapter
-           snapHelper.attachToRecyclerView(binding.rcvSongRank)
+        val snapHelper = LinearSnapHelper()
+        val adapter = AdapterSongRank(songRanks)
+        val linearLayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rcvSongRank.layoutManager = linearLayoutManager
+        binding.rcvSongRank.adapter = adapter
+        snapHelper.attachToRecyclerView(binding.rcvSongRank)
     }
 
-    private fun initSongView(){
+    private fun initSongView() {
         val jsonSong = sharedPreferences.getString(Constant.KEY_SONG, "")
-        if (jsonSong.isNullOrEmpty()){
+        if (jsonSong.isNullOrEmpty()) {
             return
         }
         val song = Gson().fromJson(jsonSong, Song::class.java)
@@ -178,9 +179,36 @@ class ExploreFragment : Fragment(), ExploreContract.View, OnItemClickListener {
     }
 
     override fun onItemClick(item: Any) {
-        val intent = Intent(requireContext(), SongActivity::class.java)
-        intent.putExtra(Constant.KEY_INTENT_ITEM, item is Song)
-        startActivity(intent)
+        when (item) {
+            is Playlist -> {
+                val intent = Intent(requireContext(), SongListActivity::class.java)
+                val bundle = Bundle().apply {
+                    putParcelable(Constant.KEY_INTENT_ITEM, item)
+                }
+                intent.putExtra(KEY_BUNDLE_ITEM, bundle)
+                startActivity(intent)
+            }
+            is Category -> {
+                val intent = Intent(requireContext(), TopicActivity::class.java)
+                val bundle = Bundle().apply {
+                    putParcelable(Constant.KEY_INTENT_ITEM, item)
+                }
+                intent.putExtra(KEY_BUNDLE_ITEM, bundle)
+                startActivity(intent)
+            }
+            is Topic -> {
+                val intent = Intent(requireContext(), SongListActivity::class.java)
+                val bundle = Bundle().apply {
+                    putParcelable(Constant.KEY_INTENT_ITEM, item)
+                }
+                intent.putExtra(KEY_BUNDLE_ITEM, bundle)
+                startActivity(intent)
+            }
+            is SongAgain -> {
+                val intent = Intent(requireContext(), SongActivity::class.java)
+                startActivity(intent)
+            }
+        }
     }
 }
 
