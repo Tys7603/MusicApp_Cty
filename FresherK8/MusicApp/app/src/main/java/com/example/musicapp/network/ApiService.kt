@@ -9,8 +9,7 @@ import com.example.musicapp.network.ManagerUrl.GET_SONG
 import com.example.musicapp.network.ManagerUrl.GET_SONG_AGAIN
 import com.example.musicapp.network.ManagerUrl.GET_SONG_RANK
 import com.example.musicapp.network.ManagerUrl.GET_TOPICS
-import com.example.musicapp.data.repositories.AlbumLoveRepository
-import com.example.musicapp.data.repositories.AlbumNewRepository
+import com.example.musicapp.data.repositories.AlbumRepository
 import com.example.musicapp.data.repositories.CategoriesRepository
 import com.example.musicapp.data.repositories.PlaylistRepository
 import com.example.musicapp.data.repositories.SongRepository
@@ -60,8 +59,8 @@ interface ApiService {
 
     // album
     @GET(GET_ALBUM_LOVE)
-    fun getListAlbumLove(): Call<AlbumLoveRepository>
+    fun getListAlbumLove(): Call<AlbumRepository>
 
     @GET(GET_ALBUM_NEW)
-    fun getListAlbumNew(): Call<AlbumNewRepository>
+    fun getListAlbumNew(): Call<AlbumRepository>
 }

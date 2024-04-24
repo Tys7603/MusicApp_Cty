@@ -7,9 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.musicapp.R
 import com.example.musicapp.databinding.ItemSocialRankBinding
-import com.example.musicapp.data.model.AlbumLove
 import com.example.musicapp.data.model.Song
-import com.example.musicapp.data.model.SongRank
 import kotlin.math.min
 
 class AdapterSubSongRank(private val songs: ArrayList<Song>) :

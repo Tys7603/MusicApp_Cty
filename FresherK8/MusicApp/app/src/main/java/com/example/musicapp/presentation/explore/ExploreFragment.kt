@@ -15,23 +15,20 @@ import com.bumptech.glide.Glide
 import com.example.musicapp.R
 import com.example.musicapp.contants.Constant
 import com.example.musicapp.contants.Constant.KEY_BUNDLE_ITEM
-import com.example.musicapp.presentation.explore.adapter.AdapterAlbumLove
-import com.example.musicapp.presentation.explore.adapter.AdapterAlbumNew
+import com.example.musicapp.data.model.Album
+import com.example.musicapp.presentation.explore.adapter.AlbumAdapter
 import com.example.musicapp.presentation.explore.adapter.AdapterCategories
 import com.example.musicapp.presentation.explore.adapter.AdapterPlayList
 import com.example.musicapp.presentation.explore.adapter.AdapterSongAgain
 import com.example.musicapp.presentation.explore.adapter.AdapterSongRank
 import com.example.musicapp.presentation.explore.adapter.AdapterTopic
 import com.example.musicapp.databinding.FragmentExploreBinding
-import com.example.musicapp.data.model.AlbumLove
-import com.example.musicapp.data.model.AlbumNew
 import com.example.musicapp.data.model.Category
 import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.data.model.SongRank
 import com.example.musicapp.data.model.Topic
-import com.example.musicapp.presentation.music.MusicFragment
 import com.example.musicapp.presentation.song.SongActivity
 import com.example.musicapp.presentation.songList.SongListActivity
 import com.example.musicapp.presentation.topic.TopicActivity
@@ -134,16 +131,16 @@ class ExploreFragment : Fragment(), ExploreContract.View, OnItemClickListener {
         binding.rcvListenAgain.adapter = adapter
     }
 
-    override fun onListAlbumLove(albumLove: ArrayList<AlbumLove>) {
-        val adapter = AdapterAlbumLove(albumLove)
+    override fun onListAlbumLove(albumLove: ArrayList<Album>) {
+        val adapter = AlbumAdapter(albumLove, this)
         val linearLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rcvAlbumLove.layoutManager = linearLayoutManager
         binding.rcvAlbumLove.adapter = adapter
     }
 
-    override fun onListAlbumNew(albumNew: ArrayList<AlbumNew>) {
-        val adapter = AdapterAlbumNew(albumNew.shuffled(Random()) as ArrayList<AlbumNew>)
+    override fun onListAlbumNew(albumNew: ArrayList<Album>) {
+        val adapter = AlbumAdapter(albumNew.shuffled(Random()) as ArrayList<Album>, this)
         val linearLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rcvAlbumNew.layoutManager = linearLayoutManager
@@ -206,6 +203,14 @@ class ExploreFragment : Fragment(), ExploreContract.View, OnItemClickListener {
             }
             is SongAgain -> {
                 val intent = Intent(requireContext(), SongActivity::class.java)
+                startActivity(intent)
+            }
+            is Album -> {
+                val intent = Intent(requireContext(), SongListActivity::class.java)
+                val bundle = Bundle().apply {
+                    putParcelable(Constant.KEY_INTENT_ITEM, item)
+                }
+                intent.putExtra(KEY_BUNDLE_ITEM, bundle)
                 startActivity(intent)
             }
         }

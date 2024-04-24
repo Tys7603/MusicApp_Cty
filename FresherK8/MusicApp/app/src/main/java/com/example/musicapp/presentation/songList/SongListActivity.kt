@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.musicapp.R
 import com.example.musicapp.contants.Constant
 import com.example.musicapp.contants.Constant.KEY_BUNDLE_ITEM
+import com.example.musicapp.data.model.Album
 import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.Topic
@@ -69,6 +70,14 @@ class SongListActivity : AppCompatActivity(), SongListContract.View {
                 binding.tvNamePlaylistActivity.text = item.name
                 binding.tvNameArtistPlaylistActivity.text = item.nameArtist
                 mPresenter.getListSongPlaylist(item.id)
+            }
+
+            is Album -> {
+                item.albumImage.let { binding.imgSongActivity.loadImageUrl(it) }
+                item.albumImage.let { binding.imgBgPlaylistActivity.loadImageUrl(it) }
+                binding.tvNamePlaylistActivity.text = item.albumName
+                binding.tvNameArtistPlaylistActivity.text = item.nameArtist
+//                mPresenter.getListSongPlaylist(item.albumId)
             }
 
             is Topic -> {

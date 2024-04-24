@@ -1,20 +1,24 @@
 package com.example.musicapp.service
 
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
-import android.util.Log
+import android.support.v4.media.session.MediaSessionCompat
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import com.example.musicapp.shared.extension.MyApplication
 import com.example.musicapp.R
 import com.example.musicapp.presentation.main.MainActivity
 import com.example.musicapp.presentation.music.MusicContract
 
 
-class MusicService() : Service() {
+class MusicService : Service() {
     private var mediaPlayer: MediaPlayer? = null
     private val binder: IBinder = LocalBinder()
     private var isMediaPrepared = false // Biến này để theo dõi trạng thái chuẩn bị âm thanh
@@ -22,14 +26,17 @@ class MusicService() : Service() {
     private var onCompletionListener: (() -> Unit)? = null // kết thúc bài hát
     private var isAutoRestart = false //  lập lại bài hát
     private var isNext = false //  qua bài mới
-    private var isShuffle= false //  đảo bài hài
+    private var isShuffle = false //  đảo bài hài
 
-    companion object{
-        const val CHANNEL_ID = "zxcv"
+    companion object {
         const val NOTIFICATION_ID = 0
+        const val ACTION_PAUSE = 1
+        const val ACTION_START = 2
+        const val ACTION_NEXT = 3
+        const val ACTION_BACK = 4
     }
 
-    fun musicService(mView : MusicContract.View){
+    fun musicService(mView: MusicContract.View) {
         this.mView = mView
     }
 
@@ -51,9 +58,9 @@ class MusicService() : Service() {
                         .build()
                 )
                 setOnCompletionListener {
-                    if (isAutoRestart){
+                    if (isAutoRestart) {
                         start()
-                    }else{
+                    } else {
                         onCompletionListener?.invoke()
                     }
                 }
@@ -69,6 +76,7 @@ class MusicService() : Service() {
                     start()
                 }
             }
+
             "PAUSE" -> {
                 if (mediaPlayer?.isPlaying == true) {
                     pause()
@@ -76,6 +84,7 @@ class MusicService() : Service() {
             }
             // Xử lý các hành động khác (ví dụ: Next, Previous) tương tự
         }
+        createNotification()
         return START_NOT_STICKY
     }
 
@@ -84,7 +93,7 @@ class MusicService() : Service() {
     private fun createNotification() {
         // Tạo Intent để mở Activity khi notification được nhấn
         val notificationIntent = Intent(this, MainActivity::class.java)
-//        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
 //
 //        // Tạo các action cho notification (Play, Pause)
 //        val playIntent = Intent(this, MusicService::class.java).apply {
@@ -96,19 +105,26 @@ class MusicService() : Service() {
 //            action = "PAUSE"
 //        }
 //        val pausePendingIntent = PendingIntent.getService(this, 0, pauseIntent, 0)
-
-        // Xây dựng notification
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.avatar)
-            .setContentTitle("Music Player")
-            .setContentText("Now playing")
-//            .setContentIntent(pendingIntent)
-//            .addAction(R.drawable.ic_play, "Play", playPendingIntent)
-//            .addAction(R.drawable.ic_pause, "Pause", pausePendingIntent)
-            .build()
-
         // Hiển thị notification
+        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.song1)
+        val notification = NotificationCompat.Builder(this, MyApplication.CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_avatar)
+            .setContentTitle("Chạy Ngay Đi")
+            .setContentText("Sơn Tùng M-TP")
+            .setLargeIcon(bitmap)
+            .setContentIntent(pendingIntent)
+            .setSound(null)
+            .addAction(R.drawable.ic_skip_back, "Play", null)
+            .addAction(R.drawable.ic_play_black, "Play", null)
+            .addAction(R.drawable.ic_skip_next, "Play", null)
+            .setStyle(
+                androidx.media.app.NotificationCompat.MediaStyle()
+                    .setShowActionsInCompactView(1)
+                    .setMediaSession(MediaSessionCompat(this, "tag").sessionToken)
+            )
+            .build()
         startForeground(NOTIFICATION_ID, notification)
+        Toast.makeText(this, " đã chạy", Toast.LENGTH_SHORT).show()
     }
 
     fun playFromUrl(url: String) {
@@ -119,12 +135,11 @@ class MusicService() : Service() {
             setOnPreparedListener {
                 isMediaPrepared = true // Đánh dấu rằng âm thanh đã được chuẩn bị
                 mView.onMediaPrepared()
-                createNotification()
             }
         }
     }
 
-    fun start(){
+    fun start() {
         mediaPlayer?.start()
     }
 
@@ -132,28 +147,29 @@ class MusicService() : Service() {
         return isMediaPrepared
     }
 
-    fun setMediaPrepared( mediaPrepared: Boolean) {
+    fun setMediaPrepared(mediaPrepared: Boolean) {
         isMediaPrepared = mediaPrepared
     }
-    fun setOnCompletionListener(listener: () -> Unit){
-       onCompletionListener = listener
+
+    fun setOnCompletionListener(listener: () -> Unit) {
+        onCompletionListener = listener
     }
 
     fun isAutoRestart() = isAutoRestart
 
-    fun setAutoRestart(isAutoRestart : Boolean) {
+    fun setAutoRestart(isAutoRestart: Boolean) {
         this.isAutoRestart = isAutoRestart
     }
 
     fun isNextMusic() = isNext
 
-    fun setNextMusic(isNext : Boolean) {
+    fun setNextMusic(isNext: Boolean) {
         this.isNext = isNext
     }
 
     fun isShuffleMusic() = isShuffle
 
-    fun setShuffleMusic(isShuffle : Boolean) {
+    fun setShuffleMusic(isShuffle: Boolean) {
         this.isShuffle = isShuffle
     }
 
@@ -187,5 +203,6 @@ class MusicService() : Service() {
             mediaPlayer?.stop()
         }
         mediaPlayer?.release()
+        mediaPlayer = null
     }
 }

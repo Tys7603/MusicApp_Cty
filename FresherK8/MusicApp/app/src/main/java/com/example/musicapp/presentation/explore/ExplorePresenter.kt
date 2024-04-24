@@ -2,8 +2,7 @@ package com.example.musicapp.presentation.explore
 
 import android.util.Log
 import com.example.musicapp.network.ApiClient
-import com.example.musicapp.data.repositories.AlbumLoveRepository
-import com.example.musicapp.data.repositories.AlbumNewRepository
+import com.example.musicapp.data.repositories.AlbumRepository
 import com.example.musicapp.data.repositories.CategoriesRepository
 import com.example.musicapp.data.repositories.PlaylistRepository
 import com.example.musicapp.data.repositories.SongAgainRepository
@@ -142,14 +141,14 @@ class ExplorePresenter : ExploreContract.Presenter {
     }
 
     override fun getListAlbumLove() {
-        ApiClient.getApiService()?.getListAlbumLove()?.enqueue(object : Callback<AlbumLoveRepository> {
+        ApiClient.getApiService()?.getListAlbumLove()?.enqueue(object : Callback<AlbumRepository> {
             override fun onResponse(
-                call: Call<AlbumLoveRepository>,
-                response: Response<AlbumLoveRepository>
+                call: Call<AlbumRepository>,
+                response: Response<AlbumRepository>
             ) {
                 if (response.isSuccessful){
                     if (Constant.STATUS == response.body()?.status){
-                        mView?.onListAlbumLove(response.body()!!.albumLoves)
+                        mView?.onListAlbumLove(response.body()!!.albums)
                     }else{
                         Log.e(Constant.TAG_ERROR, "Call other api status 200")
                     }
@@ -158,7 +157,7 @@ class ExplorePresenter : ExploreContract.Presenter {
                 }
             }
 
-            override fun onFailure(call: Call<AlbumLoveRepository>, t: Throwable) {
+            override fun onFailure(call: Call<AlbumRepository>, t: Throwable) {
                 Log.e(Constant.TAG_ERROR, t.toString())
             }
 
@@ -166,14 +165,14 @@ class ExplorePresenter : ExploreContract.Presenter {
     }
 
     override fun getListAlbumNew() {
-        ApiClient.getApiService()?.getListAlbumNew()?.enqueue(object : Callback<AlbumNewRepository> {
+        ApiClient.getApiService()?.getListAlbumNew()?.enqueue(object : Callback<AlbumRepository> {
             override fun onResponse(
-                call: Call<AlbumNewRepository>,
-                response: Response<AlbumNewRepository>
+                call: Call<AlbumRepository>,
+                response: Response<AlbumRepository>
             ) {
                 if (response.isSuccessful){
                     if (Constant.STATUS == response.body()?.status){
-                        mView?.onListAlbumNew(response.body()!!.albumNews)
+                        mView?.onListAlbumNew(response.body()!!.albums)
                     }else{
                         Log.e(Constant.TAG_ERROR, "Call other api status 200")
                     }
@@ -182,7 +181,7 @@ class ExplorePresenter : ExploreContract.Presenter {
                 }
             }
 
-            override fun onFailure(call: Call<AlbumNewRepository>, t: Throwable) {
+            override fun onFailure(call: Call<AlbumRepository>, t: Throwable) {
                 Log.e(Constant.TAG_ERROR, t.toString())
             }
 

@@ -1,6 +1,7 @@
 package com.example.musicapp.presentation.user
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.FragmentExploreBinding
 import com.example.musicapp.databinding.FragmentUserBinding
 import com.example.musicapp.presentation.explore.ExplorePresenter
+import com.example.musicapp.shared.utils.DownloadMusic
 import com.google.gson.Gson
 
 
@@ -41,6 +43,12 @@ class UserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initSongView()
+        initSongDownView()
+    }
+
+    private fun initSongDownView() {
+        val songs = DownloadMusic.getDownloadedTracksInfo(requireContext())
+        Log.d("TAG", "initSongDownView: " + songs.toString())
     }
 
     private fun initSongView(){

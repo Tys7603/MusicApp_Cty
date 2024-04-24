@@ -22,6 +22,7 @@ import com.example.musicapp.data.model.Song
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.utils.BooleanProperty
+import com.example.musicapp.shared.utils.DownloadMusic
 import com.example.musicapp.shared.utils.FormatUntil
 import com.google.gson.Gson
 
@@ -83,6 +84,7 @@ class MusicFragment : Fragment(), MusicContract.View {
         binding.btnBack.setOnClickListener { backMusic() }
         binding.btnLoop.setOnClickListener { autoRestart() }
         binding.btnShuffle.setOnClickListener { shuffleMusic() }
+        binding.btnDownload.setOnClickListener { downloadMusic() }
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
 
@@ -272,7 +274,14 @@ class MusicFragment : Fragment(), MusicContract.View {
         }, 100)
     }
 
-    private fun saveSong(){
+    private fun downloadMusic() {
+        position = sharedPreferences.getInt(KEY_POSITION, 0)
+        val url = mSongs?.get(position)?.url
+        val fileName = mSongs?.get(position)?.name
+        url?.let { fileName?.let { it1 -> DownloadMusic.downloadMusic(requireContext(), it, it1) } }
+    }
+
+    private fun saveSong() {
         val jsonSong = Gson().toJson(mSongs?.get(position))
         sharedPreferences.edit().putString(KEY_SONG, jsonSong).apply()
     }
@@ -280,20 +289,20 @@ class MusicFragment : Fragment(), MusicContract.View {
     override fun onListSong(songs: ArrayList<Song>) {
         mSongs = songs
         mSongsDefault = songs
+        initValueSong()
         if (isServiceBound) {
-            initValueSong()
             initFunc()
         }
     }
 
     override fun onMediaPrepared() {
-       musicService?.let {
-           setTimeTotal()
-           if (it.isNextMusic()) {
-               it.start()
-               updateTimeSong()
-           }
-       }
+        musicService?.let {
+            setTimeTotal()
+            if (it.isNextMusic()) {
+                it.start()
+                updateTimeSong()
+            }
+        }
     }
 
     override fun onStart() {

@@ -1,7 +1,6 @@
 package com.example.musicapp.presentation.explore
 
-import com.example.musicapp.data.model.AlbumLove
-import com.example.musicapp.data.model.AlbumNew
+import com.example.musicapp.data.model.Album
 import com.example.musicapp.data.model.Category
 import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.data.model.SongAgain
@@ -16,8 +15,8 @@ interface ExploreContract {
         fun onListTopic(topics : ArrayList<Topic>)
         fun onListCategory(categories : ArrayList<Category>)
         fun onListListenAgain(songAgain: ArrayList<SongAgain>)
-        fun onListAlbumLove(albumLove: ArrayList<AlbumLove>)
-        fun onListAlbumNew(albumNew: ArrayList<AlbumNew>)
+        fun onListAlbumLove(albumLove: ArrayList<Album>)
+        fun onListAlbumNew(albumNew: ArrayList<Album>)
         fun onListSongRank(songRanks: ArrayList<SongRank>)
     }
 
