@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.preference.PreferenceManager
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -65,6 +66,7 @@ class MusicFragment : Fragment(), MusicContract.View {
             musicService = binder.getService()
             isServiceBound = true
             musicService?.musicService(this@MusicFragment)
+            musicService!!.musicShared(sharedPreferences)
         }
 
         // ngắt kết nối music service
@@ -192,7 +194,7 @@ class MusicFragment : Fragment(), MusicContract.View {
                 binding.btnPlay.setImageResource(R.drawable.ic_play_button)
                 false
             }
-
+            musicService!!.updateNotificationFromActivity()
         }
     }
 
@@ -277,8 +279,8 @@ class MusicFragment : Fragment(), MusicContract.View {
     private fun downloadMusic() {
         position = sharedPreferences.getInt(KEY_POSITION, 0)
         val url = mSongs?.get(position)?.url
-        val fileName = mSongs?.get(position)?.name
-        url?.let { fileName?.let { it1 -> DownloadMusic.downloadMusic(requireContext(), it, it1) } }
+        val fileName = mSongs?.get(position)?.name.toString()
+        url?.let { fileName.let { it1 -> DownloadMusic.downloadMusic(requireContext(), it, it1) } }
     }
 
     private fun saveSong() {
@@ -303,6 +305,18 @@ class MusicFragment : Fragment(), MusicContract.View {
                 updateTimeSong()
             }
         }
+    }
+
+    override fun onNextMusic() {
+        nextMusic()
+    }
+
+    override fun onBackMusic() {
+        backMusic()
+    }
+
+    override fun onPlayMusic() {
+        playMusic()
     }
 
     override fun onStart() {

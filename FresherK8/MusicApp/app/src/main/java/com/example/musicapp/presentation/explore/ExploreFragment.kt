@@ -32,6 +32,7 @@ import com.example.musicapp.data.model.Topic
 import com.example.musicapp.presentation.song.SongActivity
 import com.example.musicapp.presentation.songList.SongListActivity
 import com.example.musicapp.presentation.topic.TopicActivity
+import com.example.musicapp.shared.utils.GetValue
 import com.example.musicapp.shared.utils.OnItemClickListener
 import com.google.gson.Gson
 import java.util.Random
@@ -158,16 +159,12 @@ class ExploreFragment : Fragment(), ExploreContract.View, OnItemClickListener {
     }
 
     private fun initSongView() {
-        val jsonSong = sharedPreferences.getString(Constant.KEY_SONG, "")
-        if (jsonSong.isNullOrEmpty()) {
-            return
-        }
-        val song = Gson().fromJson(jsonSong, Song::class.java)
+        val song = GetValue.getSong(sharedPreferences)
 //        binding.includeLayout.imgLayoutBottom.loadImageUrl(song.url)
-        Glide.with(binding.root).load(song.image).centerCrop()
+        Glide.with(binding.root).load(song?.image).centerCrop()
             .placeholder(R.drawable.img_placeholder).into(binding.includeLayout.imgLayoutBottom)
 
-        binding.includeLayout.tvLayoutBottomNameSong.text = song.name
+        binding.includeLayout.tvLayoutBottomNameSong.text = song?.name
     }
 
     override fun onDestroy() {

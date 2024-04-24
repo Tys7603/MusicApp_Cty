@@ -1,7 +1,7 @@
 package com.example.musicapp.network
 
 object ManagerUrl {
-    const val IP = "10.20.23.239"
+    const val IP = "192.168.1.29"
     const val BASE_URL = "http://$IP:3000/api/"
 
     // playlist

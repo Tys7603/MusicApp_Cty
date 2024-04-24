@@ -15,6 +15,7 @@ import com.example.musicapp.databinding.FragmentExploreBinding
 import com.example.musicapp.databinding.FragmentUserBinding
 import com.example.musicapp.presentation.explore.ExplorePresenter
 import com.example.musicapp.shared.utils.DownloadMusic
+import com.example.musicapp.shared.utils.GetValue
 import com.google.gson.Gson
 
 
@@ -43,24 +44,16 @@ class UserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initSongView()
-        initSongDownView()
-    }
 
-    private fun initSongDownView() {
-        val songs = DownloadMusic.getDownloadedTracksInfo(requireContext())
-        Log.d("TAG", "initSongDownView: " + songs.toString())
     }
 
     private fun initSongView(){
-        val jsonSong = sharedPreferences.getString(Constant.KEY_SONG, "")
-        if (jsonSong.isNullOrEmpty()){
-            return
-        }
-        val song = Gson().fromJson(jsonSong, Song::class.java)
+        val song = GetValue.getSong(sharedPreferences)
 //        binding.includeLayout.imgLayoutBottom.loadImageUrl(song.url)
-        Glide.with(binding.root).load(song.image).centerCrop()
+        Glide.with(binding.root).load(song?.image).centerCrop()
             .placeholder(R.drawable.img_placeholder).into(binding.includeLayout1.imgLayoutBottom)
-        binding.includeLayout1.tvLayoutBottomNameSong.text = song.name
+        binding.includeLayout1.tvLayoutBottomNameSong.text = song?.name
+
     }
 
 }

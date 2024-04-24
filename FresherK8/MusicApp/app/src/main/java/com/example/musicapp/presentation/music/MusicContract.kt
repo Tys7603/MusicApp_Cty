@@ -7,6 +7,9 @@ interface MusicContract {
     interface View {
         fun onListSong(songs: ArrayList<Song>)
         fun onMediaPrepared()
+        fun onNextMusic()
+        fun onBackMusic()
+        fun onPlayMusic()
     }
 
     interface Presenter : BasePresenter<View> {
