@@ -5,24 +5,24 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.ServiceInfo
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Binder
+import android.os.Build
 import android.os.Environment
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
-import android.widget.ImageView
-import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.transition.Transition
 import com.example.musicapp.shared.extension.MyApplication
 import com.example.musicapp.R
-import com.example.musicapp.data.model.Song
 import com.example.musicapp.presentation.main.MainActivity
-import com.example.musicapp.presentation.music.MusicContract
+import com.example.musicapp.presentation.music.base.MusicContract
 import com.example.musicapp.shared.utils.GetValue
 import java.io.File
 
@@ -32,6 +32,7 @@ class MusicService : Service() {
     private val binder: IBinder = LocalBinder()
     private var isMediaPrepared = false // Biến này để theo dõi trạng thái chuẩn bị âm thanh
     private var mView: MusicContract.View? = null
+
     private var mShared: SharedPreferences? = null
     private var onCompletionListener: (() -> Unit)? = null // kết thúc bài hát
     private var isAutoRestart = false //  lập lại bài hát
@@ -86,7 +87,9 @@ class MusicService : Service() {
         when (intent?.action) {
             ACTION_PLAY -> {
                 mView?.onPlayMusic()
-                createNotification()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    createNotification()
+                }
             }
 
             ACTION_NEXT -> {
@@ -101,7 +104,8 @@ class MusicService : Service() {
     }
 
     // Phương thức để tạo notification
-    @SuppressLint("ForegroundServiceType", "NotificationId0")
+    @SuppressLint("NotificationId0","ForegroundServiceType")
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun createNotification() {
         // Tạo Intent để mở Activity khi notification được nhấn
         val notificationIntent = Intent(this, MainActivity::class.java)
@@ -135,7 +139,7 @@ class MusicService : Service() {
             .into(object : com.bumptech.glide.request.target.SimpleTarget<Bitmap>() {
                 override fun onResourceReady(
                     resource: Bitmap,
-                    transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?
+                    transition: Transition<in Bitmap>?
                 ) {
                     // Khi ảnh đã được tải xong, đặt bitmap làm LargeIcon cho notification
                     val notification =
@@ -160,7 +164,7 @@ class MusicService : Service() {
                                     )
                             )
                             .build()
-                    startForeground(NOTIFICATION_ID, notification)
+                    startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
                 }
             })
     }
@@ -173,7 +177,9 @@ class MusicService : Service() {
             setOnPreparedListener {
                 isMediaPrepared = true // Đánh dấu rằng âm thanh đã được chuẩn bị
                 mView?.onMediaPrepared()
-                createNotification()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    createNotification()
+                }
             }
         }
     }
@@ -194,7 +200,9 @@ class MusicService : Service() {
     }
 
     fun updateNotificationFromActivity(){
-        createNotification()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            createNotification()
+        }
     }
 
     fun start() {

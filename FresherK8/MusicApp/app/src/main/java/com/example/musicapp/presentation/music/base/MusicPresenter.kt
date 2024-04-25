@@ -1,4 +1,4 @@
-package com.example.musicapp.presentation.music
+package com.example.musicapp.presentation.music.base
 
 import android.util.Log
 import com.example.musicapp.network.ApiClient

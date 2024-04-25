@@ -4,9 +4,10 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
-
 @Parcelize
-data class Song (
+data class Song(
+    @SerializedName("song_id")
+    val id: Int,
     @SerializedName("song_name")
     val name: String,
     @SerializedName("song_image")
@@ -14,5 +15,7 @@ data class Song (
     @SerializedName("song_url")
     val url: String,
     @SerializedName("name_artist")
-    val nameArtis : String
+    val nameArtis: String,
+    @SerializedName("download")
+    var download: Int
 ) : Parcelable

@@ -1,4 +1,4 @@
-package com.example.musicapp.presentation.music
+package com.example.musicapp.presentation.music.base
 
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.presentation.base.BasePresenter

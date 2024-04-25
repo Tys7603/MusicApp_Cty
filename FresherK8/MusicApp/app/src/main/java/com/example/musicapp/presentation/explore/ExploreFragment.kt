@@ -25,16 +25,14 @@ import com.example.musicapp.presentation.explore.adapter.AdapterTopic
 import com.example.musicapp.databinding.FragmentExploreBinding
 import com.example.musicapp.data.model.Category
 import com.example.musicapp.data.model.Playlist
-import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.data.model.SongRank
 import com.example.musicapp.data.model.Topic
-import com.example.musicapp.presentation.song.SongActivity
+import com.example.musicapp.presentation.music.SongActivity
 import com.example.musicapp.presentation.songList.SongListActivity
 import com.example.musicapp.presentation.topic.TopicActivity
 import com.example.musicapp.shared.utils.GetValue
 import com.example.musicapp.shared.utils.OnItemClickListener
-import com.google.gson.Gson
 import java.util.Random
 
 class ExploreFragment : Fragment(), ExploreContract.View, OnItemClickListener {
@@ -69,12 +67,13 @@ class ExploreFragment : Fragment(), ExploreContract.View, OnItemClickListener {
             getListSongRank()
         }
         checkUserLogin()
-        initSongView()
+
     }
 
     override fun onStart() {
         super.onStart()
         mPresenter.setView(this@ExploreFragment)
+        initSongView()
     }
 
     // kiểm tra xem người dùng đã đăng nhập chưa
