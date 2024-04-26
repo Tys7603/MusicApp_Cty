@@ -82,7 +82,7 @@ class SongListActivity : AppCompatActivity(), SongListContract.View, OnItemClick
                 item.albumImage.let { binding.imgBgPlaylistActivity.loadImageUrl(it) }
                 binding.tvNamePlaylistActivity.text = item.albumName
                 binding.tvNameArtistPlaylistActivity.text = item.nameArtist
-//                mPresenter.getListSongPlaylist(item.albumId)
+                mPresenter.getListSongPlaylist(item.albumId)
             }
 
             is Topic -> {

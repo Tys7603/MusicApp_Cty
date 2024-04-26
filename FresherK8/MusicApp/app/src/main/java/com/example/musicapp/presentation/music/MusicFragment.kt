@@ -30,6 +30,7 @@ import com.example.musicapp.presentation.music.base.ConstantBase.VALUE_DEFAULT
 import com.example.musicapp.presentation.music.base.MusicContract
 import com.example.musicapp.presentation.music.base.MusicPresenter
 import com.example.musicapp.service.MusicService
+import com.example.musicapp.shared.extension.loadDingUrl
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.utils.BooleanProperty
 import com.example.musicapp.shared.utils.DownloadMusic
@@ -80,6 +81,13 @@ class MusicFragment : Fragment(), MusicContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         handlerEvent()
+        handlerLoading()
+    }
+
+    private fun handlerLoading() {
+        binding.layoutMain.visibility = View.GONE
+        binding.imgLoading.visibility = View.VISIBLE
+        binding.imgLoading.loadDingUrl()
     }
 
     private fun handlerEvent() {
@@ -177,6 +185,7 @@ class MusicFragment : Fragment(), MusicContract.View {
         if (position > mSongs!!.size - 1) {
             position = 0
         }
+        handlerLoading()
         sharedPreferences.edit().putInt(KEY_POSITION, position).apply()
         setFuncMusic()
         musicService?.setNextMusic(true)
@@ -188,6 +197,7 @@ class MusicFragment : Fragment(), MusicContract.View {
         if (position < 0) {
             position = mSongs!!.size - 1
         }
+        handlerLoading()
         sharedPreferences.edit().putInt(KEY_POSITION, position).apply()
         setFuncMusic()
     }
@@ -255,6 +265,8 @@ class MusicFragment : Fragment(), MusicContract.View {
                 musicService?.let { FormatUntil.formatTime(it.getDuration()) }
             // gán max cho skbar
             binding.seekBar.max = musicService!!.getDuration()
+            binding.layoutMain.visibility = View.VISIBLE
+            binding.imgLoading.visibility = View.GONE
         }
     }
 
@@ -279,15 +291,17 @@ class MusicFragment : Fragment(), MusicContract.View {
     }
 
     private fun downloadMusic() {
-        if (mSongs?.get(position)?.download == 0) {
-            position = sharedPreferences.getInt(KEY_POSITION, 0)
-            mSongs!![position].download = 1
-            DownloadMusic.downloadMusic(requireContext(), mSongs!![position])
-            Toast.makeText(requireContext(), KEY_DOWN, Toast.LENGTH_SHORT).show()
-            // hàm update download
-        } else {
-            Toast.makeText(requireContext(), KEY_HAVE_DOWN, Toast.LENGTH_SHORT).show()
-        }
+//        if (mSongs?.get(position)?.download == 0) {
+//            position = sharedPreferences.getInt(KEY_POSITION, 0)
+//            mSongs!![position].download = 1
+//
+//            Toast.makeText(requireContext(), KEY_DOWN, Toast.LENGTH_SHORT).show()
+//            // hàm update download
+//        } else {
+//            Toast.makeText(requireContext(), KEY_HAVE_DOWN, Toast.LENGTH_SHORT).show()
+//        }
+        DownloadMusic.downloadMusic(requireContext(), mSongs!![position])
+        Toast.makeText(requireContext(), KEY_DOWN, Toast.LENGTH_SHORT).show()
     }
 
     private fun saveSong() {

@@ -16,7 +16,8 @@ const getListPlaylistMoodToday = async () => {
   "FROM Song as s " +
   "INNER JOIN Playlist as pl ON s.playlist_id = pl.playlist_id " +
   "INNER JOIN Album as a ON s.album_id = a.album_id "+
-  "WHERE mood_today = 1"
+  "WHERE mood_today = 1 " +
+  "GROUP BY s.playlist_id "
 
   return await queryDatabase(query)
 }

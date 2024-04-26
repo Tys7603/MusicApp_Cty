@@ -66,9 +66,7 @@ class SongActivity : AppCompatActivity(), MusicContract.View {
             isServiceBound = true
             musicService?.musicService(this@SongActivity)
             musicService!!.musicShared(sharedPreferences)
-            musicService?.stop()
-            musicService?.setMediaPrepared(false)
-            initValueSong()
+            setFuncMusic()
         }
 
         // ngắt kết nối music service
