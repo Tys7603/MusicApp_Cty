@@ -35,7 +35,8 @@ android {
     }
 
     buildFeatures{
-        viewBinding = true
+        //noinspection DataBindingWithoutKapt
+        dataBinding = true
     }
 }
 
@@ -63,4 +64,12 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     //noinspection UseTomlInstead
     implementation ("com.google.code.gson:gson:2.10.1")
+    //noinspection UseTomlInstead
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    //noinspection UseTomlInstead
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    //noinspection UseTomlInstead
+    implementation ("io.insert-koin:koin-android:3.5.6")
+    //noinspection UseTomlInstead
+    implementation ("io.insert-koin:koin-androidx-viewmodel:3.5.6")
 }

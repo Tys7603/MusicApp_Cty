@@ -2,8 +2,6 @@ package com.example.musicapp.presentation.topic
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -11,13 +9,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.musicapp.R
-import com.example.musicapp.contants.Constant
+import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.data.model.Category
-import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.ActivityTopicBinding
 import com.example.musicapp.presentation.topic.adapter.TopicAdapter
-import com.example.musicapp.shared.extension.loadImageUrl
 
 class TopicActivity : AppCompatActivity(), TopicContract.View {
 

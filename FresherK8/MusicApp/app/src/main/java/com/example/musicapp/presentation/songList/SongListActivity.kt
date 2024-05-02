@@ -12,9 +12,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.musicapp.R
-import com.example.musicapp.contants.Constant
-import com.example.musicapp.contants.Constant.KEY_BUNDLE_ITEM
-import com.example.musicapp.contants.Constant.KEY_INTENT_ITEM
+import com.example.musicapp.shared.utils.constant.Constant
+import com.example.musicapp.shared.utils.constant.Constant.KEY_BUNDLE_ITEM
+import com.example.musicapp.shared.utils.constant.Constant.KEY_INTENT_ITEM
 import com.example.musicapp.data.model.Album
 import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.data.model.Song

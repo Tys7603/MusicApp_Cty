@@ -1,9 +1,11 @@
 package com.example.musicapp.shared.extension
 
 import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.example.musicapp.R
 
+@BindingAdapter("imageUrl")
 fun ImageView.loadImageUrl(url : String){
     Glide.with(context)
         .load(url)

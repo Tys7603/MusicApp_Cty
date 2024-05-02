@@ -1,4 +1,4 @@
-package com.example.musicapp.data.repositories
+package com.example.musicapp.data.model.repositories
 
 import com.example.musicapp.data.model.Playlist
 

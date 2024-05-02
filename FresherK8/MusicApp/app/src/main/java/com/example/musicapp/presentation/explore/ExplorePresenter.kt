@@ -1,14 +1,14 @@
 package com.example.musicapp.presentation.explore
 
 import android.util.Log
-import com.example.musicapp.network.ApiClient
-import com.example.musicapp.data.repositories.AlbumRepository
-import com.example.musicapp.data.repositories.CategoriesRepository
-import com.example.musicapp.data.repositories.PlaylistRepository
-import com.example.musicapp.data.repositories.SongAgainRepository
-import com.example.musicapp.data.repositories.SongRankRepository
-import com.example.musicapp.data.repositories.TopicRepository
-import com.example.musicapp.contants.Constant
+import com.example.musicapp.data.source.remote.ApiClient
+import com.example.musicapp.data.model.repositories.AlbumRepository
+import com.example.musicapp.data.model.repositories.CategoriesRepository
+import com.example.musicapp.data.model.repositories.PlaylistRepository
+import com.example.musicapp.data.model.repositories.SongAgainRepository
+import com.example.musicapp.data.model.repositories.SongRankRepository
+import com.example.musicapp.data.model.repositories.TopicRepository
+import com.example.musicapp.shared.utils.constant.Constant
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

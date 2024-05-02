@@ -1,4 +1,4 @@
-package com.example.musicapp.network
+package com.example.musicapp.shared.utils.constant
 
 object ManagerUrl {
     const val IP = "10.20.23.239"

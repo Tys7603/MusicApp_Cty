@@ -1,13 +1,14 @@
-package com.example.musicapp.network
+package com.example.musicapp.data.source.remote
 
+import com.example.musicapp.shared.utils.constant.ManagerUrl
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
     private var retrofit: Retrofit? = null
-    private var apiService: ApiService? = null
 
-    private fun getApiClient(): Retrofit? {
+
+     fun getApiClient(): Retrofit? {
         if (retrofit == null) {
             retrofit =  Retrofit.Builder ()
                 .baseUrl(ManagerUrl.BASE_URL)
@@ -17,10 +18,7 @@ object ApiClient {
         return retrofit
     }
 
-    fun getApiService(): ApiService? {
-        if (apiService == null) {
-            apiService = getApiClient()?.create(ApiService::class.java)
-        }
-        return apiService
+    val apiService: ApiService by lazy {
+        getApiClient()!!.create(ApiService::class.java)
     }
 }

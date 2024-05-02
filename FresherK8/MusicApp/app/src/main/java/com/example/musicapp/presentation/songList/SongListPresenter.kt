@@ -1,9 +1,9 @@
 package com.example.musicapp.presentation.songList
 
 import android.util.Log
-import com.example.musicapp.contants.Constant
-import com.example.musicapp.data.repositories.SongRepository
-import com.example.musicapp.network.ApiClient
+import com.example.musicapp.shared.utils.constant.Constant
+import com.example.musicapp.data.model.repositories.SongRepository
+import com.example.musicapp.data.source.remote.ApiClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

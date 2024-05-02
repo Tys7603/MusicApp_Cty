@@ -1,4 +1,4 @@
-package com.example.musicapp.contants
+package com.example.musicapp.shared.utils.constant
 
 object Constant {
     const val STATUS = 200

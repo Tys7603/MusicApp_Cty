@@ -3,7 +3,6 @@ package com.example.musicapp.presentation.user
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,16 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import com.example.musicapp.R
-import com.example.musicapp.contants.Constant
-import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.source.local.dao.SongDao
-import com.example.musicapp.databinding.FragmentExploreBinding
 import com.example.musicapp.databinding.FragmentUserBinding
-import com.example.musicapp.presentation.explore.ExplorePresenter
 import com.example.musicapp.presentation.songDown.SongDownActivity
-import com.example.musicapp.shared.utils.DownloadMusic
 import com.example.musicapp.shared.utils.GetValue
-import com.google.gson.Gson
 
 
 class UserFragment : Fragment() {

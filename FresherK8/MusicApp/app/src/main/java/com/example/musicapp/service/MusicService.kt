@@ -19,7 +19,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.transition.Transition
-import com.example.musicapp.shared.extension.MyApplication
+import com.example.musicapp.shared.utils.di.MyApplication
 import com.example.musicapp.R
 import com.example.musicapp.presentation.main.MainActivity
 import com.example.musicapp.presentation.music.base.MusicContract

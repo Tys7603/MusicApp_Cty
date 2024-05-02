@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -19,13 +18,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.preference.PreferenceManager
 import com.example.musicapp.R
-import com.example.musicapp.contants.Constant
+import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.ActivitySongBinding
 import com.example.musicapp.presentation.music.base.ConstantBase
 import com.example.musicapp.presentation.music.base.ConstantBase.KEY_AUTO_RESTART
 import com.example.musicapp.presentation.music.base.ConstantBase.KEY_PLAY_CLICK
-import com.example.musicapp.presentation.music.base.ConstantBase.KEY_POSITION
 import com.example.musicapp.presentation.music.base.ConstantBase.KEY_POSITION_SONG
 import com.example.musicapp.presentation.music.base.ConstantBase.KEY_SHUFFLE
 import com.example.musicapp.presentation.music.base.ConstantBase.VALUE_DEFAULT
@@ -35,9 +33,8 @@ import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.utils.BooleanProperty
 import com.example.musicapp.shared.utils.DownloadMusic
-import com.example.musicapp.shared.utils.FormatUntil
+import com.example.musicapp.shared.utils.format.FormatUtils
 import com.google.gson.Gson
-import kotlin.math.log
 
 class SongActivity : AppCompatActivity(), MusicContract.View {
 
@@ -270,7 +267,7 @@ class SongActivity : AppCompatActivity(), MusicContract.View {
     private fun setTimeTotal() {
         if (isServiceBound) {
             binding.tvTotalTimeSongAt.text =
-                musicService?.let { FormatUntil.formatTime(it.getDuration()) }
+                musicService?.let { FormatUtils.formatTime(it.getDuration()) }
             // gán max cho skbar
             binding.seekBarAt.max = musicService!!.getDuration()
         }
@@ -285,7 +282,7 @@ class SongActivity : AppCompatActivity(), MusicContract.View {
 
             // Cập nhật UI với vị trí hiện tại của trình phát nhạc
             binding.tvTimeSongAt.text =
-                musicService?.let { FormatUntil.formatTime(it.getCurrentPosition()) }
+                musicService?.let { FormatUtils.formatTime(it.getCurrentPosition()) }
 
             // set progress cho seekbar
             binding.seekBarAt.progress = musicService?.getCurrentPosition() ?: 0

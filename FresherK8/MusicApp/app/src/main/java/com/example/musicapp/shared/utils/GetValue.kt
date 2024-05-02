@@ -1,8 +1,8 @@
 package com.example.musicapp.shared.utils
 
 import android.content.SharedPreferences
-import com.example.musicapp.contants.Constant
 import com.example.musicapp.data.model.Song
+import com.example.musicapp.shared.utils.constant.Constant
 import com.google.gson.Gson
 
 object GetValue {

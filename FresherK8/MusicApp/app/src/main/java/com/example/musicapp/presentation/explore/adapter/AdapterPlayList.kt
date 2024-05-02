@@ -15,6 +15,10 @@ class AdapterPlayList(
 ) :
     RecyclerView.Adapter<AdapterPlayList.ViewHolder>() {
 
+        fun setPlaylist(playlists : ArrayList<Playlist>){
+            this.listPlayList = playlists
+        }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
             ItemPlayListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -36,9 +40,8 @@ class AdapterPlayList(
     class ViewHolder(private val binding: ItemPlayListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(playlist: Playlist) {
-            binding.tvNamePlaylist.text = playlist.name
+            binding.playlist = playlist
             binding.imgPlaylist.loadImageUrl(playlist.image)
-            binding.tvNameArtistItem.text = playlist.nameArtist
         }
     }
 

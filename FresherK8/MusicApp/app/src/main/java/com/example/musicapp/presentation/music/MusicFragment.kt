@@ -17,12 +17,11 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
 import com.example.musicapp.R
-import com.example.musicapp.contants.Constant.KEY_SONG
+import com.example.musicapp.shared.utils.constant.Constant.KEY_SONG
 import com.example.musicapp.databinding.FragmentMusicBinding
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.presentation.music.base.ConstantBase.KEY_AUTO_RESTART
 import com.example.musicapp.presentation.music.base.ConstantBase.KEY_DOWN
-import com.example.musicapp.presentation.music.base.ConstantBase.KEY_HAVE_DOWN
 import com.example.musicapp.presentation.music.base.ConstantBase.KEY_PLAY_CLICK
 import com.example.musicapp.presentation.music.base.ConstantBase.KEY_POSITION
 import com.example.musicapp.presentation.music.base.ConstantBase.KEY_SHUFFLE
@@ -34,7 +33,7 @@ import com.example.musicapp.shared.extension.loadDingUrl
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.utils.BooleanProperty
 import com.example.musicapp.shared.utils.DownloadMusic
-import com.example.musicapp.shared.utils.FormatUntil
+import com.example.musicapp.shared.utils.format.FormatUtils
 import com.google.gson.Gson
 
 class MusicFragment : Fragment(), MusicContract.View {
@@ -262,7 +261,7 @@ class MusicFragment : Fragment(), MusicContract.View {
     private fun setTimeTotal() {
         if (isServiceBound) {
             binding.tvTotalTimeSong.text =
-                musicService?.let { FormatUntil.formatTime(it.getDuration()) }
+                musicService?.let { FormatUtils.formatTime(it.getDuration()) }
             // gán max cho skbar
             binding.seekBar.max = musicService!!.getDuration()
             binding.layoutMain.visibility = View.VISIBLE
@@ -279,7 +278,7 @@ class MusicFragment : Fragment(), MusicContract.View {
 
             // Cập nhật UI với vị trí hiện tại của trình phát nhạc
             binding.tvTimeSong.text =
-                musicService?.let { FormatUntil.formatTime(it.getCurrentPosition()) }
+                musicService?.let { FormatUtils.formatTime(it.getCurrentPosition()) }
 
             // set progress cho seekbar
             binding.seekBar.progress = musicService?.getCurrentPosition() ?: 0
