@@ -20,6 +20,7 @@ import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_PLAYLIS
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_TOPIC_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_TOPIC_BY_CATEGORY_ID
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -46,7 +47,7 @@ interface ApiService {
     fun getListSongAgain(@Path("userID") user: Int): Call<SongAgainRepository>
 
     @GET(GET_SONG)
-    fun getListSong(): Call<SongRepository>
+    fun getListSong(): Response<SongRepository>
 
     @GET(GET_SONG_RANK)
     fun getListSongRank(): Call<SongRankRepository>

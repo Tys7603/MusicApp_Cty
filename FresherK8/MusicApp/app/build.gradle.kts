@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id ("kotlin-parcelize")
+    id ("kotlin-kapt")
 }
 android {
     namespace = "com.example.musicapp"
@@ -71,5 +72,6 @@ dependencies {
     //noinspection UseTomlInstead
     implementation ("io.insert-koin:koin-android:3.5.6")
     //noinspection UseTomlInstead
-    implementation ("io.insert-koin:koin-androidx-viewmodel:3.5.6")
+//    kapt ("com.android.databinding:compiler:3.1.4")
+
 }

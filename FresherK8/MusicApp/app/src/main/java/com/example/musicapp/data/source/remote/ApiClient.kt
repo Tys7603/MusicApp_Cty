@@ -7,7 +7,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 object ApiClient {
     private var retrofit: Retrofit? = null
 
-
      fun getApiClient(): Retrofit? {
         if (retrofit == null) {
             retrofit =  Retrofit.Builder ()
