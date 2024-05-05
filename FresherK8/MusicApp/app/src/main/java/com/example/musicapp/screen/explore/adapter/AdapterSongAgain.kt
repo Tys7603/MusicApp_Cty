@@ -38,10 +38,7 @@ class AdapterSongAgain(
     class ViewHolder(private val binding: ItemSongAgianBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(songAgain: SongAgain) {
-            Glide.with(binding.root).load(songAgain.image).centerCrop()
-                .placeholder(R.drawable.img_placeholder).into(binding.imgSongAgain)
-//            binding.imgSongAgain.loadImageUrl(songAgain.url)
-            binding.tvSongAgain.text = songAgain.name
+            binding.songAgain = songAgain
         }
     }
 

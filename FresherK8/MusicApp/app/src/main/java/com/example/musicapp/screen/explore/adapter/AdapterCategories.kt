@@ -37,7 +37,7 @@ class AdapterCategories(
     class ViewHolder(private val binding: ItemCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(category: Category) {
-            binding.imgTopicCategory.loadImageUrl(category.image)
+            binding.category = category
         }
     }
 

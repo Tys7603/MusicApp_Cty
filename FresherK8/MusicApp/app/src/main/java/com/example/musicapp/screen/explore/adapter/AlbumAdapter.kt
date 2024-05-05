@@ -40,9 +40,7 @@ class AlbumAdapter(
     class ViewHolder(private val binding: ItemAlbumNewBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(album: Album) {
-            binding.imgAlbumNew.loadImageUrl(album.albumImage)
-            binding.tvNameAlbumNew.text = album.albumName
-            binding.tvNameArtist.text = album.nameArtist
+            binding.albumLove = album
         }
     }
 

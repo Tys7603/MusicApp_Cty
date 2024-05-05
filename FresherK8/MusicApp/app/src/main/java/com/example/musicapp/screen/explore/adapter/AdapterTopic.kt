@@ -38,8 +38,7 @@ class AdapterTopic(
     class ViewHolder(private val binding: ItemTopicBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(topic: Topic) {
-            binding.imgTopicCategory.loadImageUrl(topic.image)
-            binding.tvNameCategory.text = topic.name
+            binding.topic = topic
         }
     }
 

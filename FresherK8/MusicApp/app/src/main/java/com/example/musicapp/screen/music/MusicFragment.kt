@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
 import androidx.preference.PreferenceManager
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -21,8 +20,6 @@ import com.example.musicapp.R
 import com.example.musicapp.shared.utils.constant.Constant.KEY_SONG
 import com.example.musicapp.databinding.FragmentMusicBinding
 import com.example.musicapp.data.model.Song
-import com.example.musicapp.data.model.repositories.SongRepository
-import com.example.musicapp.data.source.remote.ApiClient
 import com.example.musicapp.shared.utils.constant.Constant.KEY_PLAY_CLICK
 import com.example.musicapp.screen.music.base.MusicContract
 import com.example.musicapp.service.MusicService
@@ -30,7 +27,6 @@ import com.example.musicapp.shared.extension.loadDingUrl
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.utils.BooleanProperty
 import com.example.musicapp.shared.utils.DownloadMusic
-import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.utils.constant.Constant.KEY_AUTO_RESTART
 import com.example.musicapp.shared.utils.constant.Constant.KEY_DOWN
 import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION
@@ -39,9 +35,7 @@ import com.example.musicapp.shared.utils.constant.Constant.VALUE_DEFAULT
 import com.example.musicapp.shared.utils.format.FormatUtils
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+
 
 class MusicFragment : Fragment(), MusicContract.View {
 
@@ -56,7 +50,6 @@ class MusicFragment : Fragment(), MusicContract.View {
     private var mSongsDefault: ArrayList<Song>? = null
     private var position = 0
     private var isServiceBound = false // kiểm tra kết nối service
-
 
     private val sharedPreferences: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(requireContext())
@@ -88,18 +81,24 @@ class MusicFragment : Fragment(), MusicContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         handlerEvent()
+        setUpViewModel()
         initViewModel()
     }
 
+    private fun setUpViewModel() {
+        binding.musicViewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+    }
+
     private fun initViewModel() {
-        //        viewModel.songs.observe(viewLifecycleOwner){songs ->
-//            mSongs = songs
-//            mSongsDefault = songs
-//            initValueSong()
-//            if (isServiceBound) {
-//                initFunc()
-//            }
-//        }
+        viewModel.songs.observe(viewLifecycleOwner) { songs ->
+            mSongs = songs
+            mSongsDefault = songs
+            initValueSong()
+            if (isServiceBound) {
+                initFunc()
+            }
+        }
     }
 
     private fun handlerLoading() {
@@ -116,14 +115,8 @@ class MusicFragment : Fragment(), MusicContract.View {
         binding.btnShuffle.setOnClickListener { shuffleMusic() }
         binding.btnDownload.setOnClickListener { downloadMusic() }
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-
-            }
-
-            override fun onStartTrackingTouch(p0: SeekBar?) {
-
-            }
-
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) = Unit
+            override fun onStartTrackingTouch(p0: SeekBar?) = Unit
             override fun onStopTrackingTouch(p0: SeekBar?) {
                 if (isServiceBound) {
                     musicService?.seekTo(binding.seekBar.progress)

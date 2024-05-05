@@ -1,41 +1,23 @@
 package com.example.musicapp.data.repositories
 
-import android.util.Log
 import com.example.musicapp.data.model.Topic
-import com.example.musicapp.data.model.repositories.TopicRepository
-import com.example.musicapp.data.source.remote.ApiService
+import com.example.musicapp.data.source.remote.ApiClient
 import com.example.musicapp.shared.utils.constant.Constant
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.musicapp.shared.utils.scheduler.DataResult
 
-class TopicRepository(private val apiService: ApiService) {
+class TopicRepository {
 
-    fun getListTopicByIdCategory(id: Int) : ArrayList<Topic> {
-        val result = ArrayList<Topic>()
-        apiService.getListTopicByIdCategory(id).enqueue(object :
-            Callback<TopicRepository> {
-            override fun onResponse(
-                call: Call<TopicRepository>,
-                response: Response<TopicRepository>
-            ) {
-                if (response.isSuccessful){
-                    if (Constant.STATUS == response.body()?.status){
-                        result.addAll(response.body()!!.topics)
-                    }else{
-                        Log.e(Constant.TAG_ERROR, "Call other api status 200")
-                    }
-                }else{
-                    Log.e(Constant.TAG_ERROR, "Call api failure")
-                }
+    suspend fun getListTopicByIdCategory(id: Int) : DataResult<ArrayList<Topic>> {
+        return try {
+            val response = ApiClient.apiService.getListTopicByIdCategory(id)
+            if (response.body() != null && response.body()!!.status == Constant.STATUS) {
+                DataResult.Success(response.body()!!.topics)
+            } else {
+                DataResult.Failure(Constant.CALL_API_ERROR + response.code())
             }
-
-            override fun onFailure(call: Call<TopicRepository>, t: Throwable) {
-                Log.e(Constant.TAG_ERROR, t.toString())
-            }
-
-        })
-        return result
+        } catch (e: Exception) {
+            DataResult.Error(e)
+        }
     }
 
 }

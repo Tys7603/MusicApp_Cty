@@ -25,6 +25,7 @@
                 android:layout_width="170dp"
                 android:layout_height="170dp"
                 android:scaleType="centerCrop"
+            imageUrl="@{topic.image}"
                 android:src="@drawable/img_placeholder" />
         </androidx.cardview.widget.CardView>
 
@@ -33,7 +34,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:text="@string/loading"
+            android:text="@{topic.name, default = @string/loading}"
             android:ellipsize="end"
             android:lines="1"
             android:textSize="15sp"

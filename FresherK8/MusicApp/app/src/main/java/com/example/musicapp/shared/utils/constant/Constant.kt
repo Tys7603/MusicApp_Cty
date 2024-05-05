@@ -16,5 +16,11 @@ object Constant {
     const val KEY_SHUFFLE = "shuffle"
     const val KEY_DOWN = "Downloading..."
     const val KEY_HAVE_DOWN = "Bài hát đã được tải"
+    const val FAILURE = "Thất bại"
+    const val CALL_API_ERROR = "Lỗi khi gọi API: "
     // bỏ enum ở đây
+
+//    enum class Status{
+//        Failure,
+//    }
 }

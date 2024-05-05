@@ -2,6 +2,7 @@ package com.example.musicapp.screen.explore
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.utils.constant.Constant.KEY_BUNDLE_ITEM
 import com.example.musicapp.data.model.Album
@@ -27,6 +29,8 @@ import com.example.musicapp.databinding.FragmentExploreBinding
 import com.example.musicapp.screen.song.SongActivity
 import com.example.musicapp.screen.songDetail.SongDetailActivity
 import com.example.musicapp.screen.topic.TopicActivity
+import com.example.musicapp.shared.extension.setAdapterGrid
+import com.example.musicapp.shared.extension.setAdapterLinearHorizontal
 import com.example.musicapp.shared.utils.GetValue
 import com.example.musicapp.shared.utils.OnItemClickListener
 import java.util.Random
@@ -36,6 +40,10 @@ class ExploreFragment : Fragment(), OnItemClickListener {
     private val viewModel: ExploreViewModel by viewModel()
 
     private val playListAdapter by lazy {
+        AdapterPlayList(arrayListOf(), this)
+    }
+
+    private val playListMoodAdapter by lazy {
         AdapterPlayList(arrayListOf(), this)
     }
 
@@ -51,7 +59,11 @@ class ExploreFragment : Fragment(), OnItemClickListener {
         AdapterSongAgain(arrayListOf(), this)
     }
 
-    private val albumAdapter by lazy {
+    private val albumNewAdapter by lazy {
+        AlbumAdapter(arrayListOf(), this)
+    }
+
+    private val albumLoveAdapter by lazy {
         AlbumAdapter(arrayListOf(), this)
     }
 
@@ -83,14 +95,13 @@ class ExploreFragment : Fragment(), OnItemClickListener {
         binding.lifecycleOwner = this
     }
 
-
     private fun setViewModel() {
         viewModel.playlist.observe(viewLifecycleOwner) { playlists ->
             playListAdapter.setPlaylist(playlists.shuffled(Random()) as ArrayList<Playlist>)
         }
 
         viewModel.playlistsMood.observe(viewLifecycleOwner) { playlistsMood ->
-            playListAdapter.setPlaylist(playlistsMood.shuffled(Random()) as ArrayList<Playlist>)
+            playListMoodAdapter.setPlaylist(playlistsMood.shuffled(Random()) as ArrayList<Playlist>)
         }
 
         viewModel.topics.observe(viewLifecycleOwner) { topics ->
@@ -106,74 +117,27 @@ class ExploreFragment : Fragment(), OnItemClickListener {
         }
 
         viewModel.albumLove.observe(viewLifecycleOwner) { albumLove ->
-           albumAdapter.setAlbums(albumLove.shuffled() as ArrayList<Album>)
+           albumLoveAdapter.setAlbums(albumLove.shuffled() as ArrayList<Album>)
         }
 
         viewModel.albumNew.observe(viewLifecycleOwner) { albumNew ->
-            albumAdapter.setAlbums(albumNew.shuffled() as ArrayList<Album>)
+            albumNewAdapter.setAlbums(albumNew.shuffled() as ArrayList<Album>)
         }
 
         viewModel.songRank.observe(viewLifecycleOwner) { songRank ->
             songRankAdapter.setSongRank(songRank)
         }
     }
-
     private fun setAdapterView() {
-        setAdapterCategories()
-        setAdapterPlaylist()
-        setAdapterTopic()
-        setAdapterSongAgain()
-        setAdapterPlaylistMood()
-        setAdapterPlaylist()
-        setAlbumLoveAdapter()
-        setAlbumNewAdapter()
-        setAdapterSongRank()
-        }
-
-    private fun setAdapterPlaylist() {
-        binding.rcvPlaylist.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.rcvPlaylist.adapter = playListAdapter
-    }
-
-    private fun setAdapterPlaylistMood() {
-        binding.rcvAlbumMoodToday.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.rcvAlbumMoodToday.adapter = playListAdapter
-    }
-
-    private fun setAdapterTopic() {
-        binding.rcvTopic.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.rcvTopic.adapter = topicAdapter
-    }
-
-    private fun setAdapterCategories() {
-        binding.rcvPlaylist.layoutManager =
-            GridLayoutManager(requireContext(), 2, GridLayoutManager.HORIZONTAL, false)
-        binding.rcvPlaylist.adapter = categoriesAdapter
-    }
-
-    private fun setAdapterSongAgain() {
-        binding.rcvListenAgain.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.rcvListenAgain.adapter = songAgainAdapter
-    }
-
-    private fun setAlbumLoveAdapter() {
-        binding.rcvPlaylist.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.rcvPlaylist.adapter = albumAdapter
-    }
-
-    private fun setAlbumNewAdapter() {
-        binding.rcvPlaylist.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.rcvPlaylist.adapter = albumAdapter
-    }
-
-    private fun setAdapterSongRank() {
-        binding.rcvPlaylist.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.rcvPlaylist.adapter = songRankAdapter
+        binding.rcvCategory.setAdapterGrid(categoriesAdapter)
+        binding.rcvPlaylist.setAdapterLinearHorizontal(playListAdapter)
+        binding.rcvAlbumLove.setAdapterLinearHorizontal(albumLoveAdapter)
+        binding.rcvAlbumNew.setAdapterLinearHorizontal(albumNewAdapter)
+        binding.rcvAlbumMoodToday.setAdapterLinearHorizontal(playListMoodAdapter)
+        binding.rcvTopic.setAdapterLinearHorizontal(topicAdapter)
+        binding.rcvListenAgain.setAdapterLinearHorizontal(songAgainAdapter)
+        binding.rcvSongRank.setAdapterLinearHorizontal(songRankAdapter)
+        // Thiết lập SnapHelper cho RecyclerView songRank
         LinearSnapHelper().attachToRecyclerView(binding.rcvSongRank)
     }
 

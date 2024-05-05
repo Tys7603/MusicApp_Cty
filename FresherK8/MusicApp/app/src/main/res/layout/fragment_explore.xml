@@ -352,7 +352,7 @@
                         android:text="@{exploreViewModel.message}"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        android:visibility="@{exploreViewModel.isUserLogin() ? View.VISIBLE  : View.GONE}"
+                        android:visibility="@{exploreViewModel.isMessageSelect() ? View.VISIBLE : View.GONE}"
                         app:layout_constraintBottom_toBottomOf="@+id/rcv_listen_again"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

@@ -1,5 +1,7 @@
 package com.example.musicapp.screen.explore.adapter
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -15,8 +17,10 @@ class AdapterPlayList(
 ) :
     RecyclerView.Adapter<AdapterPlayList.ViewHolder>() {
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setPlaylist(playlists: ArrayList<Playlist>) {
         this.listPlayList = playlists
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,7 +45,6 @@ class AdapterPlayList(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(playlist: Playlist) {
             binding.playlist = playlist
-            binding.imgPlaylist.loadImageUrl(playlist.image)
         }
     }
 

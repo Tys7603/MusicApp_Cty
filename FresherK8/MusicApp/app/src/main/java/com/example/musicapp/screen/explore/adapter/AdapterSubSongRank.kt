@@ -8,16 +8,19 @@ import com.bumptech.glide.Glide
 import com.example.musicapp.R
 import com.example.musicapp.databinding.ItemSocialRankBinding
 import com.example.musicapp.data.model.Song
+import com.example.musicapp.data.model.SongRank
 import kotlin.math.min
 
-class AdapterSubSongRank(private val songs: ArrayList<Song>) :
+class AdapterSubSongRank(private var songs: ArrayList<Song>) :
     RecyclerView.Adapter<AdapterSubSongRank.ViewHolder>() {
 
-    private lateinit var binding: ItemSocialRankBinding
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        binding = ItemSocialRankBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemSocialRankBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
+    }
+
+    fun setSongSubRank(song: ArrayList<Song>) {
+        this.songs = song
     }
 
     override fun getItemCount(): Int {
@@ -32,13 +35,8 @@ class AdapterSubSongRank(private val songs: ArrayList<Song>) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
         fun bind(song: Song, position: Int) {
-            Glide.with(binding.root).load(song.image).centerCrop()
-                .placeholder(R.drawable.img_placeholder).into(binding.ingSocialRank)
-//            binding.ingSocialRank.loadImageUrl(song.url)
-            binding.tvNameSongSocialRank.text = song.name
-
             binding.tvSttSocialRank.text = (position + 1).toString()
-            binding.tvNameArtistSocialRank.text = song.nameArtis
+            binding.song = song
         }
     }
 

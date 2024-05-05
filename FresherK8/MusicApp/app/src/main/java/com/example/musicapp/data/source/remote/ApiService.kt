@@ -28,40 +28,40 @@ interface ApiService {
 
     // Playlist
     @GET(GET_PLAYLIST)
-    fun getListPlaylist(): Call<PlaylistRepository>
+    suspend fun getListPlaylist(): Response<PlaylistRepository>
     @GET(GET_PLAYLIST_MODE_TODAY)
-    fun getListPlaylistMoodToday(): Call<PlaylistRepository>
+    suspend fun getListPlaylistMoodToday(): Response<PlaylistRepository>
 
     // Categories and topic
     @GET(GET_TOPICS)
-    fun getListTopic(): Call<TopicRepository>
+    suspend fun getListTopic(): Response<TopicRepository>
 
     @GET(GET_CATEGORIES)
-    fun getListCategory(): Call<CategoriesRepository>
+    suspend fun getListCategory(): Response<CategoriesRepository>
 
     @GET(GET_TOPIC_BY_CATEGORY_ID)
-    fun getListTopicByIdCategory(@Path("categoryId") categoryId: Int): Call<TopicRepository>
+    suspend fun getListTopicByIdCategory(@Path("categoryId") categoryId: Int): Response<TopicRepository>
 
     //song
     @GET(GET_SONG_AGAIN)
-    fun getListSongAgain(@Path("userID") user: Int): Call<SongAgainRepository>
+    suspend fun getListSongAgain(@Path("userID") user: Int): Response<SongAgainRepository>
 
     @GET(GET_SONG)
-    fun getListSong(): Response<SongRepository>
+    suspend fun getListSong(): Response<SongRepository>
 
     @GET(GET_SONG_RANK)
-    fun getListSongRank(): Call<SongRankRepository>
+    suspend fun getListSongRank(): Response<SongRankRepository>
 
     @GET(GET_SONG_BY_PLAYLIST_ID)
-    fun getListSongPlaylistById(@Path("playlistId") playlistId: Int): Call<SongRepository>
+    suspend fun getListSongPlaylistById(@Path("playlistId") playlistId: Int): Response<SongRepository>
 
     @GET(GET_SONG_BY_TOPIC_ID)
-    fun getListSongTopicById(@Path("topicId") topicId: Int): Call<SongRepository>
+    suspend fun getListSongTopicById(@Path("topicId") topicId: Int): Response<SongRepository>
 
     // album
     @GET(GET_ALBUM_LOVE)
-    fun getListAlbumLove(): Call<AlbumRepository>
+    suspend fun getListAlbumLove(): Response<AlbumRepository>
 
     @GET(GET_ALBUM_NEW)
-    fun getListAlbumNew(): Call<AlbumRepository>
+    suspend fun getListAlbumNew(): Response<AlbumRepository>
 }

@@ -13,7 +13,10 @@ import com.example.musicapp.R
 import com.example.musicapp.data.source.local.dao.SongDao
 import com.example.musicapp.databinding.FragmentUserBinding
 import com.example.musicapp.screen.songDown.SongDownActivity
+import com.example.musicapp.screen.user.adapter.BottomSheetLogin
 import com.example.musicapp.shared.utils.GetValue
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
 class UserFragment : Fragment() {
@@ -46,6 +49,12 @@ class UserFragment : Fragment() {
 
     private fun handleEvent() {
         binding.btnTrackDown.setOnClickListener {startActivity(Intent(requireContext(), SongDownActivity::class.java))}
+        binding.btnLogin.setOnClickListener { openBottomSheetLogin() }
+    }
+
+    private fun openBottomSheetLogin() {
+        val bottomSheetLogin = BottomSheetLogin()
+        bottomSheetLogin.show(parentFragmentManager, bottomSheetLogin.tag)
     }
 
     @SuppressLint("SetTextI18n")
@@ -55,10 +64,7 @@ class UserFragment : Fragment() {
 
     private fun initSongView(){
         val song = GetValue.getSong(sharedPreferences)
-//        binding.includeLayout.imgLayoutBottom.loadImageUrl(song.url)
-        Glide.with(binding.root).load(song?.image).centerCrop()
-            .placeholder(R.drawable.img_placeholder).into(binding.includeLayout1.imgLayoutBottom)
-        binding.includeLayout1.tvLayoutBottomNameSong.text = song?.name
+        binding.includeLayout1.song = song
     }
 
     override fun onStart() {
