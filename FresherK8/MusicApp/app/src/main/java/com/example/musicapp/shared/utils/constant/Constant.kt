@@ -27,6 +27,8 @@ object Constant {
     const val SING_UP_SUCCESS= "Đăng ký thành công"
     const val LOGIN_EMPTY = "Không được bỏ trống"
     const val SING_UP_EQUAL = "Mật khẩu không trùng khớp"
+    const val SEN_EMAIL_FAILURE = "Gửi email thất bại"
+    const val SEN_EMAIL_SUCCESS = "Gửi email thành công"
     // bỏ enum ở đây
 
 }

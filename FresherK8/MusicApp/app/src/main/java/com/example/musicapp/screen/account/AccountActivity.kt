@@ -21,6 +21,7 @@ class AccountActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_account)) { v, insets ->
@@ -30,6 +31,11 @@ class AccountActivity : AppCompatActivity() {
         }
 
         initTabLayout()
+        initHandlerEvent()
+    }
+
+    private fun initHandlerEvent() {
+        binding.btnBackAccount.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
     private fun initTabLayout() {

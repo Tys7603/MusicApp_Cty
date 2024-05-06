@@ -1,5 +1,6 @@
 package com.example.musicapp.shared.extension
 
+import android.net.Uri
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
@@ -11,6 +12,15 @@ fun ImageView.loadImageUrl(url : String){
         .load(url)
         .centerCrop()
         .placeholder(R.drawable.img_placeholder)
+        .into(this)
+}
+
+@BindingAdapter("imageUrl")
+fun ImageView.loadImageUrlUser(uri : Uri){
+    Glide.with(context)
+        .load(uri)
+        .centerCrop()
+        .placeholder(R.drawable.avatar)
         .into(this)
 }
 
