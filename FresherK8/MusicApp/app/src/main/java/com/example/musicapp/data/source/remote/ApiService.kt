@@ -1,5 +1,6 @@
 package com.example.musicapp.data.source.remote
 
+import com.example.musicapp.data.model.User
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_ALBUM_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_ALBUM_NEW
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_CATEGORIES
@@ -16,12 +17,16 @@ import com.example.musicapp.data.model.repositories.SongRepository
 import com.example.musicapp.data.model.repositories.SongAgainRepository
 import com.example.musicapp.data.model.repositories.SongRankRepository
 import com.example.musicapp.data.model.repositories.TopicRepository
+import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_PLAYLIST_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_TOPIC_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_TOPIC_BY_CATEGORY_ID
 import retrofit2.Call
 import retrofit2.Response
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ApiService {
@@ -64,4 +69,9 @@ interface ApiService {
 
     @GET(GET_ALBUM_NEW)
     suspend fun getListAlbumNew(): Response<AlbumRepository>
+
+    //user
+    @FormUrlEncoded
+    @POST(CREATE_USER)
+    suspend fun createUser(@Field("userId") userId : String): Response<User>
 }

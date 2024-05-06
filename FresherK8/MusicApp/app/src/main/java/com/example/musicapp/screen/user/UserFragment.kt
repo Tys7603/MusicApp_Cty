@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import com.example.musicapp.R
@@ -17,9 +18,12 @@ import com.example.musicapp.screen.user.adapter.BottomSheetLogin
 import com.example.musicapp.shared.utils.GetValue
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class UserFragment : Fragment() {
+
+    private val viewModel : UserViewModel by viewModel()
 
     private val binding by lazy {
         FragmentUserBinding.inflate(layoutInflater)
@@ -45,6 +49,12 @@ class UserFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initQuantityView()
         handleEvent()
+        initViewModel()
+    }
+
+    private fun initViewModel() {
+        binding.userViewModel = viewModel
+        binding.lifecycleOwner = this
     }
 
     private fun handleEvent() {
@@ -75,5 +85,4 @@ class UserFragment : Fragment() {
     companion object{
         const val SONG = " bài hát"
     }
-
 }

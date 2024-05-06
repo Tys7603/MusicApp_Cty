@@ -1,5 +1,6 @@
 package com.example.musicapp.data.model
 
 data class User (
-    val id : String,
+    val status : Int,
+    val userID : String
 )

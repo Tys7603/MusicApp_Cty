@@ -1,4 +1,4 @@
-package com.example.musicapp.shared.widgit
+package com.example.musicapp.shared.widget
 
 import android.os.Handler
 import android.os.Looper

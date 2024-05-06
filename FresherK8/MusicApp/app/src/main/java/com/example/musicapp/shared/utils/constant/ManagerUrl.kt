@@ -24,5 +24,7 @@ object ManagerUrl {
     const val GET_ALBUM_LOVE = "albums/love"
     const val GET_ALBUM_NEW = "albums/new"
 
+    //user
+    const val CREATE_USER = "user"
 
 }
