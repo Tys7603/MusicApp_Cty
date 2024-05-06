@@ -13,7 +13,6 @@ const createUserController = async (req, res) => {
   } catch (error) {
     res.json({ status: "400", error : error.message });
   }
-
 }
 
 module.exports = {

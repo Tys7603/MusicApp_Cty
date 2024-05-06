@@ -85,5 +85,4 @@ class UserFragment : Fragment() {
     companion object{
         const val SONG = " bài hát"
     }
-
 }
