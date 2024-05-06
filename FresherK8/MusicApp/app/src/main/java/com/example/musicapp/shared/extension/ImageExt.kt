@@ -14,7 +14,7 @@ fun ImageView.loadImageUrl(url : String){
         .placeholder(R.drawable.img_placeholder)
         .into(this)
 }
-
+// test
 @BindingAdapter("imageUrl")
 fun ImageView.loadImageUrlUser(uri : Uri){
     Glide.with(context)
