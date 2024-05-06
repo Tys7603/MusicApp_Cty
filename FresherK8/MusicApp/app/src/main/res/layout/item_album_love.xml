@@ -1,35 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:layout_margin="8dp"
-    android:orientation="vertical">
+<layout>
 
-  <androidx.cardview.widget.CardView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      app:cardCornerRadius="10dp">
+    <data>
 
-      <ImageView
-          android:id="@+id/img_album_love"
-          android:layout_width="150dp"
-          android:layout_height="150dp"
-          android:layout_weight="1"
-          app:srcCompat="@drawable/img_placeholder" />
-  </androidx.cardview.widget.CardView>
+        <variable
+            name="albumLove"
+            type="com.example.musicapp.data.model.Album" />
+    </data>
 
-    <TextView
-        android:id="@+id/tv_name_album_love"
-        android:layout_width="120dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:textSize="15sp"
-        android:fontFamily="@font/product_sans_bold"
-        android:ellipsize="end"
-        android:lines="1"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:gravity="center"
-        android:text="@string/loading" />
+        android:orientation="vertical">
 
-</LinearLayout>
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp">
+
+            <ImageView
+                android:id="@+id/img_album_love"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                imageUrl="@{albumLove.albumImage}"
+                app:srcCompat="@drawable/img_placeholder" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/tv_name_album_love"
+            android:layout_width="120dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fontFamily="@font/product_sans_bold"
+            android:gravity="center"
+            android:lines="1"
+            android:text="@{albumLove.albumName , default = @string/loading}"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+</layout>

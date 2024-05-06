@@ -8,7 +8,7 @@ const getListCategoryController = async (req, res) => {
 
     res.json({ status: 200 , categories  })
   } catch (error) {
-    res.json({ status: "400", error });
+    res.json({ status: "400", message: error.message });
   }
 
 }
