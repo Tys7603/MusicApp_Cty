@@ -1,5 +1,6 @@
 package com.example.musicapp.shared.utils.di
 
+import com.example.musicapp.screen.account.singup.SingUpViewModel
 import com.example.musicapp.screen.explore.ExploreViewModel
 import com.example.musicapp.screen.music.MusicViewModel
 import com.example.musicapp.screen.topic.TopicViewModel
@@ -13,4 +14,5 @@ val viewModelModule = module {
     viewModel { MusicViewModel(get()) }
     viewModel { TopicViewModel(get()) }
     viewModel { BottomSheetLoginViewModel() }
+    viewModel { SingUpViewModel(get()) }
 }

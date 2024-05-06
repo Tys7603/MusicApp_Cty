@@ -5,6 +5,7 @@ object Constant {
     const val TAG_ERROR = "Error"
     const val SONG_COMPLETED = "song_completed"
     const val KEY_SONG = "song"
+    const val KEY_USER = "start_user"
     const val KEY_INTENT_ITEM = "item"
     const val KEY_BUNDLE_ITEM = "bundle"
     const val EMPTY_SONG_MESSAGE = "Chưa nghe bài hát nào"
@@ -19,9 +20,13 @@ object Constant {
     const val FAILURE = "Thất bại"
     const val CALL_API_ERROR = "Lỗi khi gọi API: "
     const val ACCESS_RULES = "Bạn chưa đồng ý điều khoản của chúng tôi"
+    const val LOGIN = "Đăng nhập"
+    const val SING_UP = "Đăng ký"
+    const val LOGIN_FAILURE = "Đăng nhập thất bại"
+    const val SING_UP_FAILURE = "Đăng ký thất bại"
+    const val SING_UP_SUCCESS= "Đăng ký thành công"
+    const val LOGIN_EMPTY = "Không được bỏ trống"
+    const val SING_UP_EQUAL = "Mật khẩu không trùng khớp"
     // bỏ enum ở đây
 
-//    enum class Status{
-//        Failure,
-//    }
 }
