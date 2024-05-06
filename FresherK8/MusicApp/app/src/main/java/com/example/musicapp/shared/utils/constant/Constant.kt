@@ -18,6 +18,7 @@ object Constant {
     const val KEY_HAVE_DOWN = "Bài hát đã được tải"
     const val FAILURE = "Thất bại"
     const val CALL_API_ERROR = "Lỗi khi gọi API: "
+    const val ACCESS_RULES = "Bạn chưa đồng ý điều khoản của chúng tôi"
     // bỏ enum ở đây
 
 //    enum class Status{
