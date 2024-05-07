@@ -2,22 +2,16 @@ package com.example.musicapp.screen.explore.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.data.model.Album
 import com.example.musicapp.databinding.ItemAlbumNewBinding
-import com.example.musicapp.shared.extension.loadImageUrl
-import com.example.musicapp.shared.utils.OnItemClickListener
 import kotlin.math.min
 
 class AlbumAdapter(
-    private var albums: ArrayList<Album>,
-    private var mListener: OnItemClickListener
-) :
-    RecyclerView.Adapter<AlbumAdapter.ViewHolder>() {
-
-    fun setAlbums(albums: ArrayList<Album>) {
-        this.albums = albums
-    }
+    private var mListener: (Album) -> Unit
+) : ListAdapter<Album, AlbumAdapter.ViewHolder>(MovieDiffCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -27,13 +21,13 @@ class AlbumAdapter(
 
 
     override fun getItemCount(): Int {
-        return min(albums.size, 8)
+        return min(currentList.size, 8)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(albums[position])
+        holder.bind(currentList[position])
         holder.itemView.setOnClickListener {
-            mListener.onItemClick(albums[position])
+            mListener.invoke(currentList[position])
         }
     }
 
@@ -43,5 +37,13 @@ class AlbumAdapter(
             binding.albumLove = album
         }
     }
+    class MovieDiffCallBack : DiffUtil.ItemCallback<Album>() {
+        override fun areItemsTheSame(oldItem: Album, newItem: Album): Boolean {
+            return oldItem.albumId == newItem.albumId
+        }
 
+        override fun areContentsTheSame(oldItem: Album, newItem: Album): Boolean {
+            return oldItem == newItem
+        }
+    }
 }

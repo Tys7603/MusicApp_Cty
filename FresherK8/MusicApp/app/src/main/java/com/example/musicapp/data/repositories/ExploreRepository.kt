@@ -66,8 +66,7 @@ class ExploreRepository() {
         }
     }
 
-    suspend fun getListListenAgain(userID: Int): DataResult<ArrayList<SongAgain>> {
-
+    suspend fun getListListenAgain(userID: String): DataResult<ArrayList<SongAgain>> {
         return try {
             val response = ApiClient.apiService.getListSongAgain(userID)
             if (response.body() != null && response.body()!!.status == Constant.STATUS) {

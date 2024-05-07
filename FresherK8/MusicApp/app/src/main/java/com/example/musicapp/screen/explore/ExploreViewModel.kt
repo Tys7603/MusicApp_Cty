@@ -13,8 +13,10 @@ import com.example.musicapp.data.repositories.ExploreRepository
 import com.example.musicapp.shared.base.BaseViewModel
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.utils.scheduler.DataResult
+import com.google.firebase.auth.FirebaseAuth
 
 class ExploreViewModel(private val exploreRepository: ExploreRepository) : BaseViewModel() {
+    private val user = FirebaseAuth.getInstance().currentUser
 
     private val _playlists = MutableLiveData<ArrayList<Playlist>>()
     val playlist: LiveData<ArrayList<Playlist>> = _playlists
@@ -65,7 +67,8 @@ class ExploreViewModel(private val exploreRepository: ExploreRepository) : BaseV
     }
 
     private fun checkUserLogin() {
-        _isUserLogin.value = true
+        _isUserLogin.value = user != null
+
         _isMessageSelect.value = false
         if (_isUserLogin.value == true) {
             fetchSongAgain()
@@ -92,8 +95,9 @@ class ExploreViewModel(private val exploreRepository: ExploreRepository) : BaseV
         { _categories.value = it }
     )
 
+
     private fun fetchSongAgain() = fetchDataWithSync(
-        { exploreRepository.getListListenAgain(1) },
+        { exploreRepository.getListListenAgain(user!!.uid) },
         { songs ->
             _songAgain.value = songs
             if (songs.size == 0) {
@@ -102,6 +106,7 @@ class ExploreViewModel(private val exploreRepository: ExploreRepository) : BaseV
             }
         }
     )
+
 
     private fun fetchAlbumLove() = fetchDataWithSync(
         { exploreRepository.getListAlbumLove() },

@@ -1,5 +1,6 @@
 package com.example.musicapp.screen.account.singup
 
+import android.net.Uri
 import android.util.Log
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
@@ -10,6 +11,7 @@ import com.example.musicapp.data.repositories.UserRepository
 import com.example.musicapp.shared.base.BaseViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.userProfileChangeRequest
 
 
 class SingUpViewModel(private val userRepository: UserRepository) : BaseViewModel() {
@@ -54,7 +56,7 @@ class SingUpViewModel(private val userRepository: UserRepository) : BaseViewMode
                         val user = FirebaseAuth.getInstance().currentUser
                         launchTaskSync(
                             onRequest = { userRepository.createUser(user!!.uid) },
-                            onSuccess = { _isSingUp.value = it },
+                            onSuccess = {updateProfile()},
                             onFailure = { message -> Log.e("singUp", "Failed: $message") },
                             onError = { exception.value = it }
                         )
@@ -63,6 +65,19 @@ class SingUpViewModel(private val userRepository: UserRepository) : BaseViewMode
                     }
                 }
         }
+    }
+
+    private fun updateProfile(){
+        val profileUpdates = userProfileChangeRequest {
+            photoUri = Uri.parse("https://cdn-icons-png.flaticon.com/512/1053/1053244.png")
+        }
+
+        FirebaseAuth.getInstance().currentUser!!.updateProfile(profileUpdates)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _isSingUp.value = true
+                }
+            }
     }
 
 }

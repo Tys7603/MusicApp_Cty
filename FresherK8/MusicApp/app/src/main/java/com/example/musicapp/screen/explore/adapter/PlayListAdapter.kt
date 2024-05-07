@@ -1,27 +1,17 @@
 package com.example.musicapp.screen.explore.adapter
 
-import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.databinding.ItemPlayListBinding
 import com.example.musicapp.data.model.Playlist
-import com.example.musicapp.shared.extension.loadImageUrl
-import com.example.musicapp.shared.utils.OnItemClickListener
 import kotlin.math.min
 
-class AdapterPlayList(
-    private var listPlayList: ArrayList<Playlist>,
-    private var mListener: OnItemClickListener
-) :
-    RecyclerView.Adapter<AdapterPlayList.ViewHolder>() {
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun setPlaylist(playlists: ArrayList<Playlist>) {
-        this.listPlayList = playlists
-        notifyDataSetChanged()
-    }
+class PlayListAdapter(
+    private var mListener: (Playlist) -> Unit
+) : ListAdapter<Playlist, PlayListAdapter.ViewHolder>(MovieDiffCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -30,14 +20,13 @@ class AdapterPlayList(
     }
 
     override fun getItemCount(): Int {
-        return min(listPlayList.size, 5)
+        return min(currentList.size, 5)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val playlist = listPlayList[position]
-        holder.bind(playlist)
+        holder.bind(currentList[position])
         holder.itemView.setOnClickListener {
-            mListener.onItemClick(playlist)
+            mListener.invoke(currentList[position])
         }
     }
 
@@ -48,5 +37,14 @@ class AdapterPlayList(
         }
     }
 
+    class MovieDiffCallBack : DiffUtil.ItemCallback<Playlist>() {
+        override fun areItemsTheSame(oldItem: Playlist, newItem: Playlist): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Playlist, newItem: Playlist): Boolean {
+            return oldItem == newItem
+        }
+    }
 
 }
