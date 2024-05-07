@@ -24,6 +24,7 @@ import com.example.musicapp.screen.explore.ExploreFragment
 import com.example.musicapp.screen.music.MusicFragment
 import com.example.musicapp.screen.user.UserFragment
 import com.example.musicapp.service.MusicService
+import com.example.musicapp.shared.utils.constant.Constant
 
 
 class MainActivity : AppCompatActivity() {
@@ -53,6 +54,8 @@ class MainActivity : AppCompatActivity() {
         switchFragment()
         fragmentManager(MusicFragment())
         createService()
+        switchUserIntent()
+
         if (!checkPermission(this)) {
             requestPermission(this)
         }
@@ -60,6 +63,14 @@ class MainActivity : AppCompatActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 requestNotificationPermission(this)
             }
+        }
+
+    }
+
+    private fun switchUserIntent() {
+        val checkUser = intent.getBooleanExtra(Constant.KEY_USER, false)
+        if (checkUser){
+            fragmentManager(UserFragment())
         }
     }
 

@@ -18,5 +18,14 @@
     <string name="love">Yêu thích</string>
     <string name="playlist">Thêm vào playlist</string>
     <string name="loop">Nghe lại</string>
+    <string name="email">Email</string>
+    <string name="m_t_kh_u">Mật khẩu</string>
+    <string name="qu_n_m_t_kh_u">Quên mật khẩu ?</string>
+    <string name="ng_nh_p">Đăng nhập</string>
+    <string name="nh_p_l_i_m_t_kh_u">Nhập lại mật khẩu</string>
+    <string name="ng_k">Đăng ký</string>
+    <string name="g_i">Gửi</string>
+    <string name="playlist_t_o">Playlist Đã Tạo</string>
+    <string name="playlist_y_u_th_ch">Playlist Yêu Thích</string>
 
 </resources>
