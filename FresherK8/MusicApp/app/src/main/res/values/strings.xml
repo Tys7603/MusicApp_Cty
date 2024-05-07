@@ -27,5 +27,9 @@
     <string name="g_i">Gửi</string>
     <string name="playlist_t_o">Playlist Đã Tạo</string>
     <string name="playlist_y_u_th_ch">Playlist Yêu Thích</string>
-
+    <string name="_0_b_i_h_t">0 bài hát</string>
+    <string name="song">&#160;track</string>
+    <string name="y_u_th_ch">Yêu thích</string>
+    <string name="t_i">Đã tải</string>
+    <string name="ph_t_ng_u_nhi_n">Phát ngẫu nhiên</string>
 </resources>

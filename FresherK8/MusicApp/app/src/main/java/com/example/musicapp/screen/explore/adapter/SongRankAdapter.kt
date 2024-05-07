@@ -1,20 +1,15 @@
 package com.example.musicapp.screen.explore.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.databinding.ItemSongRankBinding
 import com.example.musicapp.data.model.SongRank
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 
-class AdapterSongRank(private var songRanks: ArrayList<SongRank>) :
-    RecyclerView.Adapter<AdapterSongRank.ViewHolder>() {
-
-    fun setSongRank(songRanks: ArrayList<SongRank>) {
-        this.songRanks = songRanks
-        notifyDataSetChanged()
-    }
+class SongRankAdapter : ListAdapter<SongRank, SongRankAdapter.ViewHolder>(MovieDiffCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -22,12 +17,8 @@ class AdapterSongRank(private var songRanks: ArrayList<SongRank>) :
         return ViewHolder(binding)
     }
 
-    override fun getItemCount(): Int {
-        return songRanks.size
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(songRanks[position])
+        holder.bind(currentList[position])
     }
 
     class ViewHolder(val binding: ItemSongRankBinding) :
@@ -35,7 +26,17 @@ class AdapterSongRank(private var songRanks: ArrayList<SongRank>) :
 
         fun bind(songRank: SongRank) {
             binding.songRank = songRank
-            binding.rcvSocialRank.setAdapterLinearVertical(AdapterSubSongRank(songRank.songs))
+            binding.rcvSocialRank.setAdapterLinearVertical(SubSongRankAdapter(songRank.songs))
+        }
+    }
+
+    class MovieDiffCallBack : DiffUtil.ItemCallback<SongRank>() {
+        override fun areItemsTheSame(oldItem: SongRank, newItem: SongRank): Boolean {
+            return oldItem.rankName == newItem.rankName
+        }
+
+        override fun areContentsTheSame(oldItem: SongRank, newItem: SongRank): Boolean {
+            return oldItem == newItem
         }
     }
 

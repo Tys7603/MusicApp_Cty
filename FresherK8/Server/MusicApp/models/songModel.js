@@ -29,8 +29,36 @@ const getListSongByTopicId = async (topicId) => {
   return await queryDatabase(query, [topicId])
 }
 
+const getListSonglove = async (userId) => {
+
+  const query = "SELECT sl.song_love_id, s.song_id, s.song_name, s.song_image, s.song_url, a.name_artist " +
+    "FROM Song as s " +
+    "INNER JOIN Album as a ON s.album_id = a.album_id " +
+    "INNER JOIN Song_love as sl ON sl.song_id = s.song_id " +
+    "WHERE sl.user_id = ?"
+    
+  return await queryDatabase(query, [userId])
+}
+
+const createSongLove = async (userId, songId) => {
+
+  const query = "INSERT INTO song_love (user_id, song_id) VALUES (?, ?)"
+
+  return await queryDatabase(query, [userId, songId])
+}
+
+const deleteSongLove = async (songLoveId) => {
+
+  const query = "DELETE FROM song_love WHERE song_love_id = ?"
+
+  return await queryDatabase(query, [songLoveId])
+}
+
 module.exports = {
   getListSong,
   getListSongByPlaylistId,
-  getListSongByTopicId
+  getListSongByTopicId,
+  createSongLove,
+  deleteSongLove,
+  getListSonglove
 }

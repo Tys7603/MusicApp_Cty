@@ -1,4 +1,4 @@
-package com.example.musicapp.screen.music.base
+package com.example.musicapp.screen.base
 
 interface MusicContract {
     interface View {

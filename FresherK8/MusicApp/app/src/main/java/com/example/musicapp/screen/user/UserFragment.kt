@@ -29,10 +29,6 @@ class UserFragment : Fragment() {
         FragmentUserBinding.inflate(layoutInflater)
     }
 
-    private val songDao by lazy {
-        SongDao(requireContext())
-    }
-
     private val sharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(requireContext())
     }
@@ -47,8 +43,8 @@ class UserFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initQuantityView()
         handleEvent()
+        handleEventViewModel()
         initViewModel()
     }
 
@@ -56,6 +52,10 @@ class UserFragment : Fragment() {
         binding.userViewModel = viewModel
         binding.lifecycleOwner = this
     }
+
+    private fun handleEventViewModel() {
+    }
+
 
     private fun handleEvent() {
         binding.btnTrackDown.setOnClickListener {startActivity(Intent(requireContext(), SongDownActivity::class.java))}
@@ -65,11 +65,6 @@ class UserFragment : Fragment() {
     private fun openBottomSheetLogin() {
         val bottomSheetLogin = BottomSheetLogin()
         bottomSheetLogin.show(parentFragmentManager, bottomSheetLogin.tag)
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun initQuantityView() {
-        binding.tvQuantityTrackDown.text = songDao.readSongs().size.toString() + SONG
     }
 
     private fun initSongView(){
@@ -82,7 +77,4 @@ class UserFragment : Fragment() {
         initSongView()
     }
 
-    companion object{
-        const val SONG = " bài hát"
-    }
 }

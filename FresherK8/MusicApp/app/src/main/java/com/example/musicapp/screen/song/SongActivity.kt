@@ -21,7 +21,7 @@ import com.example.musicapp.R
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.ActivitySongBinding
-import com.example.musicapp.screen.music.base.MusicContract
+import com.example.musicapp.screen.base.MusicContract
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.utils.BooleanProperty

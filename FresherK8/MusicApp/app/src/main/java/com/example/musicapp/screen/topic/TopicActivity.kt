@@ -13,11 +13,14 @@ import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.data.model.Category
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.ActivityTopicBinding
-import com.example.musicapp.screen.topic.adapter.TopicAdapter
+import com.example.musicapp.screen.topic.adapter.TopicAdapterGrid
+import com.example.musicapp.shared.extension.setAdapterGrid
+import com.example.musicapp.shared.extension.setAdapterGridVertical
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TopicActivity : AppCompatActivity() {
     private val viewModel : TopicViewModel by viewModel()
+    private val adapter = TopicAdapterGrid()
     val binding by lazy {
         ActivityTopicBinding.inflate(layoutInflater)
     }
@@ -36,8 +39,21 @@ class TopicActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             initValue()
         }
-
+        initViewModel()
+        handleEventViewModel()
         handleEvent()
+        initRecyclerView()
+    }
+
+    private fun handleEventViewModel() {
+        viewModel.topics.observe(this){
+            adapter.submitList(it)
+        }
+    }
+
+    private fun initViewModel() {
+        binding.topicViewModel = viewModel
+        binding.lifecycleOwner = this
     }
 
     private fun handleEvent() {
@@ -54,8 +70,7 @@ class TopicActivity : AppCompatActivity() {
         category?.let { viewModel.fetchTopic(it.id) }
     }
 
-    fun onListTopicByIdCategory(topics: ArrayList<Topic>) {
-        binding.rcvCategoriesTopic.adapter = TopicAdapter(topics)
-        binding.rcvCategoriesTopic.layoutManager = GridLayoutManager(this, 2)
+    private fun initRecyclerView() {
+        binding.rcvCategoriesTopic.setAdapterGridVertical(adapter)
     }
 }

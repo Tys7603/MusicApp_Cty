@@ -22,7 +22,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.musicapp.shared.utils.di.MyApplication
 import com.example.musicapp.R
 import com.example.musicapp.screen.main.MainActivity
-import com.example.musicapp.screen.music.base.MusicContract
+import com.example.musicapp.screen.base.MusicContract
 import com.example.musicapp.shared.utils.GetValue
 import java.io.File
 

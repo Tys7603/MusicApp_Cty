@@ -16,13 +16,18 @@ import com.example.musicapp.data.model.repositories.PlaylistRepository
 import com.example.musicapp.data.model.repositories.SongRepository
 import com.example.musicapp.data.model.repositories.SongAgainRepository
 import com.example.musicapp.data.model.repositories.SongRankRepository
+import com.example.musicapp.data.model.repositories.StatusRepository
 import com.example.musicapp.data.model.repositories.TopicRepository
+import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_USER
+import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_PLAYLIST_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_TOPIC_ID
+import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_TOPIC_BY_CATEGORY_ID
 import retrofit2.Call
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -34,6 +39,7 @@ interface ApiService {
     // Playlist
     @GET(GET_PLAYLIST)
     suspend fun getListPlaylist(): Response<PlaylistRepository>
+
     @GET(GET_PLAYLIST_MODE_TODAY)
     suspend fun getListPlaylistMoodToday(): Response<PlaylistRepository>
 
@@ -49,7 +55,7 @@ interface ApiService {
 
     //song
     @GET(GET_SONG_AGAIN)
-    suspend fun getListSongAgain(@Path("userID") user: Int): Response<SongAgainRepository>
+    suspend fun getListSongAgain(@Path("userID") user: String): Response<SongAgainRepository>
 
     @GET(GET_SONG)
     suspend fun getListSong(): Response<SongRepository>
@@ -63,6 +69,18 @@ interface ApiService {
     @GET(GET_SONG_BY_TOPIC_ID)
     suspend fun getListSongTopicById(@Path("topicId") topicId: Int): Response<SongRepository>
 
+    @FormUrlEncoded
+    @POST(CREATE_SONG_LOVE)
+    suspend fun createSongLove(
+        @Field("userId") userId: String,
+        @Field("songId") songId: Int
+    ): Response<StatusRepository>
+
+    @DELETE(DELETE_SONG_LOVE)
+    suspend fun deleteSongLove(@Path("songLoveId") songLoveId: Int): Response<StatusRepository>
+
+    @GET(GET_SONG_LOVE)
+    suspend fun getListSongLove(@Path("userId") userId: String): Response<SongRepository>
     // album
     @GET(GET_ALBUM_LOVE)
     suspend fun getListAlbumLove(): Response<AlbumRepository>
@@ -73,5 +91,5 @@ interface ApiService {
     //user
     @FormUrlEncoded
     @POST(CREATE_USER)
-    suspend fun createUser(@Field("userId") userId : String): Response<User>
+    suspend fun createUser(@Field("userId") userId: String): Response<User>
 }

@@ -4,8 +4,8 @@
     <data>
 
         <variable
-            name="category"
-            type="com.example.musicapp.data.model.Category" />
+            name="topic"
+            type="com.example.musicapp.data.model.Topic" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -23,7 +23,7 @@
 
             <ImageView
                 android:id="@+id/img_categories_grid"
-                imageUrl="@{category.image}"
+                imageUrl="@{topic.image}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/song1" />
@@ -38,7 +38,7 @@
             android:ellipsize="end"
             android:fontFamily="@font/product_sans_bold"
             android:lines="1"
-            android:text="@{category.name , default = @string/loading}"
+            android:text="@{topic.name , default = @string/loading}"
             android:textSize="16sp" />
     </LinearLayout>
 </layout>

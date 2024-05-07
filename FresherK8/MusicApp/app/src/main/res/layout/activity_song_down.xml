@@ -31,7 +31,7 @@
             style="@style/TextTile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Đã tải"
+            android:text="@string/t_i"
             app:layout_constraintBottom_toBottomOf="@+id/btn_back_song_down"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Phát ngẫu nhiên"
+            android:text="@string/ph_t_ng_u_nhi_n"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView5" />
