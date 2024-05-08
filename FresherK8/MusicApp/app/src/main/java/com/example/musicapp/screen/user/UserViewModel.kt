@@ -6,8 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
-import com.example.musicapp.data.repositories.MusicRepository
-import com.example.musicapp.data.repositories.MusicRepositoryImpl
+import com.example.musicapp.data.repositories.musicRepository.MusicRepository
 import com.example.musicapp.shared.base.BaseViewModel
 import com.example.musicapp.shared.utils.scheduler.DataResult
 import com.google.firebase.auth.FirebaseAuth

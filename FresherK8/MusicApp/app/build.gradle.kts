@@ -75,5 +75,7 @@ dependencies {
     implementation ("io.insert-koin:koin-android:3.5.6")
     //noinspection UseTomlInstead
 //    kapt ("com.android.databinding:compiler:3.1.4")
+    //noinspection UseTomlInstead
+    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
 
 }

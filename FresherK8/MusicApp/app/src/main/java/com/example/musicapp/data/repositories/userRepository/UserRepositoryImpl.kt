@@ -1,11 +1,10 @@
-package com.example.musicapp.data.repositories
+package com.example.musicapp.data.repositories.userRepository
 
 import com.example.musicapp.data.source.UserDataSource
-import com.example.musicapp.data.source.remote.api.ApiClient
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.utils.scheduler.DataResult
 
-class UserRepositoryImpl (private val dataSource: UserDataSource) : UserRepository{
+class UserRepositoryImpl (private val dataSource: UserDataSource) : UserRepository {
 
     override suspend fun createUser(userId : String) : DataResult<Boolean>{
         return try {

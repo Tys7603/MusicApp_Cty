@@ -1,4 +1,4 @@
-package com.example.musicapp.data.repositories
+package com.example.musicapp.data.repositories.musicRepository
 
 import androidx.lifecycle.LiveData
 import com.example.musicapp.data.model.Song

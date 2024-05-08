@@ -22,6 +22,7 @@ import com.example.musicapp.R
 import com.example.musicapp.databinding.ActivityMainBinding
 import com.example.musicapp.screen.explore.ExploreFragment
 import com.example.musicapp.screen.music.MusicFragment
+import com.example.musicapp.screen.musicVideo.MusicVideoFragment
 import com.example.musicapp.screen.user.UserFragment
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.utils.constant.Constant
@@ -125,6 +126,11 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.explore_menu -> {
                     fragmentManager(ExploreFragment())
+                    true
+                }
+
+                R.id.mv_menu -> {
+                    fragmentManager(MusicVideoFragment())
                     true
                 }
 

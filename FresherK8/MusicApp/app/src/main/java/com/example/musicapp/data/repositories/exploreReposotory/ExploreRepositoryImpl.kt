@@ -1,4 +1,4 @@
-package com.example.musicapp.data.repositories
+package com.example.musicapp.data.repositories.exploreReposotory
 
 
 import com.example.musicapp.data.model.Album

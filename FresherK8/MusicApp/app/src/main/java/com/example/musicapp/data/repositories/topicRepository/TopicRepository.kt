@@ -1,4 +1,4 @@
-package com.example.musicapp.data.repositories
+package com.example.musicapp.data.repositories.topicRepository
 
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.shared.utils.scheduler.DataResult

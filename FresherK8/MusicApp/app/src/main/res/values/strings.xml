@@ -36,4 +36,11 @@
     <string name="t_o_playlist_m_i">Tạo playlist mới</string>
     <string name="nh_p_t_n_playlist">Nhập tên playlist</string>
     <string name="t_o_playlist">Tạo playlist</string>
+    <string name="nh_c_tr">Nhạc trẻ</string>
+    <string name="d_nh_cho_b_n">Dành cho bạn</string>
+    <string name="kh_m_ph">Khám phá</string>
+    <string name="video_nh_c">Video Nhạc</string>
+    <string name="c_a_tui">Của Tui</string>
+    <string name="sau_l_i_t_kh_c_phan_m_nh_qu_nh_official_mv_ost_phim_mai_o_di_n_tr_n_th_nh">SAU LỜI TỪ KHƯỚC - PHAN MẠNH QUỲNH | OFFICIAL MV (OST phim MAI, Đạo Diễn Trấn Thành)</string>
+    <string name="phan_m_nh_qu_nh">Phan Mạnh Quỳnh</string>
 </resources>
