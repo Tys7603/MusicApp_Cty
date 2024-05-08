@@ -47,8 +47,25 @@ const getListPlaylistMoodTodayController = async (req, res) => {
 
 }
 
+// add playlist love
+
+const createPlaylistLoveController = async (req, res) => {
+
+  try {
+    const {namePlaylist , userId} = req.body
+
+    const playlists = await model.createPlaylistLove(namePlaylist, userId)
+
+    res.json({ status: 200, playlists })
+
+  } catch (error) {
+    res.json({ status: "400",  message: error.message });
+  }
+
+}
 
 module.exports = {
   getListPlaylistController,
-  getListPlaylistMoodTodayController
+  getListPlaylistMoodTodayController,
+  createPlaylistLoveController
 }

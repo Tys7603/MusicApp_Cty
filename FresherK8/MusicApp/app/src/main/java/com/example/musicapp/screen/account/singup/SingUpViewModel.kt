@@ -2,15 +2,13 @@
 
     import android.net.Uri
     import android.util.Log
-    import androidx.databinding.BaseObservable
-    import androidx.databinding.Bindable
     import androidx.lifecycle.LiveData
     import androidx.lifecycle.MutableLiveData
-    import com.example.musicapp.BR
     import com.example.musicapp.data.repositories.UserRepository
+    import com.example.musicapp.data.repositories.UserRepositoryImpl
     import com.example.musicapp.shared.base.BaseViewModel
+    import com.example.musicapp.shared.utils.constant.Constant
     import com.google.firebase.auth.FirebaseAuth
-    import com.google.firebase.auth.FirebaseUser
     import com.google.firebase.auth.userProfileChangeRequest
 
 
@@ -71,7 +69,7 @@
 
         private fun updateProfile(){
             val profileUpdates = userProfileChangeRequest {
-                photoUri = Uri.parse("https://cdn-icons-png.flaticon.com/512/1053/1053244.png")
+                photoUri = Uri.parse(Constant.URL_IMAGE)
             }
 
             FirebaseAuth.getInstance().currentUser!!.updateProfile(profileUpdates)
