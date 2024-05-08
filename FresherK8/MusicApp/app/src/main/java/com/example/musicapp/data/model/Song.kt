@@ -6,6 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Song(
+    @SerializedName("song_love_id")
+    val songLoveId: Int,
     @SerializedName("song_id")
     val id: Int,
     @SerializedName("song_name")

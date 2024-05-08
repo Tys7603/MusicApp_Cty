@@ -18,3 +18,8 @@ fun RecyclerView.setAdapterGrid(adapter: RecyclerView.Adapter<*>) {
     this.layoutManager =  GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
     this.adapter = adapter
 }
+
+fun RecyclerView.setAdapterGridVertical(adapter: RecyclerView.Adapter<*>) {
+    this.layoutManager =  GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
+    this.adapter = adapter
+}

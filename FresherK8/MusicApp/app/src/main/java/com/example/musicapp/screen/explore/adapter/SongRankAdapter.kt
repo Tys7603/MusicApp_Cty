@@ -1,20 +1,16 @@
 package com.example.musicapp.screen.explore.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.databinding.ItemSongRankBinding
 import com.example.musicapp.data.model.SongRank
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
+import com.example.musicapp.shared.utils.GenericDiffCallback
 
-class AdapterSongRank(private var songRanks: ArrayList<SongRank>) :
-    RecyclerView.Adapter<AdapterSongRank.ViewHolder>() {
-
-    fun setSongRank(songRanks: ArrayList<SongRank>) {
-        this.songRanks = songRanks
-        notifyDataSetChanged()
-    }
+class SongRankAdapter : ListAdapter<SongRank, SongRankAdapter.ViewHolder>(GenericDiffCallback<SongRank>()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -22,21 +18,18 @@ class AdapterSongRank(private var songRanks: ArrayList<SongRank>) :
         return ViewHolder(binding)
     }
 
-    override fun getItemCount(): Int {
-        return songRanks.size
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(songRanks[position])
+        holder.bind(currentList[position])
     }
 
     class ViewHolder(val binding: ItemSongRankBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(songRank: SongRank) {
+            val adapter = SubSongRankAdapter()
             binding.songRank = songRank
-            binding.rcvSocialRank.setAdapterLinearVertical(AdapterSubSongRank(songRank.songs))
+            binding.rcvSocialRank.setAdapterLinearVertical(adapter)
+            adapter.submitList(songRank.songs)
         }
     }
-
 }

@@ -38,9 +38,48 @@ const getListSongByTopicIdController = async (req, res) => {
 
 }
 
+const getListSongLoveByUserIdController = async (req, res) => {
+
+  try {
+    const { userId } = req.params
+    const songs = await model.getListSonglove(userId)
+    res.json({ status: 200, songs })
+  } catch (error) {
+    res.json({ status: "400", error });
+  }
+
+}
+
+const createSongLoveController = async (req, res) => {
+
+  try {
+    const { userId, songId } = req.body
+    const songs = await model.createSongLove(userId, songId)
+    res.json({ status: 200, songs })
+  } catch (error) {
+    res.json({ status: "400", error });
+  }
+
+}
+
+const deleteSongLoveController = async (req, res) => {
+
+  try {
+    const { songLoveId } = req.params
+    const songs = await model.deleteSongLove(songLoveId)
+    res.json({ status: 200, songs })
+  } catch (error) {
+    res.json({ status: "400", error });
+  }
+
+}
+
 
 module.exports = {
   getListSongController,
   getListSongByPlaylistIdController,
-  getListSongByTopicIdController
+  getListSongByTopicIdController,
+  getListSongLoveByUserIdController,
+  createSongLoveController,
+  deleteSongLoveController
 }

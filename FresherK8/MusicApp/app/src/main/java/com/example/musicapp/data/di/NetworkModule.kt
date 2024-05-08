@@ -1,6 +1,6 @@
 package com.example.musicapp.data.di
 
-import com.example.musicapp.data.source.remote.ApiClient
+import com.example.musicapp.data.source.remote.api.ApiClient
 import org.koin.dsl.module
 
 val networkModule = module {

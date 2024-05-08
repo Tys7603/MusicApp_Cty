@@ -2,16 +2,16 @@ package com.example.musicapp.screen.songDetail.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.ItemSongListBinding
-import com.example.musicapp.shared.extension.loadImageUrl
-import com.example.musicapp.shared.utils.OnItemClickListener
+import com.example.musicapp.shared.utils.GenericDiffCallback
 
 class SongDetailAdapter(
-    private val songs: ArrayList<Song>,
-    private var mListener: OnItemClickListener
-) : RecyclerView.Adapter<SongDetailAdapter.ViewHolder>() {
+    private var mListener: (Song) -> Unit
+) : ListAdapter<Song, SongDetailAdapter.ViewHolder>(GenericDiffCallback<Song>()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -19,22 +19,16 @@ class SongDetailAdapter(
         return ViewHolder(binding)
     }
 
-    override fun getItemCount(): Int {
-        return songs.size
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(songs[position])
+        holder.bind(currentList[position])
         holder.itemView.setOnClickListener {
-            mListener.onItemClick(position)
+            mListener.invoke(currentList[position])
         }
     }
 
     class ViewHolder(val binding: ItemSongListBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(song: Song) {
-            binding.imgSongItem.loadImageUrl(song.image)
-            binding.tvNameSongItem.text = song.name
-            binding.tvNameArtistSongItem.text = song.nameArtis
+            binding.song = song
         }
     }
 }

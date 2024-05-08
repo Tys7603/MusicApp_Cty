@@ -2,36 +2,29 @@ package com.example.musicapp.screen.explore.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.musicapp.R
 import com.example.musicapp.databinding.ItemSongAgianBinding
 import com.example.musicapp.data.model.SongAgain
-import com.example.musicapp.shared.utils.OnItemClickListener
+import com.example.musicapp.shared.utils.GenericDiffCallback
 
-class AdapterSongAgain(
-    private var songAgain: ArrayList<SongAgain>,
-    private var mListener: OnItemClickListener
-) :
-    RecyclerView.Adapter<AdapterSongAgain.ViewHolder>() {
+class SongAgainAdapter(
+    private var mListener: (SongAgain) -> Unit
+) : ListAdapter<SongAgain, SongAgainAdapter.ViewHolder>(GenericDiffCallback<SongAgain>()) {
 
-    fun setSongAgain(songAgain : ArrayList<SongAgain>) {
-        this.songAgain = songAgain
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemSongAgianBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemSongAgianBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
-    override fun getItemCount(): Int {
-        return songAgain.size
-    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(songAgain[position])
+        holder.bind(currentList[position])
         holder.itemView.setOnClickListener {
-            mListener.onItemClick(songAgain[position])
+            mListener.invoke(currentList[position])
         }
     }
 
@@ -41,5 +34,4 @@ class AdapterSongAgain(
             binding.songAgain = songAgain
         }
     }
-
 }

@@ -17,6 +17,7 @@ class SongDao(val context: Context) {
         val cursor = sqlData.rawQuery(query, selections)
         while (cursor.moveToNext()) {
             val song = Song(
+                0,
                 cursor.getInt(cursor.getColumnIndex(SongEntryLocal.COLUMN_SONG_ID)) ,
                 cursor.getString(cursor.getColumnIndex(SongEntryLocal.COLUMN_SONG_NAME)),
                 cursor.getString(cursor.getColumnIndex(SongEntryLocal.COLUMN_SONG_IMAGE)),

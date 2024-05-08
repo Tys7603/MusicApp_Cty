@@ -21,9 +21,8 @@ import com.example.musicapp.shared.utils.constant.Constant.KEY_SONG
 import com.example.musicapp.databinding.FragmentMusicBinding
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.shared.utils.constant.Constant.KEY_PLAY_CLICK
-import com.example.musicapp.screen.music.base.MusicContract
+import com.example.musicapp.screen.base.BaseService
 import com.example.musicapp.service.MusicService
-import com.example.musicapp.shared.extension.loadDingUrl
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.utils.BooleanProperty
 import com.example.musicapp.shared.utils.DownloadMusic
@@ -33,11 +32,13 @@ import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION
 import com.example.musicapp.shared.utils.constant.Constant.KEY_SHUFFLE
 import com.example.musicapp.shared.utils.constant.Constant.VALUE_DEFAULT
 import com.example.musicapp.shared.utils.format.FormatUtils
+import com.example.musicapp.shared.widget.SnackBarManager
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class MusicFragment : Fragment(), MusicContract.View {
+class MusicFragment : Fragment(), BaseService {
 
     private val viewModel: MusicViewModel by viewModel()
 
@@ -47,9 +48,11 @@ class MusicFragment : Fragment(), MusicContract.View {
 
     private var musicService: MusicService? = null
     private var mSongs: ArrayList<Song>? = null
+    private var mSongsLove: ArrayList<Song>? = null
     private var mSongsDefault: ArrayList<Song>? = null
     private var position = 0
     private var isServiceBound = false // kiểm tra kết nối service
+
 
     private val sharedPreferences: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(requireContext())
@@ -91,20 +94,29 @@ class MusicFragment : Fragment(), MusicContract.View {
     }
 
     private fun initViewModel() {
-        viewModel.songs.observe(viewLifecycleOwner) { songs ->
-            mSongs = songs
-            mSongsDefault = songs
+        viewModel.songs.observe(viewLifecycleOwner) {
+            mSongs = it
+            mSongsDefault = it
             initValueSong()
             if (isServiceBound) {
                 initFunc()
             }
         }
-    }
 
-    private fun handlerLoading() {
-        binding.layoutMain.visibility = View.GONE
-        binding.imgLoading.visibility = View.VISIBLE
-        binding.imgLoading.loadDingUrl()
+        viewModel.songsLove.observe(viewLifecycleOwner) {
+            mSongsLove = it
+            checkSongLove()
+        }
+
+        viewModel.isAddSongLove.observe(viewLifecycleOwner){
+            if (it){
+                SnackBarManager.showMessage(binding.btnPlay, ADD_SONG_LOVE)
+                binding.btnAddLove.setImageResource(R.drawable.ic_love_red)
+            }else{
+                SnackBarManager.showMessage(binding.btnPlay, DELETE_SONG_LOVE )
+                binding.btnAddLove.setImageResource(R.drawable.ic_heart_black)
+            }
+        }
     }
 
     private fun handlerEvent() {
@@ -123,6 +135,28 @@ class MusicFragment : Fragment(), MusicContract.View {
                 }
             }
         })
+        binding.btnAddLove.setOnClickListener { checkUserLogin() }
+    }
+
+    private fun checkUserLogin(){
+        val user = FirebaseAuth.getInstance().currentUser
+        position = sharedPreferences.getInt(KEY_POSITION, 0)
+        if (user != null){
+            mSongsLove?.let { songsLoveList ->
+                val songToCheck = mSongs!![position]
+                val isSongInLoveList = isSongInList(songToCheck, songsLoveList)
+                if (isSongInLoveList) {
+                    val songLove = songsLoveList.find { it.id == songToCheck.id }
+                    songLove?.let {
+                        viewModel.deleteSongLove(it.songLoveId)
+                    }
+                } else {
+                    viewModel.addSongLove(user.uid, mSongs!![position].id)
+                }
+            }
+        }else{
+            SnackBarManager.showMessage(binding.btnPlay, NOT_LOGIN)
+        }
     }
 
     // hiển thị tên, ảnh bài hát, tên ca sĩ, bg
@@ -133,6 +167,7 @@ class MusicFragment : Fragment(), MusicContract.View {
         binding.tvNameSong.text = mSongs?.get(position)?.name
         binding.tvTotalTimeSong.text = VALUE_DEFAULT
         mSongs?.get(position)?.let { binding.imgBg.loadImageUrl(it.image) }
+
         if (isServiceBound) {
             if (!musicService?.isMediaPrepared()!!) {
                 mSongs?.get(position)?.let { musicService?.playFromUrl(it.url) }
@@ -148,6 +183,14 @@ class MusicFragment : Fragment(), MusicContract.View {
         }
         saveSong()
         initViewButton()
+    }
+
+    private fun checkSongLove(){
+        if (mSongsLove?.let { isSongInList(mSongs!![position], it) } == true){
+            binding.btnAddLove.setImageResource(R.drawable.ic_love_red)
+        }else{
+            binding.btnAddLove.setImageResource(R.drawable.ic_heart_black)
+        }
     }
 
     // kiểm tra xem nhạc có đang phát không -> hiển thị nút play, pause
@@ -196,7 +239,6 @@ class MusicFragment : Fragment(), MusicContract.View {
         if (position > mSongs!!.size - 1) {
             position = 0
         }
-        handlerLoading()
         sharedPreferences.edit().putInt(KEY_POSITION, position).apply()
         setFuncMusic()
         musicService?.setNextMusic(true)
@@ -208,7 +250,6 @@ class MusicFragment : Fragment(), MusicContract.View {
         if (position < 0) {
             position = mSongs!!.size - 1
         }
-        handlerLoading()
         sharedPreferences.edit().putInt(KEY_POSITION, position).apply()
         setFuncMusic()
     }
@@ -219,6 +260,7 @@ class MusicFragment : Fragment(), MusicContract.View {
         var isPlaySelected: Boolean by BooleanProperty(sharedPreferences, KEY_PLAY_CLICK, false)
         isPlaySelected = true
         initValueSong()
+        checkSongLove()
     }
 
     // nghe lại bài nhạc
@@ -265,7 +307,6 @@ class MusicFragment : Fragment(), MusicContract.View {
                 binding.btnLoop.setImageResource(R.drawable.ic_loop)
             }
         }
-
         sharedPreferences.edit().putBoolean(KEY_SHUFFLE, musicService!!.isShuffleMusic()).apply()
     }
 
@@ -276,8 +317,6 @@ class MusicFragment : Fragment(), MusicContract.View {
                 musicService?.let { FormatUtils.formatTime(it.getDuration()) }
             // gán max cho skbar
             binding.seekBar.max = musicService!!.getDuration()
-            binding.layoutMain.visibility = View.VISIBLE
-            binding.imgLoading.visibility = View.GONE
         }
     }
 
@@ -302,15 +341,6 @@ class MusicFragment : Fragment(), MusicContract.View {
     }
 
     private fun downloadMusic() {
-//        if (mSongs?.get(position)?.download == 0) {
-//            position = sharedPreferences.getInt(KEY_POSITION, 0)
-//            mSongs!![position].download = 1
-//
-//            Toast.makeText(requireContext(), KEY_DOWN, Toast.LENGTH_SHORT).show()
-//            // hàm update download
-//        } else {
-//            Toast.makeText(requireContext(), KEY_HAVE_DOWN, Toast.LENGTH_SHORT).show()
-//        }
         DownloadMusic.downloadMusic(requireContext(), mSongs!![position])
         Toast.makeText(requireContext(), KEY_DOWN, Toast.LENGTH_SHORT).show()
     }
@@ -328,6 +358,11 @@ class MusicFragment : Fragment(), MusicContract.View {
                 updateTimeSong()
             }
         }
+    }
+
+    // Kiểm tra xem một bài hát có nằm trong danh sách đã cho hay không
+    private fun isSongInList(song: Song, list: List<Song>): Boolean {
+        return list.any { it.id == song.id }
     }
 
     override fun onNextMusic() {
@@ -361,6 +396,12 @@ class MusicFragment : Fragment(), MusicContract.View {
         mSongs = null
         mSongsDefault = null
         musicService = null
+    }
+
+    companion object{
+        const val NOT_LOGIN = "Bạn chưa đăng nhập"
+        const val ADD_SONG_LOVE = "Đã thêm vào bài hát yêu thích"
+        const val DELETE_SONG_LOVE= "Đã xóa bài hát khỏi yêu thích"
     }
 }
 

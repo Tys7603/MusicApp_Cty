@@ -17,9 +17,8 @@ import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.ActivitySongDetailBinding
 import com.example.musicapp.shared.extension.loadImageUrl
-import com.example.musicapp.shared.utils.OnItemClickListener
 
-class SongDetailActivity : AppCompatActivity(), OnItemClickListener {
+class SongDetailActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivitySongDetailBinding.inflate(layoutInflater)
     }
@@ -84,9 +83,6 @@ class SongDetailActivity : AppCompatActivity(), OnItemClickListener {
         }
     }
 
-    override fun onItemClick(item: Any) {
-        TODO("Not yet implemented")
-    }
 
 //    @SuppressLint("SetTextI18n")
 //    override fun onListSong(songs: ArrayList<Song>) {

@@ -1,14 +1,10 @@
 package com.example.musicapp.screen.account.login
 
-import android.content.res.ColorStateList
-import android.view.View
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
-import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.musicapp.BR
-import com.example.musicapp.R
 import com.google.firebase.auth.FirebaseAuth
 
 

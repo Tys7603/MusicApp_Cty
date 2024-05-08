@@ -21,7 +21,7 @@ import com.example.musicapp.R
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.ActivitySongBinding
-import com.example.musicapp.screen.music.base.MusicContract
+import com.example.musicapp.screen.base.BaseService
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.utils.BooleanProperty
@@ -36,7 +36,7 @@ import com.example.musicapp.shared.utils.constant.Constant.VALUE_DEFAULT
 import com.example.musicapp.shared.utils.format.FormatUtils
 import com.google.gson.Gson
 
-class SongActivity : AppCompatActivity(), MusicContract.View {
+class SongActivity : AppCompatActivity(), BaseService {
 
     private val binding by lazy {
         ActivitySongBinding.inflate(layoutInflater)

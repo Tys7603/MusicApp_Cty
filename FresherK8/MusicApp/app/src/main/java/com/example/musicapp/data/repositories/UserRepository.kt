@@ -1,7 +1,6 @@
 package com.example.musicapp.data.repositories
 
-import com.example.musicapp.data.model.User
-import com.example.musicapp.data.source.remote.ApiClient
+import com.example.musicapp.data.source.remote.api.ApiClient
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.utils.scheduler.DataResult
 
