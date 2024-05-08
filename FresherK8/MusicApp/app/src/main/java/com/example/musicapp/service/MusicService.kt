@@ -22,7 +22,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.musicapp.shared.utils.di.MyApplication
 import com.example.musicapp.R
 import com.example.musicapp.screen.main.MainActivity
-import com.example.musicapp.screen.base.MusicContract
+import com.example.musicapp.screen.base.BaseService
 import com.example.musicapp.shared.utils.GetValue
 import java.io.File
 
@@ -31,7 +31,7 @@ class MusicService : Service() {
     private var mediaPlayer: MediaPlayer? = null
     private val binder: IBinder = LocalBinder()
     private var isMediaPrepared = false // Biến này để theo dõi trạng thái chuẩn bị âm thanh
-    private var mView: MusicContract.View? = null
+    private var mBaseService: BaseService? = null
 
     private var mShared: SharedPreferences? = null
     private var onCompletionListener: (() -> Unit)? = null // kết thúc bài hát
@@ -46,8 +46,8 @@ class MusicService : Service() {
         const val ACTION_BACK = "Back"
     }
 
-    fun musicService(mView: MusicContract.View) {
-        this.mView = mView
+    fun musicService(baseService: BaseService) {
+        this.mBaseService = baseService
     }
 
     fun musicShared(sharedPreferences: SharedPreferences) {
@@ -86,18 +86,18 @@ class MusicService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_PLAY -> {
-                mView?.onPlayMusic()
+                mBaseService?.onPlayMusic()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     createNotification()
                 }
             }
 
             ACTION_NEXT -> {
-                mView?.onNextMusic()
+                mBaseService?.onNextMusic()
             }
 
             ACTION_BACK -> {
-                mView?.onBackMusic()
+                mBaseService?.onBackMusic()
             }
         }
         return START_NOT_STICKY
@@ -176,7 +176,7 @@ class MusicService : Service() {
             prepareAsync()
             setOnPreparedListener {
                 isMediaPrepared = true // Đánh dấu rằng âm thanh đã được chuẩn bị
-                mView?.onMediaPrepared()
+                mBaseService?.onMediaPrepared()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     createNotification()
                 }
@@ -194,7 +194,7 @@ class MusicService : Service() {
             prepareAsync()
             setOnPreparedListener {
                 isMediaPrepared = true
-                mView?.onMediaPrepared()
+                mBaseService?.onMediaPrepared()
             }
         }
     }
@@ -275,7 +275,7 @@ class MusicService : Service() {
         }
         mediaPlayer?.release()
         mediaPlayer = null
-        mView = null
+        mBaseService = null
         mShared = null
 
         Log.d("TAG", "onDestroy: chạy")

@@ -7,11 +7,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.databinding.ItemPlayListBinding
 import com.example.musicapp.data.model.Playlist
+import com.example.musicapp.shared.utils.GenericDiffCallback
 import kotlin.math.min
 
 class PlayListAdapter(
     private var mListener: (Playlist) -> Unit
-) : ListAdapter<Playlist, PlayListAdapter.ViewHolder>(MovieDiffCallBack()) {
+) : ListAdapter<Playlist, PlayListAdapter.ViewHolder>(GenericDiffCallback<Playlist>()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -36,15 +37,4 @@ class PlayListAdapter(
             binding.playlist = playlist
         }
     }
-
-    class MovieDiffCallBack : DiffUtil.ItemCallback<Playlist>() {
-        override fun areItemsTheSame(oldItem: Playlist, newItem: Playlist): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItem: Playlist, newItem: Playlist): Boolean {
-            return oldItem == newItem
-        }
-    }
-
 }

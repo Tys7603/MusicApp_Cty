@@ -1,4 +1,4 @@
-package com.example.musicapp.data.source.remote
+package com.example.musicapp.data.source.remote.api
 
 import com.example.musicapp.data.model.User
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_ALBUM_LOVE
@@ -16,7 +16,7 @@ import com.example.musicapp.data.model.repositories.PlaylistRepository
 import com.example.musicapp.data.model.repositories.SongRepository
 import com.example.musicapp.data.model.repositories.SongAgainRepository
 import com.example.musicapp.data.model.repositories.SongRankRepository
-import com.example.musicapp.data.model.repositories.StatusRepository
+import com.example.musicapp.data.model.Status
 import com.example.musicapp.data.model.repositories.TopicRepository
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_USER
@@ -25,7 +25,6 @@ import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_PLAYLIS
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_TOPIC_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_TOPIC_BY_CATEGORY_ID
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.DELETE
 import retrofit2.http.Field
@@ -74,10 +73,10 @@ interface ApiService {
     suspend fun createSongLove(
         @Field("userId") userId: String,
         @Field("songId") songId: Int
-    ): Response<StatusRepository>
+    ): Response<Status>
 
     @DELETE(DELETE_SONG_LOVE)
-    suspend fun deleteSongLove(@Path("songLoveId") songLoveId: Int): Response<StatusRepository>
+    suspend fun deleteSongLove(@Path("songLoveId") songLoveId: Int): Response<Status>
 
     @GET(GET_SONG_LOVE)
     suspend fun getListSongLove(@Path("userId") userId: String): Response<SongRepository>

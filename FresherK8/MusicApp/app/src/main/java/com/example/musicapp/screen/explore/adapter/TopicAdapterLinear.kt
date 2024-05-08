@@ -7,11 +7,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.databinding.ItemTopicBinding
 import com.example.musicapp.data.model.Topic
+import com.example.musicapp.shared.utils.GenericDiffCallback
 import kotlin.math.min
 
 class TopicAdapterLinear(
     private var mListener: (Topic) -> Unit
-) : ListAdapter<Topic, TopicAdapterLinear.ViewHolder>(MovieDiffCallBack())  {
+) : ListAdapter<Topic, TopicAdapterLinear.ViewHolder>(GenericDiffCallback<Topic>())  {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemTopicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -31,15 +32,6 @@ class TopicAdapterLinear(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(topic: Topic) {
             binding.topic = topic
-        }
-    }
-    class MovieDiffCallBack : DiffUtil.ItemCallback<Topic>() {
-        override fun areItemsTheSame(oldItem: Topic, newItem: Topic): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItem: Topic, newItem: Topic): Boolean {
-            return oldItem == newItem
         }
     }
 }

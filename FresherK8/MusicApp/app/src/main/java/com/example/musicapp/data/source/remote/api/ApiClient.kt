@@ -1,4 +1,4 @@
-package com.example.musicapp.data.source.remote
+package com.example.musicapp.data.source.remote.api
 
 import com.example.musicapp.shared.utils.constant.ManagerUrl
 import retrofit2.Retrofit
