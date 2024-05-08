@@ -13,11 +13,16 @@ import com.bumptech.glide.Glide
 import com.example.musicapp.R
 import com.example.musicapp.data.source.local.dao.SongDao
 import com.example.musicapp.databinding.FragmentUserBinding
+import com.example.musicapp.screen.account.adapter.AccountPageAdapter
 import com.example.musicapp.screen.songDown.SongDownActivity
 import com.example.musicapp.screen.user.adapter.BottomSheetLogin
+import com.example.musicapp.screen.user.adapter.PlaylistPageAdapter
 import com.example.musicapp.shared.utils.GetValue
+import com.example.musicapp.shared.utils.constant.Constant
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -46,6 +51,7 @@ class UserFragment : Fragment() {
         handleEvent()
         handleEventViewModel()
         initViewModel()
+        initTabLayout()
     }
 
     private fun initViewModel() {
@@ -65,6 +71,19 @@ class UserFragment : Fragment() {
     private fun openBottomSheetLogin() {
         val bottomSheetLogin = BottomSheetLogin()
         bottomSheetLogin.show(parentFragmentManager, bottomSheetLogin.tag)
+    }
+
+    private fun initTabLayout() {
+        val pagerAdapter = PlaylistPageAdapter(requireActivity())
+        binding.viewPagerUser.setAdapter(pagerAdapter)
+        TabLayoutMediator(
+            binding.tabLayoutUser, binding.viewPagerUser
+        ) { tab: TabLayout.Tab, position: Int ->
+            when (position) {
+                0 -> tab.setText(Constant.PLAYLIST_USER)
+                1 -> tab.setText(Constant.PLAYLIST_LOVE)
+            }
+        }.attach()
     }
 
     private fun initSongView(){

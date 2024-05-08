@@ -4,6 +4,7 @@ object Constant {
     const val STATUS = 200
     const val TAG_ERROR = "Error"
     const val SONG_COMPLETED = "song_completed"
+    const val URL_IMAGE = "https://cdn-icons-png.flaticon.com/512/1053/1053244.png"
     const val KEY_SONG = "song"
     const val KEY_USER = "start_user"
     const val KEY_INTENT_ITEM = "item"
@@ -22,6 +23,8 @@ object Constant {
     const val ACCESS_RULES = "Bạn chưa đồng ý điều khoản của chúng tôi"
     const val LOGIN = "Đăng nhập"
     const val SING_UP = "Đăng ký"
+    const val PLAYLIST_USER = "Playlist đã tạo"
+    const val PLAYLIST_LOVE = "Playlist yêu thích"
     const val LOGIN_FAILURE = "Đăng nhập thất bại"
     const val SING_UP_FAILURE = "Đăng ký thất bại"
     const val SING_UP_SUCCESS= "Đăng ký thành công"

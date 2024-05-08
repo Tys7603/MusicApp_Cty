@@ -22,7 +22,19 @@ const getListPlaylistMoodToday = async () => {
   return await queryDatabase(query)
 }
 
+// add playlist love
+
+const createPlaylistLove= async (namePlaylist, userId) => {
+
+  const query ="INSERT INTO playlist_user(playlist_user_name, user_id) VALUES (?,?)" 
+
+  return await queryDatabase(query, [namePlaylist, userId])
+}
+
+
+
 module.exports = {
   getListPlaylist,
   getListPlaylistMoodToday,
+  createPlaylistLove
 }

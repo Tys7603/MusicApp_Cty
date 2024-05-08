@@ -1,14 +1,12 @@
 package com.example.musicapp.screen.music
 
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.repositories.MusicRepository
+import com.example.musicapp.data.repositories.MusicRepositoryImpl
 import com.example.musicapp.shared.base.BaseViewModel
-import com.example.musicapp.shared.utils.constant.Constant
 import com.google.firebase.auth.FirebaseAuth
 
 class MusicViewModel(private val musicRepository: MusicRepository) : BaseViewModel() {

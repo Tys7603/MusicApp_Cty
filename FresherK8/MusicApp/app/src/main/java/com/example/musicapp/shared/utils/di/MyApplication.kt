@@ -20,7 +20,7 @@ class MyApplication : Application() {
         super.onCreate()
         createNotification()
 
-        val modules = listOf(viewModelModule, networkModule, repositoryModule, networkModule, dataSourceModule)
+        val modules = listOf(repositoryModule,dataSourceModule, networkModule , viewModelModule)
 
         startKoin {
             androidLogger()

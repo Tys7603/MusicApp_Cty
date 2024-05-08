@@ -14,7 +14,18 @@
         android:layout_height="match_parent"
         tools:context=".screen.user.UserFragment" >
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/blue_mix"
+            android:foreground="@drawable/gradient_overlay"
+            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout_user"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -33,9 +44,10 @@
                 android:text="@string/playlist_y_u_th_ch" />
         </com.google.android.material.tabs.TabLayout>
 
+
         <ImageView
             android:id="@+id/imageView19"
-            imageUrl="@{userViewModel.image}"
+            imageUrl="@{userViewModel.isLogin() ? userViewModel.image : @string/url}"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginStart="8dp"
@@ -74,10 +86,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
+            android:visibility="@{userViewModel.isLogin() ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@+id/imageView19"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/imageView19"
-            android:visibility="@{userViewModel.isLogin() ? View.VISIBLE : View.GONE}"
             app:srcCompat="@drawable/baseline_manage_accounts_24" />
 
         <LinearLayout
@@ -96,7 +108,7 @@
                 android:id="@+id/btn_track_down"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_song_dow_user"
                 android:padding="10dp">
@@ -135,7 +147,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_song_dow_user">
 
@@ -221,13 +233,22 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager_user"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/include_layout1"
+            app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
+            app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
+            app:layout_constraintTop_toBottomOf="@+id/tab_layout_user" />
+
         <include
             android:id="@+id/include_layout1"
             layout="@layout/layout_bottom_sheet_song"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
