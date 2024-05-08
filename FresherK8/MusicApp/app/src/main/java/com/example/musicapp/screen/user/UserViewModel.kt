@@ -43,7 +43,6 @@ class UserViewModel (private val musicRepository: MusicRepository) : BaseViewMod
             _userName.value = user.email
             _image.value = user.photoUrl.toString()
             _isLogin.value = true
-            Log.d("TAG", "initValueUser: " + user.photoUrl)
         }
     }
 

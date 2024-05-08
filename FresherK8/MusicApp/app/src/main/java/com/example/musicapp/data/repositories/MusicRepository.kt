@@ -3,12 +3,13 @@ package com.example.musicapp.data.repositories
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.data.source.local.dao.SongDao
-import com.example.musicapp.data.source.remote.ApiClient
+import com.example.musicapp.data.source.remote.api.ApiClient
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.utils.scheduler.DataResult
 
 
 class MusicRepository(private val songDao: SongDao) {
+
     suspend fun getListSong(): DataResult<ArrayList<Song>> {
         return try {
             val response = ApiClient.apiService.getListSong()

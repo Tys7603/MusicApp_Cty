@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.ItemCategoriesGridBinding
 import com.example.musicapp.shared.extension.loadImageUrl
+import com.example.musicapp.shared.utils.GenericDiffCallback
 
-class TopicAdapterGrid : ListAdapter<Topic, TopicAdapterGrid.ViewHolder>(MovieDiffCallBack()) {
+class TopicAdapterGrid : ListAdapter<Topic, TopicAdapterGrid.ViewHolder>(GenericDiffCallback<Topic>()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -26,16 +27,6 @@ class TopicAdapterGrid : ListAdapter<Topic, TopicAdapterGrid.ViewHolder>(MovieDi
         RecyclerView.ViewHolder(binding.root) {
         fun bind(topic: Topic) {
             binding.topic = topic
-        }
-    }
-
-    class MovieDiffCallBack : DiffUtil.ItemCallback<Topic>() {
-        override fun areItemsTheSame(oldItem: Topic, newItem: Topic): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItem: Topic, newItem: Topic): Boolean {
-            return oldItem == newItem
         }
     }
 }

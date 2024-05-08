@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
 import androidx.preference.PreferenceManager
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -22,7 +21,7 @@ import com.example.musicapp.shared.utils.constant.Constant.KEY_SONG
 import com.example.musicapp.databinding.FragmentMusicBinding
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.shared.utils.constant.Constant.KEY_PLAY_CLICK
-import com.example.musicapp.screen.base.MusicContract
+import com.example.musicapp.screen.base.BaseService
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.utils.BooleanProperty
@@ -39,7 +38,7 @@ import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class MusicFragment : Fragment(), MusicContract.View {
+class MusicFragment : Fragment(), BaseService {
 
     private val viewModel: MusicViewModel by viewModel()
 
@@ -107,7 +106,6 @@ class MusicFragment : Fragment(), MusicContract.View {
         viewModel.songsLove.observe(viewLifecycleOwner) {
             mSongsLove = it
             checkSongLove()
-            Log.d("TAG", "initViewModel: " + it.toString())
         }
 
         viewModel.isAddSongLove.observe(viewLifecycleOwner){

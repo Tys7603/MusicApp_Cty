@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
+import com.example.musicapp.data.di.dataSourceModule
 import com.example.musicapp.data.di.networkModule
 import com.example.musicapp.data.di.repositoryModule
 import org.koin.android.ext.koin.androidContext
@@ -19,7 +20,7 @@ class MyApplication : Application() {
         super.onCreate()
         createNotification()
 
-        val modules = listOf(viewModelModule, networkModule, repositoryModule, networkModule)
+        val modules = listOf(viewModelModule, networkModule, repositoryModule, networkModule, dataSourceModule)
 
         startKoin {
             androidLogger()

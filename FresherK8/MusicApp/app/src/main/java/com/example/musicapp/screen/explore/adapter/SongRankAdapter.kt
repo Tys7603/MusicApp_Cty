@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.databinding.ItemSongRankBinding
 import com.example.musicapp.data.model.SongRank
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
+import com.example.musicapp.shared.utils.GenericDiffCallback
 
-class SongRankAdapter : ListAdapter<SongRank, SongRankAdapter.ViewHolder>(MovieDiffCallBack()) {
+class SongRankAdapter : ListAdapter<SongRank, SongRankAdapter.ViewHolder>(GenericDiffCallback<SongRank>()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -25,19 +26,10 @@ class SongRankAdapter : ListAdapter<SongRank, SongRankAdapter.ViewHolder>(MovieD
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(songRank: SongRank) {
+            val adapter = SubSongRankAdapter()
             binding.songRank = songRank
-            binding.rcvSocialRank.setAdapterLinearVertical(SubSongRankAdapter(songRank.songs))
+            binding.rcvSocialRank.setAdapterLinearVertical(adapter)
+            adapter.submitList(songRank.songs)
         }
     }
-
-    class MovieDiffCallBack : DiffUtil.ItemCallback<SongRank>() {
-        override fun areItemsTheSame(oldItem: SongRank, newItem: SongRank): Boolean {
-            return oldItem.rankName == newItem.rankName
-        }
-
-        override fun areContentsTheSame(oldItem: SongRank, newItem: SongRank): Boolean {
-            return oldItem == newItem
-        }
-    }
-
 }
