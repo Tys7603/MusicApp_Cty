@@ -8,8 +8,6 @@ import com.example.musicapp.data.model.MusicVideo
 import com.example.musicapp.databinding.ItemMvBinding
 import com.example.musicapp.shared.utils.GenericDiffCallback
 
-
-
 class MusicVideoAdapter(
     private val mListener: (MusicVideo) -> Unit,
 ) : ListAdapter<MusicVideo, MusicVideoAdapter.ViewHolder>(GenericDiffCallback<MusicVideo>()) {

@@ -1,7 +1,5 @@
 package com.example.musicapp.screen.musicVideo.adapter
 
-import android.annotation.SuppressLint
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -11,7 +9,6 @@ import com.example.musicapp.R
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.ItemTopicMvBinding
 import com.example.musicapp.shared.utils.GenericDiffCallback
-
 
 class TopicMVAdapter(
     private val mListener: (Topic) -> Unit
@@ -25,46 +22,56 @@ class TopicMVAdapter(
         return ViewHolder(binding)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(currentList[position])
-
-        holder.itemView.setOnClickListener {
-            mListener.invoke(currentList[position])
-            val previouslySelectedItem = selectedItem
-            selectedItem = holder.adapterPosition;
-            notifyItemChanged(previouslySelectedItem)
-            notifyItemChanged(selectedItem)
-        }
-        selectItemPosition(holder, position)
-
+        holder.bind(currentList[position], selectedItem == position)
     }
 
-    private fun selectItemPosition(holder: ViewHolder, position: Int) {
+    private fun selectItemPosition(
+        binding: ItemTopicMvBinding,
+        isSelected: Boolean,
+        position: Int
+    ) {
         // background color
-        holder.binding.layoutTopicMv.setBackgroundResource(
-            if (position == selectedItem) {
+        binding.layoutTopicMv.setBackgroundResource(
+            if (isSelected) {
                 if (position == 1) {
                     R.drawable.bg_select_mix
                 } else R.drawable.bg_select_topic_mv
-
-            } else if (position == 1){
+            } else if (position == 1) {
                 R.drawable.bg_stroke_mix
-            }  else R.drawable.bg_no_select_topic_mv
+            } else R.drawable.bg_no_select_topic_mv
         )
         // text color
-        holder.binding.tvTopicMv.setTextColor(
+        binding.tvTopicMv.setTextColor(
             ContextCompat.getColor(
-                holder.binding.root.context,
-                if (position == selectedItem) R.color.white else R.color.black
+                binding.root.context,
+                if (isSelected) R.color.white else R.color.black
             )
         )
     }
 
-    class ViewHolder(val binding: ItemTopicMvBinding) :
+    inner class ViewHolder(val binding: ItemTopicMvBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(topic: Topic) {
+
+        init {
+            binding.root.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    mListener.invoke(currentList[position])
+
+                    val previouslySelectedItem = selectedItem
+                    selectedItem = adapterPosition
+
+                    notifyItemChanged(previouslySelectedItem)
+                    notifyItemChanged(selectedItem)
+                }
+            }
+        }
+
+        fun bind(topic: Topic, isSelected: Boolean) {
             binding.topic = topic
+            binding.root.isSelected = isSelected
+            selectItemPosition(binding, isSelected, adapterPosition)
         }
     }
 }
