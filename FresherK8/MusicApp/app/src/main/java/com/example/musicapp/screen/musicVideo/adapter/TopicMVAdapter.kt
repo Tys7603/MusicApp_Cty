@@ -53,11 +53,14 @@ class TopicMVAdapter(
     inner class ViewHolder(val binding: ItemTopicMvBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        init {
+        fun bind(topic: Topic, isSelected: Boolean) {
+            binding.topic = topic
+            binding.root.isSelected = isSelected
+
             binding.root.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    mListener.invoke(currentList[position])
+                    mListener.invoke(topic)
 
                     val previouslySelectedItem = selectedItem
                     selectedItem = adapterPosition
@@ -66,11 +69,6 @@ class TopicMVAdapter(
                     notifyItemChanged(selectedItem)
                 }
             }
-        }
-
-        fun bind(topic: Topic, isSelected: Boolean) {
-            binding.topic = topic
-            binding.root.isSelected = isSelected
             selectItemPosition(binding, isSelected, adapterPosition)
         }
     }
