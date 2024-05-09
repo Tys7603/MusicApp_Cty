@@ -16,6 +16,15 @@ fun ImageView.loadImageUrl(url : String){
         .into(this)
 }
 
+@BindingAdapter("imageUrlMV")
+fun ImageView.loadImageMVUrl(url : String){
+    Glide.with(context)
+        .load(url)
+        .centerCrop()
+        .placeholder(R.drawable.img_placeholder_mv)
+        .into(this)
+}
+
 @BindingAdapter("imageUri")
 fun ImageView.loadImageUrlUser(uri : Uri){
     Glide.with(context)

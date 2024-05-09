@@ -29,4 +29,7 @@ object ManagerUrl {
     //user
     const val CREATE_USER = "user"
 
+    // music video
+    const val GET_MUSIC_VIDEO = "musics/video"
+
 }

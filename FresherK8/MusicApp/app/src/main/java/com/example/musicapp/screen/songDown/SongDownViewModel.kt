@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.musicapp.data.model.Song
-import com.example.musicapp.data.repositories.MusicRepositoryImpl
+import com.example.musicapp.data.repositories.musicRepository.MusicRepositoryImpl
 import com.example.musicapp.shared.base.BaseViewModel
 import kotlinx.coroutines.launch
 

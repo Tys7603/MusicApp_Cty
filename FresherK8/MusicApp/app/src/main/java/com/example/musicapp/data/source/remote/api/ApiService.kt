@@ -17,10 +17,12 @@ import com.example.musicapp.data.model.reponse.SongRepository
 import com.example.musicapp.data.model.reponse.SongAgainRepository
 import com.example.musicapp.data.model.reponse.SongRankRepository
 import com.example.musicapp.data.model.Status
+import com.example.musicapp.data.model.reponse.MusicVideoRepository
 import com.example.musicapp.data.model.reponse.TopicRepository
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_SONG_LOVE
+import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_PLAYLIST_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_TOPIC_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_LOVE
@@ -91,4 +93,9 @@ interface ApiService {
     @FormUrlEncoded
     @POST(CREATE_USER)
     suspend fun createUser(@Field("userId") userId: String): Response<User>
+
+    // music video
+    @GET(GET_MUSIC_VIDEO)
+    suspend fun getListMusicVideo(): Response<MusicVideoRepository>
+
 }

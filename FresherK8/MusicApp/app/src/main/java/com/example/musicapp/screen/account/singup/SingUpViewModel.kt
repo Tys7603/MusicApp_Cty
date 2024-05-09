@@ -4,8 +4,7 @@
     import android.util.Log
     import androidx.lifecycle.LiveData
     import androidx.lifecycle.MutableLiveData
-    import com.example.musicapp.data.repositories.UserRepository
-    import com.example.musicapp.data.repositories.UserRepositoryImpl
+    import com.example.musicapp.data.repositories.userRepository.UserRepository
     import com.example.musicapp.shared.base.BaseViewModel
     import com.example.musicapp.shared.utils.constant.Constant
     import com.google.firebase.auth.FirebaseAuth

@@ -1,4 +1,4 @@
-package com.example.musicapp.data.repositories
+package com.example.musicapp.data.repositories.userRepository
 
 import com.example.musicapp.data.source.remote.api.ApiClient
 import com.example.musicapp.shared.utils.constant.Constant
