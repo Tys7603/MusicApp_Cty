@@ -28,6 +28,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".screen.musicVideoDetail.MusicVideoDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".screen.account.forgotPassword.ForgotPasswordActivity"
             android:exported="false" />
         <activity

@@ -9,5 +9,5 @@ import retrofit2.Response
 class MusicVideoRemoteImpl : MusicVideoDataSource {
     override suspend fun getListMusicVideo() = ApiClient.apiService.getListMusicVideo()
 
-    override suspend fun getListCategory() = ApiClient.apiService.getListCategory()
+    override suspend fun getListTopic() = ApiClient.apiService.getListTopic()
 }

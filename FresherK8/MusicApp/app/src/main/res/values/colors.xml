@@ -12,4 +12,8 @@
     <color name="orange">#FFF7F1</color>
     <color name="blue">#005ADC</color>
     <color name="main">#F5F5F5</color>
+    <color name="yellow_mix">#FF8C00</color>
+    <color name="green_mix">#40E0D0</color>
+    <color name="pink_mix">#FF0080</color>
+    <color name="red">#dd1818</color>
 </resources>

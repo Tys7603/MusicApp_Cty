@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.musicapp.data.model.Category
 import com.example.musicapp.data.model.MusicVideo
+import com.example.musicapp.data.model.Topic
 import com.example.musicapp.data.repositories.musicVideoRepository.MusicVideoRepository
 import com.example.musicapp.shared.base.BaseViewModel
 
@@ -12,8 +13,8 @@ class MusicVideoViewModel (private val musicVideoRepository: MusicVideoRepositor
     private val _musicVideos = MutableLiveData<ArrayList<MusicVideo>>()
     val musicVideos: LiveData<ArrayList<MusicVideo>> = _musicVideos
 
-    private val _categories = MutableLiveData<ArrayList<Category>>()
-    val categories: LiveData<ArrayList<Category>> = _categories
+    private val _topics = MutableLiveData<ArrayList<Topic>>()
+    val topics: LiveData<ArrayList<Topic>> = _topics
 
     init {
         fetchData()
@@ -35,8 +36,8 @@ class MusicVideoViewModel (private val musicVideoRepository: MusicVideoRepositor
 
     private fun fetchCategory() {
         launchTaskSync(
-            onRequest = { musicVideoRepository.getListCategory() },
-            onSuccess = { _categories.value = it },
+            onRequest = { musicVideoRepository.getListTopic() },
+            onSuccess = { _topics.value = it },
             onFailure = { Log.e("fetchCategory", "Failed: $it") },
             onError = { exception.value = it }
         )
