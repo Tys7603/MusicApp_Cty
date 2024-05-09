@@ -1,9 +1,8 @@
 package com.example.musicapp.screen.musicVideoDetail
 
-import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -14,15 +13,19 @@ import com.example.musicapp.screen.musicVideo.MusicVideoViewModel
 import com.example.musicapp.screen.musicVideo.adapter.MusicVideoAdapter
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.constant.Constant
+import com.example.musicapp.shared.widget.CustomPlayerUiController
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerCallback
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.loadOrCueVideo
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
 
 class MusicVideoDetailActivity : AppCompatActivity() {
     private val viewModel: MusicVideoViewModel by viewModel()
     private val musicVideoAdapter = MusicVideoAdapter(::onClickItem)
-    private var mMusicVideo : MusicVideo? = null
+    private var mMusicVideo: MusicVideo? = null
     private val binding by lazy {
         ActivityMusicVideoDetailBinding.inflate(layoutInflater)
     }
@@ -37,19 +40,16 @@ class MusicVideoDetailActivity : AppCompatActivity() {
             insets
         }
 
-//        initViewModel()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            getBundlerValue()
-        }
-//        initRecyclerView()
-//        handlerEventViewModel()
+        initViewModel()
+        getBundlerValue()
+        initRecyclerView()
+        handlerEventViewModel()
         initPlayerYoutube()
+
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun getBundlerValue() {
-        val bundle = intent.getBundleExtra(Constant.KEY_BUNDLE_ITEM)
-        val musicVideo = bundle?.getParcelable(Constant.KEY_INTENT_ITEM, MusicVideo::class.java)
+        val musicVideo = intent.getParcelableExtra<MusicVideo>(Constant.KEY_INTENT_ITEM)
         binding.musicVideo = musicVideo
         mMusicVideo = musicVideo
     }
@@ -71,19 +71,56 @@ class MusicVideoDetailActivity : AppCompatActivity() {
     }
 
     private fun initPlayerYoutube() {
-        binding.youtubePlayerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+        val customPlayerUi: View =
+            binding.youtubePlayerView.inflateCustomPlayerUi(R.layout.layout_controller_music_video)
+
+        val listener: YouTubePlayerListener = object : AbstractYouTubePlayerListener() {
             override fun onReady(youTubePlayer: YouTubePlayer) {
-                mMusicVideo?.let { youTubePlayer.loadVideo(it.musicVideoId, 0f) }
+                val customPlayerUiController = CustomPlayerUiController(
+                    customPlayerUi,
+                    youTubePlayer,
+                    binding.youtubePlayerView
+                )
+                youTubePlayer.addListener(customPlayerUiController)
+                mMusicVideo?.let {
+                    youTubePlayer.loadOrCueVideo(
+                        lifecycle,
+                        mMusicVideo!!.musicVideoId,
+                        0F
+                    )
+                }
+            }
+        }
+
+        val options = IFramePlayerOptions
+            .Builder()
+            .controls(0)
+            .ivLoadPolicy(3)
+            .fullscreen(1)
+            .build()
+        binding.youtubePlayerView.initialize(listener, options)
+    }
+
+    private fun onClickItem(musicVideo: MusicVideo) {
+        binding.musicVideo = musicVideo
+
+        binding.youtubePlayerView.getYouTubePlayerWhenReady(object : YouTubePlayerCallback {
+            override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
+                youTubePlayer.pause()
+                mMusicVideo?.let {
+                    youTubePlayer.loadOrCueVideo(
+                        lifecycle,
+                        musicVideo.musicVideoId,
+                        0F
+                    )
+                }
             }
         })
     }
 
-    private fun onClickItem(musicVideo: MusicVideo) {
-
-    }
-
     override fun onDestroy() {
         super.onDestroy()
+        binding.youtubePlayerView.release()
         mMusicVideo = null
     }
 }

@@ -78,6 +78,8 @@ dependencies {
     //noinspection UseTomlInstead
     implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
     //noinspection UseTomlInstead
+    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:custom-ui:12.1.0")
+    //noinspection UseTomlInstead
     implementation ("com.makeramen:roundedimageview:2.3.0")
 
 }

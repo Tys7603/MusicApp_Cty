@@ -2,6 +2,7 @@ package com.example.musicapp.screen.musicVideo
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -87,10 +88,7 @@ class MusicVideoFragment : Fragment() {
 
             is MusicVideo -> {
                 val intent = Intent(requireContext(), MusicVideoDetailActivity::class.java)
-                val bundle = Bundle().apply {
-                    putParcelable(Constant.KEY_INTENT_ITEM, item)
-                }
-                intent.putExtra(Constant.KEY_BUNDLE_ITEM, bundle)
+                intent.putExtra(Constant.KEY_INTENT_ITEM, item)
                 startActivity(intent)
             }
         }

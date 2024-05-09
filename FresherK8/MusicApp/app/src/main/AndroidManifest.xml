@@ -28,6 +28,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31" >
         <activity
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
             android:name=".screen.musicVideoDetail.MusicVideoDetailActivity"
             android:exported="false" />
         <activity
