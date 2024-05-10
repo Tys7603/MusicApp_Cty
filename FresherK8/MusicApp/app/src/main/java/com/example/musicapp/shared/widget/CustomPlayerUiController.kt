@@ -21,8 +21,7 @@ class CustomPlayerUiController(
     private val youTubePlayer: YouTubePlayer,
     private val youTubePlayerView: YouTubePlayerView,
     private val mListener: (Constant.ClickControllerPlayerUi) -> Unit
-) :
-    AbstractYouTubePlayerListener() {
+) : AbstractYouTubePlayerListener() {
     private val playerTracker: YouTubePlayerTracker = YouTubePlayerTracker()
     private var isFullScreen = false
 
