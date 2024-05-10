@@ -11,8 +11,10 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
         <ImageView
             android:id="@+id/btn_pause_play_controller"
@@ -43,6 +45,39 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/btn_seekBar" />
+
+        <ImageView
+            android:id="@+id/btn_back_music_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_pause_play_controller"
+            app:layout_constraintEnd_toStartOf="@+id/btn_pause_play_controller"
+            app:layout_constraintTop_toTopOf="@+id/btn_pause_play_controller"
+            app:srcCompat="@drawable/ic_skip_back"
+            app:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/btn_next_music_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_pause_play_controller"
+            app:layout_constraintStart_toEndOf="@+id/btn_pause_play_controller"
+            app:layout_constraintTop_toTopOf="@+id/btn_pause_play_controller"
+            app:srcCompat="@drawable/ic_skip_next"
+            app:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/btn_on_back_music_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:tint="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_back" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

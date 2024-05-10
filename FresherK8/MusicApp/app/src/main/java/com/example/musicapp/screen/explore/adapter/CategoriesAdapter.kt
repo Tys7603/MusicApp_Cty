@@ -26,13 +26,15 @@ class CategoriesAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(currentList[position])
-        holder.itemView.setOnClickListener { mListener.invoke(currentList[position]) }
     }
 
-    class ViewHolder(private val binding: ItemCategoryBinding) :
+    inner class ViewHolder(private val binding: ItemCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(category: Category) {
             binding.category = category
+            binding.root.setOnClickListener {
+                mListener.invoke(category)
+            }
         }
     }
 }

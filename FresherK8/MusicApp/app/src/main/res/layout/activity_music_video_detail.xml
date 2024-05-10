@@ -54,13 +54,14 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
+
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/imageView13"
                             imageUrl="@{musicVideo.artistImage}"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_marginStart="16dp"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="8dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView16"
                             tools:src="@tools:sample/avatars" />
@@ -117,11 +118,11 @@
 
                         <TextView
                             android:id="@+id/textView27"
+                            style="@style/TextTile"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="32dp"
+                            android:layout_marginTop="16dp"
                             android:text="@string/xem_ti_p"
-                            style="@style/TextTile"
                             app:layout_constraintStart_toStartOf="@+id/imageView13"
                             app:layout_constraintTop_toBottomOf="@+id/imageView13" />
 

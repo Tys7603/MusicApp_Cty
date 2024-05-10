@@ -14,6 +14,7 @@ import com.example.musicapp.screen.musicVideo.adapter.MusicVideoAdapter
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.widget.CustomPlayerUiController
+import com.example.musicapp.shared.widget.SnackBarManager
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerCallback
@@ -26,6 +27,9 @@ class MusicVideoDetailActivity : AppCompatActivity() {
     private val viewModel: MusicVideoViewModel by viewModel()
     private val musicVideoAdapter = MusicVideoAdapter(::onClickItem)
     private var mMusicVideo: MusicVideo? = null
+    private var mMusicVideosDefault: ArrayList<MusicVideo>? = null
+    private var mMusicVideosSublist: ArrayList<MusicVideo>? = null
+    private var positionMusicVideo = -1
     private val binding by lazy {
         ActivityMusicVideoDetailBinding.inflate(layoutInflater)
     }
@@ -49,9 +53,10 @@ class MusicVideoDetailActivity : AppCompatActivity() {
     }
 
     private fun getBundlerValue() {
-        val musicVideo = intent.getParcelableExtra<MusicVideo>(Constant.KEY_INTENT_ITEM)
-        binding.musicVideo = musicVideo
-        mMusicVideo = musicVideo
+        intent.getParcelableExtra<MusicVideo>(Constant.KEY_INTENT_ITEM)?.let {
+            binding.musicVideo = it
+            mMusicVideo = it
+        }
     }
 
     private fun initViewModel() {
@@ -66,7 +71,9 @@ class MusicVideoDetailActivity : AppCompatActivity() {
 
     private fun handlerEventViewModel() {
         viewModel.musicVideos.observe(this) {
-            musicVideoAdapter.submitList(it.shuffled())
+            mMusicVideosDefault = it
+            mMusicVideosSublist = itemEqualListMusicVideo(it)
+            musicVideoAdapter.submitList(mMusicVideosSublist)
         }
     }
 
@@ -79,7 +86,8 @@ class MusicVideoDetailActivity : AppCompatActivity() {
                 val customPlayerUiController = CustomPlayerUiController(
                     customPlayerUi,
                     youTubePlayer,
-                    binding.youtubePlayerView
+                    binding.youtubePlayerView,
+                    ::onClickController
                 )
                 youTubePlayer.addListener(customPlayerUiController)
                 mMusicVideo?.let {
@@ -102,15 +110,28 @@ class MusicVideoDetailActivity : AppCompatActivity() {
     }
 
     private fun onClickItem(musicVideo: MusicVideo) {
-        binding.musicVideo = musicVideo
+        checkItemEqualMusicVideosDefault(musicVideo)
+    }
 
+    private fun checkItemEqualMusicVideosDefault(musicVideo: MusicVideo){
+        binding.musicVideo = musicVideo
+        mMusicVideo = musicVideo
+        mMusicVideosDefault?.let { musicVideos ->
+            val updatedList = itemEqualListMusicVideo(ArrayList(musicVideos))
+            mMusicVideosSublist = updatedList
+            musicVideoAdapter.submitList(mMusicVideosSublist)
+            getYouTubePlayerWhenReady(musicVideo)
+        }
+    }
+
+    private fun getYouTubePlayerWhenReady(musicVideo: MusicVideo){
         binding.youtubePlayerView.getYouTubePlayerWhenReady(object : YouTubePlayerCallback {
             override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
                 youTubePlayer.pause()
-                mMusicVideo?.let {
+                musicVideo.musicVideoId.let {
                     youTubePlayer.loadOrCueVideo(
                         lifecycle,
-                        musicVideo.musicVideoId,
+                        it,
                         0F
                     )
                 }
@@ -118,9 +139,60 @@ class MusicVideoDetailActivity : AppCompatActivity() {
         })
     }
 
+    private fun itemEqualListMusicVideo(musicVideos: ArrayList<MusicVideo>) : ArrayList<MusicVideo>{
+        val matchList = ArrayList(musicVideos)
+        mMusicVideo?.musicVideoId?.let { musicVideoId ->
+            for (musicVideo in musicVideos){
+                if (musicVideoId == musicVideo.musicVideoId){
+                    matchList.remove(musicVideo)
+                    break
+                }
+            }
+        }
+        return matchList
+    }
+
+    private fun onClickController(enum : Constant.ClickControllerPlayerUi){
+        when(enum){
+            Constant.ClickControllerPlayerUi.ON_BACK -> {
+                onBackPressedDispatcher.onBackPressed()
+            }
+            Constant.ClickControllerPlayerUi.ON_NEXT_VIDEO -> {
+                nextVideoMusic()
+            }
+            Constant.ClickControllerPlayerUi.ON_BACK_VIDEO -> {
+                backVideoMusic()
+            }
+        }
+    }
+
+    private fun nextVideoMusic(){
+        positionMusicVideo ++
+        //test
+        if (positionMusicVideo > mMusicVideosSublist!!.size){
+            SnackBarManager.showMessage(binding.imageView13, "End Video")
+            return
+        }
+        getYouTubePlayerWhenReady(mMusicVideosSublist!![positionMusicVideo])
+        checkItemEqualMusicVideosDefault(mMusicVideosSublist!![positionMusicVideo])
+    }
+
+    private fun backVideoMusic(){
+        positionMusicVideo --
+        // test
+        if (positionMusicVideo == 1){
+            SnackBarManager.showMessage(binding.imageView13, "Firt Video")
+            return
+        }
+        getYouTubePlayerWhenReady(mMusicVideosSublist!![positionMusicVideo])
+        checkItemEqualMusicVideosDefault(mMusicVideosSublist!![positionMusicVideo])
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         binding.youtubePlayerView.release()
         mMusicVideo = null
+        mMusicVideosDefault = null
+        mMusicVideosSublist = null
     }
 }

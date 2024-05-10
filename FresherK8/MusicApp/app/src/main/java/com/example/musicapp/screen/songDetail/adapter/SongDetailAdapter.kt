@@ -21,14 +21,14 @@ class SongDetailAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(currentList[position])
-        holder.itemView.setOnClickListener {
-            mListener.invoke(currentList[position])
-        }
     }
 
-    class ViewHolder(val binding: ItemSongListBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: ItemSongListBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(song: Song) {
             binding.song = song
+            binding.root.setOnClickListener {
+                mListener.invoke(song)
+            }
         }
     }
 }

@@ -33,5 +33,9 @@ object Constant {
     const val SEN_EMAIL_FAILURE = "Gửi email thất bại"
     const val SEN_EMAIL_SUCCESS = "Gửi email thành công"
     // bỏ enum ở đây
-
+    enum class ClickControllerPlayerUi(){
+        ON_BACK,
+        ON_NEXT_VIDEO,
+        ON_BACK_VIDEO
+    }
 }

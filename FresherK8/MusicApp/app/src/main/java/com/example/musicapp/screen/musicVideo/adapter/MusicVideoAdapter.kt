@@ -20,14 +20,14 @@ class MusicVideoAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(currentList[position])
-        holder.itemView.setOnClickListener { mListener.invoke(currentList[position]) }
     }
 
-    class ViewHolder(val binding: ItemMvBinding) :
+    inner class ViewHolder(val binding: ItemMvBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(musicVideo: MusicVideo) {
             binding.musicVideo = musicVideo
+            binding.root.setOnClickListener { mListener.invoke(musicVideo) }
         }
     }
 }

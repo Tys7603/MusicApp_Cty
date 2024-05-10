@@ -12,7 +12,7 @@ import kotlin.math.min
 
 class TopicAdapterLinear(
     private var mListener: (Topic) -> Unit
-) : ListAdapter<Topic, TopicAdapterLinear.ViewHolder>(GenericDiffCallback<Topic>())  {
+) : ListAdapter<Topic, TopicAdapterLinear.ViewHolder>(GenericDiffCallback<Topic>()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemTopicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -25,13 +25,13 @@ class TopicAdapterLinear(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(currentList[position])
-        holder.itemView.setOnClickListener { mListener.invoke(currentList[position]) }
     }
 
-    class ViewHolder(private val binding: ItemTopicBinding) :
+    inner class ViewHolder(private val binding: ItemTopicBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(topic: Topic) {
             binding.topic = topic
+            binding.root.setOnClickListener { mListener.invoke(topic) }
         }
     }
 }

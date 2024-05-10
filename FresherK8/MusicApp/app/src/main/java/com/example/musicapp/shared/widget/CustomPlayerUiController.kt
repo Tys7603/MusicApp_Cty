@@ -6,6 +6,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.musicapp.R
+import com.example.musicapp.shared.utils.constant.Constant
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.customui.utils.FadeViewHelper
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.customui.views.YouTubePlayerSeekBar
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.customui.views.YouTubePlayerSeekBarListener
@@ -18,7 +19,8 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 class CustomPlayerUiController(
     controlsUi: View,
     private val youTubePlayer: YouTubePlayer,
-    private val youTubePlayerView: YouTubePlayerView
+    private val youTubePlayerView: YouTubePlayerView,
+    private val mListener: (Constant.ClickControllerPlayerUi) -> Unit
 ) :
     AbstractYouTubePlayerListener() {
     private val playerTracker: YouTubePlayerTracker = YouTubePlayerTracker()
@@ -35,7 +37,14 @@ class CustomPlayerUiController(
         val seekBar = view.findViewById<YouTubePlayerSeekBar>(R.id.btn_seekBar)
         val pausePlay = view.findViewById<ImageView>(R.id.btn_pause_play_controller)
         val fullScreen = view.findViewById<ImageView>(R.id.btn_full_screen)
+        val backStack = view.findViewById<ImageView>(R.id.btn_on_back_music_detail)
+        val backVideo = view.findViewById<ImageView>(R.id.btn_back_music_detail)
+        val nextVideo = view.findViewById<ImageView>(R.id.btn_next_music_detail)
         youTubePlayer.addListener(seekBar)
+
+        backStack.setOnClickListener { mListener.invoke(Constant.ClickControllerPlayerUi.ON_BACK) }
+        backVideo.setOnClickListener { mListener.invoke(Constant.ClickControllerPlayerUi.ON_BACK_VIDEO) }
+        nextVideo.setOnClickListener { mListener.invoke(Constant.ClickControllerPlayerUi.ON_NEXT_VIDEO) }
 
         seekBar.youtubePlayerSeekBarListener = object : YouTubePlayerSeekBarListener {
             override fun seekTo(time: Float) {
@@ -62,7 +71,6 @@ class CustomPlayerUiController(
             }
             isFullScreen = !isFullScreen // Đảo ngược trạng thái toàn màn hình
         }
-
 
         val fadeViewHelper = FadeViewHelper(container)
         fadeViewHelper.animationDuration = FadeViewHelper.DEFAULT_ANIMATION_DURATION

@@ -26,15 +26,15 @@ class PlayListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(currentList[position])
-        holder.itemView.setOnClickListener {
-            mListener.invoke(currentList[position])
-        }
     }
 
-    class ViewHolder(private val binding: ItemPlayListBinding) :
+    inner class ViewHolder(private val binding: ItemPlayListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(playlist: Playlist) {
             binding.playlist = playlist
+            binding.root.setOnClickListener {
+                mListener.invoke(playlist)
+            }
         }
     }
 }

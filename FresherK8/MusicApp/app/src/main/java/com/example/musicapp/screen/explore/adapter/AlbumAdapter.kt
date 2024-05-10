@@ -26,15 +26,15 @@ class AlbumAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(currentList[position])
-        holder.itemView.setOnClickListener {
-            mListener.invoke(currentList[position])
-        }
     }
 
-    class ViewHolder(private val binding: ItemAlbumNewBinding) :
+    inner class ViewHolder(private val binding: ItemAlbumNewBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(album: Album) {
             binding.albumLove = album
+            binding.root.setOnClickListener {
+                mListener.invoke(album)
+            }
         }
     }
 }

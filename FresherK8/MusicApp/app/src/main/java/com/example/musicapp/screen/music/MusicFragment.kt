@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.preference.PreferenceManager
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -37,7 +38,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
 class MusicFragment : Fragment(), BaseService {
 
     private val viewModel: MusicViewModel by viewModel()
@@ -52,7 +52,6 @@ class MusicFragment : Fragment(), BaseService {
     private var mSongsDefault: ArrayList<Song>? = null
     private var position = 0
     private var isServiceBound = false // kiểm tra kết nối service
-
 
     private val sharedPreferences: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(requireContext())
@@ -108,12 +107,12 @@ class MusicFragment : Fragment(), BaseService {
             checkSongLove()
         }
 
-        viewModel.isAddSongLove.observe(viewLifecycleOwner){
-            if (it){
+        viewModel.isAddSongLove.observe(viewLifecycleOwner) {
+            if (it) {
                 SnackBarManager.showMessage(binding.btnPlay, ADD_SONG_LOVE)
                 binding.btnAddLove.setImageResource(R.drawable.ic_love_red)
-            }else{
-                SnackBarManager.showMessage(binding.btnPlay, DELETE_SONG_LOVE )
+            } else {
+                SnackBarManager.showMessage(binding.btnPlay, DELETE_SONG_LOVE)
                 binding.btnAddLove.setImageResource(R.drawable.ic_heart_black)
             }
         }
@@ -138,10 +137,10 @@ class MusicFragment : Fragment(), BaseService {
         binding.btnAddLove.setOnClickListener { checkUserLogin() }
     }
 
-    private fun checkUserLogin(){
+    private fun checkUserLogin() {
         val user = FirebaseAuth.getInstance().currentUser
         position = sharedPreferences.getInt(KEY_POSITION, 0)
-        if (user != null){
+        if (user != null) {
             mSongsLove?.let { songsLoveList ->
                 val songToCheck = mSongs!![position]
                 val isSongInLoveList = isSongInList(songToCheck, songsLoveList)
@@ -154,7 +153,7 @@ class MusicFragment : Fragment(), BaseService {
                     viewModel.addSongLove(user.uid, mSongs!![position].id)
                 }
             }
-        }else{
+        } else {
             SnackBarManager.showMessage(binding.btnPlay, NOT_LOGIN)
         }
     }
@@ -183,13 +182,16 @@ class MusicFragment : Fragment(), BaseService {
         }
         saveSong()
         initViewButton()
+        checkSongLove()
     }
 
-    private fun checkSongLove(){
-        if (mSongsLove?.let { isSongInList(mSongs!![position], it) } == true){
-            binding.btnAddLove.setImageResource(R.drawable.ic_love_red)
-        }else{
-            binding.btnAddLove.setImageResource(R.drawable.ic_heart_black)
+    private fun checkSongLove() {
+        if (!mSongsLove.isNullOrEmpty() && !mSongs.isNullOrEmpty()) {
+            if (isSongInList(mSongs!![position], mSongsLove!!)) {
+                binding.btnAddLove.setImageResource(R.drawable.ic_love_red)
+            } else {
+                binding.btnAddLove.setImageResource(R.drawable.ic_heart_black)
+            }
         }
     }
 
@@ -398,10 +400,10 @@ class MusicFragment : Fragment(), BaseService {
         musicService = null
     }
 
-    companion object{
+    companion object {
         const val NOT_LOGIN = "Bạn chưa đăng nhập"
         const val ADD_SONG_LOVE = "Đã thêm vào bài hát yêu thích"
-        const val DELETE_SONG_LOVE= "Đã xóa bài hát khỏi yêu thích"
+        const val DELETE_SONG_LOVE = "Đã xóa bài hát khỏi yêu thích"
     }
 }
 
