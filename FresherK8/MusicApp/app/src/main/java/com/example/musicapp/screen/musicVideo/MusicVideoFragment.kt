@@ -72,14 +72,32 @@ class MusicVideoFragment : Fragment() {
             is Topic -> {
                 when (item.id) {
                     0 -> {
+//                        if (mMusicVideos.isNullOrEmpty()){
+//                            binding.tvShow.visibility = View.VISIBLE
+//                        }else{
+//                            binding.tvShow.visibility = View.GONE
+//                            musicVideoAdapter.submitList(mMusicVideos!!.shuffled())
+//                        }
                         musicVideoAdapter.submitList(mMusicVideos!!.shuffled())
                     }
 
                     1 -> {
+//                        if (itemEqualListMusicVideoProposalNew(mMusicVideos!!).isEmpty()){
+//                            binding.tvShow.visibility = View.VISIBLE
+//                        }else{
+//                            binding.tvShow.visibility = View.GONE
+//                            musicVideoAdapter.submitList(itemEqualListMusicVideoProposalNew(mMusicVideos!!))
+//                        }
                         musicVideoAdapter.submitList(itemEqualListMusicVideoProposalNew(mMusicVideos!!))
                     }
 
                     else -> {
+//                       if (itemEqualListMusicVideo(item, mMusicVideos!!).isEmpty()){
+//                           binding.tvShow.visibility = View.VISIBLE
+//                       }else{
+//                           binding.tvShow.visibility = View.GONE
+//                           musicVideoAdapter.submitList(itemEqualListMusicVideo(item, mMusicVideos!!))
+//                       }
                         musicVideoAdapter.submitList(itemEqualListMusicVideo(item, mMusicVideos!!))
                     }
                 }

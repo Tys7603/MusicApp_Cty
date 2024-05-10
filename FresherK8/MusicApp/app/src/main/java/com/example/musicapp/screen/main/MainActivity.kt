@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         val checkUser = intent.getBooleanExtra(Constant.KEY_USER, false)
         if (checkUser){
             fragmentManager(UserFragment())
+            binding.bottomNavigationView.setSelectedItemId(R.id.user_menu);
         }
     }
 

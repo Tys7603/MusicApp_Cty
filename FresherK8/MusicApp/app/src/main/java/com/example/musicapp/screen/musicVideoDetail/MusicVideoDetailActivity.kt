@@ -188,6 +188,13 @@ class MusicVideoDetailActivity : AppCompatActivity() {
         checkItemEqualMusicVideosDefault(mMusicVideosSublist!![positionMusicVideo])
     }
 
+    /**
+     * issue : next , back
+     * ideal : lúc chuyển màn có 1 list default
+     *         - next : chuyển tới vị trí đầu tiên của mảng, xóa vị trí đầu tiền , lưu vào 1 mang moi
+     *         - back : quay ve vi tri cuoi cung , sublist lai adapter + shuffle
+     */
+
     override fun onDestroy() {
         super.onDestroy()
         binding.youtubePlayerView.release()

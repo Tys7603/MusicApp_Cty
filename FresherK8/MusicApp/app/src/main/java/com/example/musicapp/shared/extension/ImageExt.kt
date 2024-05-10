@@ -16,6 +16,16 @@ fun ImageView.loadImageUrl(url : String){
         .into(this)
 }
 
+@BindingAdapter("imageUrlUser")
+fun ImageView.loadImageUrlUser(url : String){
+    Glide.with(context)
+        .load(url)
+        .centerCrop()
+        .placeholder(R.drawable.avatar)
+        .into(this)
+}
+
+
 @BindingAdapter("imageUrlMV")
 fun ImageView.loadImageMVUrl(url : String){
     Glide.with(context)
@@ -36,7 +46,7 @@ fun ImageView.loadImageUrlUser(uri : Uri){
 
 fun ImageView.loadDingUrl(){
     Glide.with(context)
-        .load("https://cdn.pixabay.com/animation/2023/03/20/02/45/02-45-27-186_512.gif")
+        .load("https://thebowlcut.com/cdn/shop/t/41/assets/loading.gif?v=157493769327766696621701744369")
         .centerCrop()
         .placeholder(R.drawable.img_placeholder)
         .into(this)
