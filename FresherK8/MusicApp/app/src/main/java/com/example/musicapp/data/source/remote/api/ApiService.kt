@@ -23,6 +23,7 @@ import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO
+import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO_EXCLUDING_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_PLAYLIST_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_TOPIC_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_LOVE
@@ -82,6 +83,7 @@ interface ApiService {
 
     @GET(GET_SONG_LOVE)
     suspend fun getListSongLove(@Path("userId") userId: String): Response<SongRepository>
+
     // album
     @GET(GET_ALBUM_LOVE)
     suspend fun getListAlbumLove(): Response<AlbumRepository>
@@ -97,5 +99,8 @@ interface ApiService {
     // music video
     @GET(GET_MUSIC_VIDEO)
     suspend fun getListMusicVideo(): Response<MusicVideoRepository>
+
+    @GET(GET_MUSIC_VIDEO_EXCLUDING_ID)
+    suspend fun getListMusicVideoExcludingId(@Path("musicVideoId") musicVideoId: String): Response<MusicVideoRepository>
 
 }

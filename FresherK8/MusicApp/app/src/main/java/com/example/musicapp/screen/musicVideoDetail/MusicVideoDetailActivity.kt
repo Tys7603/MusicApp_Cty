@@ -1,6 +1,7 @@
 package com.example.musicapp.screen.musicVideoDetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -9,8 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.musicapp.R
 import com.example.musicapp.data.model.MusicVideo
 import com.example.musicapp.databinding.ActivityMusicVideoDetailBinding
-import com.example.musicapp.screen.musicVideo.MusicVideoViewModel
-import com.example.musicapp.screen.musicVideo.adapter.MusicVideoAdapter
+import com.example.musicapp.screen.musicVideoDetail.adapter.MusicVideoDetailAdapter
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.widget.CustomPlayerUiController
@@ -24,11 +24,11 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.loadOrC
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MusicVideoDetailActivity : AppCompatActivity() {
-    private val viewModel: MusicVideoViewModel by viewModel()
-    private val musicVideoAdapter = MusicVideoAdapter(::onClickItem)
+    private val viewModel: MusicVideoDetailViewModel by viewModel()
+    private val musicVideoAdapter = MusicVideoDetailAdapter(::onClickItem)
     private var mMusicVideo: MusicVideo? = null
-    private var mMusicVideosDefault: ArrayList<MusicVideo>? = null
-    private var mMusicVideosSublist: ArrayList<MusicVideo>? = null
+    private var mMusicVideosNext: ArrayList<MusicVideo>? = null
+    private var mMusicVideosBack = ArrayList<MusicVideo>()
     private var positionMusicVideo = -1
     private val binding by lazy {
         ActivityMusicVideoDetailBinding.inflate(layoutInflater)
@@ -49,13 +49,14 @@ class MusicVideoDetailActivity : AppCompatActivity() {
         initRecyclerView()
         handlerEventViewModel()
         initPlayerYoutube()
-
+        showLayout(true)
     }
 
     private fun getBundlerValue() {
         intent.getParcelableExtra<MusicVideo>(Constant.KEY_INTENT_ITEM)?.let {
             binding.musicVideo = it
             mMusicVideo = it
+            viewModel.fetchMusicVideoDetail(it.musicVideoId)
         }
     }
 
@@ -71,9 +72,8 @@ class MusicVideoDetailActivity : AppCompatActivity() {
 
     private fun handlerEventViewModel() {
         viewModel.musicVideos.observe(this) {
-            mMusicVideosDefault = it
-            mMusicVideosSublist = itemEqualListMusicVideo(it)
-            musicVideoAdapter.submitList(mMusicVideosSublist)
+            mMusicVideosNext = it
+            musicVideoAdapter.submitList(it)
         }
     }
 
@@ -96,6 +96,7 @@ class MusicVideoDetailActivity : AppCompatActivity() {
                         mMusicVideo!!.musicVideoId,
                         0F
                     )
+                    showLayout(false)
                 }
             }
         }
@@ -110,18 +111,8 @@ class MusicVideoDetailActivity : AppCompatActivity() {
     }
 
     private fun onClickItem(musicVideo: MusicVideo) {
-        checkItemEqualMusicVideosDefault(musicVideo)
-    }
-
-    private fun checkItemEqualMusicVideosDefault(musicVideo: MusicVideo){
-        binding.musicVideo = musicVideo
-        mMusicVideo = musicVideo
-        mMusicVideosDefault?.let { musicVideos ->
-            val updatedList = itemEqualListMusicVideo(ArrayList(musicVideos))
-            mMusicVideosSublist = updatedList
-            musicVideoAdapter.submitList(mMusicVideosSublist)
-            getYouTubePlayerWhenReady(musicVideo)
-        }
+        showLayout(true)
+        getYouTubePlayerWhenReady(musicVideo)
     }
 
     private fun getYouTubePlayerWhenReady(musicVideo: MusicVideo){
@@ -134,22 +125,15 @@ class MusicVideoDetailActivity : AppCompatActivity() {
                         it,
                         0F
                     )
+                    showLayout(false)
                 }
+
             }
         })
-    }
-
-    private fun itemEqualListMusicVideo(musicVideos: ArrayList<MusicVideo>) : ArrayList<MusicVideo>{
-        val matchList = ArrayList(musicVideos)
-        mMusicVideo?.musicVideoId?.let { musicVideoId ->
-            for (musicVideo in musicVideos){
-                if (musicVideoId == musicVideo.musicVideoId){
-                    matchList.remove(musicVideo)
-                    break
-                }
-            }
-        }
-        return matchList
+        binding.musicVideo = musicVideo
+        mMusicVideo = musicVideo
+        mMusicVideosBack.add(musicVideo)
+        mMusicVideosNext!!.remove(musicVideo)
     }
 
     private fun onClickController(enum : Constant.ClickControllerPlayerUi){
@@ -169,23 +153,22 @@ class MusicVideoDetailActivity : AppCompatActivity() {
     private fun nextVideoMusic(){
         positionMusicVideo ++
         //test
-        if (positionMusicVideo > mMusicVideosSublist!!.size){
+        if (positionMusicVideo >= mMusicVideosNext!!.size){
             SnackBarManager.showMessage(binding.imageView13, "End Video")
             return
         }
-        getYouTubePlayerWhenReady(mMusicVideosSublist!![positionMusicVideo])
-        checkItemEqualMusicVideosDefault(mMusicVideosSublist!![positionMusicVideo])
+        getYouTubePlayerWhenReady(mMusicVideosNext!![positionMusicVideo])
+        mMusicVideosBack.add(mMusicVideosNext!![positionMusicVideo])
     }
 
     private fun backVideoMusic(){
         positionMusicVideo --
         // test
-        if (positionMusicVideo == 1){
+        if (positionMusicVideo < 0){
             SnackBarManager.showMessage(binding.imageView13, "Firt Video")
             return
         }
-        getYouTubePlayerWhenReady(mMusicVideosSublist!![positionMusicVideo])
-        checkItemEqualMusicVideosDefault(mMusicVideosSublist!![positionMusicVideo])
+        getYouTubePlayerWhenReady(mMusicVideosNext!![positionMusicVideo])
     }
 
     /**
@@ -195,11 +178,20 @@ class MusicVideoDetailActivity : AppCompatActivity() {
      *         - back : quay ve vi tri cuoi cung , sublist lai adapter + shuffle
      */
 
+    private fun showLayout(isShow : Boolean){
+        if (isShow){
+            binding.includeLayoutMvDetail.visibility = View.VISIBLE
+            binding.layoutMvDetail.visibility = View.GONE
+        }else{
+            binding.includeLayoutMvDetail.visibility = View.GONE
+            binding.layoutMvDetail.visibility = View.VISIBLE
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         binding.youtubePlayerView.release()
         mMusicVideo = null
-        mMusicVideosDefault = null
-        mMusicVideosSublist = null
+        mMusicVideosNext = null
     }
 }

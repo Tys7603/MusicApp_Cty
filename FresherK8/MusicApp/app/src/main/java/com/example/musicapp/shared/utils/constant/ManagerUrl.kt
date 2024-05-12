@@ -1,7 +1,7 @@
 package com.example.musicapp.shared.utils.constant
 
 object ManagerUrl {
-    private const val IP = "10.20.23.239"
+    private const val IP = "192.168.1.7"
     const val BASE_URL = "http://$IP:3000/api/"
 
     // playlist
@@ -22,6 +22,7 @@ object ManagerUrl {
     const val CREATE_SONG_LOVE = "song/love"
     const val DELETE_SONG_LOVE = "song/love/{songLoveId}"
     const val GET_SONG_LOVE = "songs/love/{userId}"
+
     //album
     const val GET_ALBUM_LOVE = "albums/love"
     const val GET_ALBUM_NEW = "albums/new"
@@ -31,5 +32,6 @@ object ManagerUrl {
 
     // music video
     const val GET_MUSIC_VIDEO = "musics/video"
+    const val GET_MUSIC_VIDEO_EXCLUDING_ID = "musics/video/{musicVideoId}"
 
 }
