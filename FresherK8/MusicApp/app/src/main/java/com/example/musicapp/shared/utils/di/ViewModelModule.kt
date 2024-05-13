@@ -10,6 +10,8 @@ import com.example.musicapp.screen.topic.TopicViewModel
 import com.example.musicapp.screen.user.UserViewModel
 import com.example.musicapp.screen.user.adapter.BottomSheetLogin
 import com.example.musicapp.screen.user.adapter.BottomSheetLoginViewModel
+import com.example.musicapp.screen.user.playlistLove.PlaylistLoveViewModel
+import com.example.musicapp.screen.user.playlistUser.PlaylistUserViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -24,4 +26,7 @@ val viewModelModule = module {
     viewModel { SongDownViewModel(get()) }
     viewModel { MusicVideoViewModel(get()) }
     viewModel { MusicVideoDetailViewModel(get()) }
+    viewModel { PlaylistUserViewModel(get()) }
+    viewModel { PlaylistLoveViewModel() }
+
 }

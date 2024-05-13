@@ -62,7 +62,6 @@ class UserFragment : Fragment() {
     private fun handleEventViewModel() {
     }
 
-
     private fun handleEvent() {
         binding.btnTrackDown.setOnClickListener {startActivity(Intent(requireContext(), SongDownActivity::class.java))}
         binding.btnLogin.setOnClickListener { openBottomSheetLogin() }

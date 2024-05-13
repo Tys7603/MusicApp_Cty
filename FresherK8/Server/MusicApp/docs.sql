@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 07, 2024 lúc 06:09 AM
+-- Thời gian đã tạo: Th5 13, 2024 lúc 12:41 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -75,6 +75,34 @@ INSERT INTO `album_love` (`album_love_id`, `user_id`, `song_id`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `artist`
+--
+
+CREATE TABLE `artist` (
+  `artist_id` int(11) NOT NULL,
+  `artist_name` varchar(100) NOT NULL,
+  `artist_image` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `artist`
+--
+
+INSERT INTO `artist` (`artist_id`, `artist_name`, `artist_image`) VALUES
+(1, 'Double2T', 'https://avatar-ex-swe.nixcdn.com/singer/avatar/2023/04/11/c/1/9/7/1681207645373.jpg'),
+(2, 'Phan Mạnh Quỳnh', 'https://avatar-ex-swe.nixcdn.com/singer/avatar/2021/08/30/8/3/f/f/1630294420814.jpg'),
+(3, 'Sơn Tùng M-TP', 'https://avatar-ex-swe.nixcdn.com/singer/avatar/2021/05/12/7/d/c/b/1620802736418.jpg'),
+(4, 'Binz', 'https://avatar-ex-swe.nixcdn.com/singer/avatar/2019/09/12/c/3/c/7/1568253936065.jpg'),
+(5, 'RPT MCK', 'https://avatar-ex-swe.nixcdn.com/singer/avatar/2023/03/03/a/5/a/8/1677826163685.jpg'),
+(6, 'HIEUTHUHAI', 'https://avatar-ex-swe.nixcdn.com/singer/avatar/2022/08/12/3/a/7/f/1660300989335.jpg'),
+(7, 'Low G', 'https://avatar-ex-swe.nixcdn.com/singer/avatar/2022/03/02/b/c/6/4/1646192952353.jpg'),
+(8, 'Tez', 'https://avatar-ex-swe.nixcdn.com/singer/avatar/2022/10/05/7/0/6/2/1664940579241.jpg'),
+(9, 'Tlinh', 'https://avatar-ex-swe.nixcdn.com/singer/avatar/2023/08/11/3/c/2/e/1691749030077.jpg'),
+(10, 'Bích Phương', 'https://avatar-ex-swe.nixcdn.com/singer/avatar/2021/06/28/b/2/0/9/1624861449651.jpg');
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `category`
 --
 
@@ -95,6 +123,38 @@ INSERT INTO `category` (`category_id`, `category_name`, `category_image`) VALUES
 (4, 'Chill Out', 'https://avatar-ex-swe.nixcdn.com/topic/thumb/2021/03/09/2/9/3/f/1615284927743_org.jpg'),
 (5, 'Gym', 'https://avatar-ex-swe.nixcdn.com/topic/thumb/2022/10/31/7/f/c/2/1667207540646_org.jpg'),
 (6, 'V-Rap', 'https://avatar-ex-swe.nixcdn.com/topic/mobile/2024/04/16/f/d/3/d/1713237576082_org.jpg');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `music_video`
+--
+
+CREATE TABLE `music_video` (
+  `music_video_id` varchar(100) NOT NULL,
+  `music_video_name` text NOT NULL,
+  `music_video_image` text NOT NULL,
+  `music_video_time` varchar(25) NOT NULL,
+  `music_video_proposal_new` tinyint(1) NOT NULL DEFAULT 0,
+  `artist_id` int(11) NOT NULL,
+  `topic_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `music_video`
+--
+
+INSERT INTO `music_video` (`music_video_id`, `music_video_name`, `music_video_image`, `music_video_time`, `music_video_proposal_new`, `artist_id`, `topic_id`) VALUES
+('3gNuUcPg1fk', 'BINZ - HIT ME UP (ft. NOMOVODKA) | OFFICIAL MV', 'https://i.ytimg.com/vi/3gNuUcPg1fk/maxresdefault.jpg', '5:37', 1, 4, 22),
+('zoEtcR5EW08', 'SƠN TÙNG M-TP | CHÚNG TA CỦA TƯƠNG LAI | OFFICIAL MUSIC VIDEO', 'https://i.ytimg.com/vi/zoEtcR5EW08/maxresdefault.jpg', '4:37', 1, 3, 26),
+('i0nd3NPJ4MI', 'HIEUTHUHAI - Không Thể Say (prod. by Kewtiie) l Official Video', 'https://i.ytimg.com/vi/i0nd3NPJ4MI/sddefault.jpg?v=643f6a59', '4:21', 1, 6, 26),
+('sU8G7Q4rUA4', 'BÍCH PHƯƠNG - Nâng Chén Tiêu Sầu (Official M/V)', 'https://i.ytimg.com/vi/sU8G7Q4rUA4/sddefault.jpg?v=65e993e7', '4:11', 0, 10, 13),
+('b_pcHCfW4S4', 'Double2T - Em Yêu Cô Ấy (Prod. Hải Ma) | 10 Năm Trước Album - OFFICIAL MUSIC VIDEO', 'https://i.ytimg.com/vi/b_pcHCfW4S4/sddefault.jpg?v=661cf9f6', '3:39', 1, 1, 29),
+('-k5ylVYTRvU', 'Ở sâu trong tim này - Tez x Emily | Official Music Video', 'https://i.ytimg.com/vi/-k5ylVYTRvU/maxresdefault.jpg', '3:11', 0, 8, 29),
+('fyMgBQioTLo', 'tlinh - nếu lúc đó (ft. 2pillz) | OFFICIAL MUSIC VIDEO', 'https://i.ytimg.com/vi/fyMgBQioTLo/maxresdefault.jpg', '5:25', 0, 9, 23),
+('rwIOCoDtHyI', 'VỤ NỔ LỚN - KHÔNG QUAN TRỌNG', 'https://i.ytimg.com/vi/rwIOCoDtHyI/maxresdefault.jpg', '5:53', 1, 5, 28),
+('JAZZn6Bue0c', 'Quá Sớm | Low G | Rap Nhà Làm', 'https://i.ytimg.com/vi/JAZZn6Bue0c/sddefault.jpg', '4:07', 0, 7, 29),
+('h_1t3-6oWz4', 'SAU LỜI TỪ KHƯỚC - PHAN MẠNH QUỲNH | OFFICIAL MV (OST phim MAI, Đạo Diễn Trấn Thành)', 'https://i.ytimg.com/vi/mzqvF_rIOx8/maxresdefault.jpg', '4:23', 0, 2, 23);
 
 -- --------------------------------------------------------
 
@@ -132,6 +192,27 @@ CREATE TABLE `playlist_user` (
   `user_id` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `playlist_user`
+--
+
+INSERT INTO `playlist_user` (`playlist_user_id`, `playlist_user_name`, `user_id`) VALUES
+(1, 'Chil chil', 'ZCt6n9uDFjZ9lOOtPataEGxngfr2'),
+(2, 'Rap', 'ZCt6n9uDFjZ9lOOtPataEGxngfr2'),
+(3, 'Gym', 'ZCt6n9uDFjZ9lOOtPataEGxngfr2');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `playlist_user_love`
+--
+
+CREATE TABLE `playlist_user_love` (
+  `playlist_user_song_love_id` int(11) NOT NULL,
+  `user_id` varchar(100) NOT NULL,
+  `playlist_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- --------------------------------------------------------
 
 --
@@ -143,6 +224,16 @@ CREATE TABLE `playlist_user_song` (
   `playlist_user_id` int(11) NOT NULL,
   `song_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `playlist_user_song`
+--
+
+INSERT INTO `playlist_user_song` (`playlist_user_song_id`, `playlist_user_id`, `song_id`) VALUES
+(1, 1, 2),
+(2, 1, 5),
+(4, 2, 4),
+(3, 2, 7);
 
 -- --------------------------------------------------------
 
@@ -212,6 +303,13 @@ CREATE TABLE `song_again` (
   `user_id` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `song_again`
+--
+
+INSERT INTO `song_again` (`song_again_id`, `song_id`, `user_id`) VALUES
+(10, 2, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2');
+
 -- --------------------------------------------------------
 
 --
@@ -229,14 +327,22 @@ CREATE TABLE `song_love` (
 --
 
 INSERT INTO `song_love` (`song_love_id`, `user_id`, `song_id`) VALUES
+(51, '3i0hJyaL2kNBKjLrT8t8uPhxsa32', 2),
 (11, '7oEPyI8hGqUB45vZNkMv3tsWahB2', 2),
-(10, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 1),
-(12, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 2),
+(48, 'Kct8HgBtVsaLhXE5J8FBfMPEFWr2', 1),
+(53, 'QSZqSss49HOyRaPzQymitz8P2942', 1),
+(54, 'QSZqSss49HOyRaPzQymitz8P2942', 2),
+(56, 'QSZqSss49HOyRaPzQymitz8P2942', 4),
+(45, 'XMe0wL5W9wMYZEpdae30GwG15JD3', 1),
+(46, 'XMe0wL5W9wMYZEpdae30GwG15JD3', 2),
+(47, 'XMe0wL5W9wMYZEpdae30GwG15JD3', 3),
 (13, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 3),
+(20, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 4),
 (14, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 5),
 (15, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 6),
 (16, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 7),
-(9, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 10);
+(21, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 8),
+(35, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 10);
 
 -- --------------------------------------------------------
 
@@ -334,13 +440,21 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`) VALUES
+('3i0hJyaL2kNBKjLrT8t8uPhxsa32'),
 ('7oEPyI8hGqUB45vZNkMv3tsWahB2'),
 ('aeBg8o0lO7aEeGsqyWqvaMhZvu13'),
 ('boCsxQUcmfNsvWQ7CU8SSsbSmkA3'),
+('Fcdj4N26i8PpzzpQCFFSqw5BHLx2'),
 ('GxUfF3C40NeUQsrJhdJeTD4xWxx1'),
+('HU0KmfuPLUXvFKgmghtkRoiyNif1'),
 ('Jy5byXeAJ2aEbTCuF0o4EOPId3q2'),
+('Kct8HgBtVsaLhXE5J8FBfMPEFWr2'),
+('LrBLAMC8kQfNhBP2dq0PTnrAOEz2'),
 ('mFjqHF12ifQh8t0bOVL0NkeyMIf1'),
+('QRig9dL8kaYE02jFwnpAeKAFXNd2'),
+('QSZqSss49HOyRaPzQymitz8P2942'),
 ('tbWSmMgy1Uc4igHWLkA2WANhhUp2'),
+('XMe0wL5W9wMYZEpdae30GwG15JD3'),
 ('ZCt6n9uDFjZ9lOOtPataEGxngfr2');
 
 --
@@ -362,10 +476,23 @@ ALTER TABLE `album_love`
   ADD KEY `song_id` (`song_id`);
 
 --
+-- Chỉ mục cho bảng `artist`
+--
+ALTER TABLE `artist`
+  ADD PRIMARY KEY (`artist_id`);
+
+--
 -- Chỉ mục cho bảng `category`
 --
 ALTER TABLE `category`
   ADD PRIMARY KEY (`category_id`);
+
+--
+-- Chỉ mục cho bảng `music_video`
+--
+ALTER TABLE `music_video`
+  ADD KEY `artist_id` (`artist_id`,`topic_id`),
+  ADD KEY `topic_id` (`topic_id`);
 
 --
 -- Chỉ mục cho bảng `playlist`
@@ -381,11 +508,19 @@ ALTER TABLE `playlist_user`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Chỉ mục cho bảng `playlist_user_love`
+--
+ALTER TABLE `playlist_user_love`
+  ADD PRIMARY KEY (`playlist_user_song_love_id`),
+  ADD KEY `playlistUser_id` (`user_id`,`playlist_id`),
+  ADD KEY `song_id` (`playlist_id`);
+
+--
 -- Chỉ mục cho bảng `playlist_user_song`
 --
 ALTER TABLE `playlist_user_song`
   ADD PRIMARY KEY (`playlist_user_song_id`),
-  ADD KEY `playlistUser_id` (`playlist_user_id`,`song_id`),
+  ADD KEY `playlist_user_id` (`playlist_user_id`,`song_id`),
   ADD KEY `song_id` (`song_id`);
 
 --
@@ -457,6 +592,12 @@ ALTER TABLE `album_love`
   MODIFY `album_love_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
+-- AUTO_INCREMENT cho bảng `artist`
+--
+ALTER TABLE `artist`
+  MODIFY `artist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT cho bảng `category`
 --
 ALTER TABLE `category`
@@ -472,13 +613,19 @@ ALTER TABLE `playlist`
 -- AUTO_INCREMENT cho bảng `playlist_user`
 --
 ALTER TABLE `playlist_user`
-  MODIFY `playlist_user_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `playlist_user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT cho bảng `playlist_user_love`
+--
+ALTER TABLE `playlist_user_love`
+  MODIFY `playlist_user_song_love_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT cho bảng `playlist_user_song`
 --
 ALTER TABLE `playlist_user_song`
-  MODIFY `playlist_user_song_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `playlist_user_song_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT cho bảng `rank`
@@ -496,13 +643,13 @@ ALTER TABLE `song`
 -- AUTO_INCREMENT cho bảng `song_again`
 --
 ALTER TABLE `song_again`
-  MODIFY `song_again_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `song_again_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT cho bảng `song_love`
 --
 ALTER TABLE `song_love`
-  MODIFY `song_love_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `song_love_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT cho bảng `song_rank`
@@ -528,17 +675,31 @@ ALTER TABLE `album_love`
   ADD CONSTRAINT `album_love_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Các ràng buộc cho bảng `music_video`
+--
+ALTER TABLE `music_video`
+  ADD CONSTRAINT `music_video_ibfk_1` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `music_video_ibfk_2` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`topic_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Các ràng buộc cho bảng `playlist_user`
 --
 ALTER TABLE `playlist_user`
   ADD CONSTRAINT `playlist_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Các ràng buộc cho bảng `playlist_user_love`
+--
+ALTER TABLE `playlist_user_love`
+  ADD CONSTRAINT `playlist_user_love_ibfk_1` FOREIGN KEY (`playlist_id`) REFERENCES `playlist` (`playlist_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `playlist_user_love_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Các ràng buộc cho bảng `playlist_user_song`
 --
 ALTER TABLE `playlist_user_song`
-  ADD CONSTRAINT `playlist_user_song_ibfk_1` FOREIGN KEY (`playlist_user_id`) REFERENCES `playlist_user` (`playlist_user_id`),
-  ADD CONSTRAINT `playlist_user_song_ibfk_2` FOREIGN KEY (`song_id`) REFERENCES `song` (`song_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `playlist_user_song_ibfk_1` FOREIGN KEY (`song_id`) REFERENCES `song` (`song_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `playlist_user_song_ibfk_2` FOREIGN KEY (`playlist_user_id`) REFERENCES `playlist_user` (`playlist_user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `song`

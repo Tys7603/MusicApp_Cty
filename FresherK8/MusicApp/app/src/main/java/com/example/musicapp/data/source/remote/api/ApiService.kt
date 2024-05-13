@@ -18,12 +18,15 @@ import com.example.musicapp.data.model.reponse.SongAgainRepository
 import com.example.musicapp.data.model.reponse.SongRankRepository
 import com.example.musicapp.data.model.Status
 import com.example.musicapp.data.model.reponse.MusicVideoRepository
+import com.example.musicapp.data.model.reponse.PlaylistUserRepository
 import com.example.musicapp.data.model.reponse.TopicRepository
+import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_PLAYLIST_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO_EXCLUDING_ID
+import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_PLAYLIST_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_PLAYLIST_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_TOPIC_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_LOVE
@@ -44,6 +47,15 @@ interface ApiService {
 
     @GET(GET_PLAYLIST_MODE_TODAY)
     suspend fun getListPlaylistMoodToday(): Response<PlaylistRepository>
+
+    @GET(GET_PLAYLIST_USER)
+    suspend fun getListPlaylistUser(@Path("userId") userId: String): Response<PlaylistUserRepository>
+
+    @POST(CREATE_PLAYLIST_USER)
+    suspend fun createPlaylistUser(
+        @Field("userId") userId: String,
+        @Field("namePlaylist") namePlaylist: String
+    ): Response<Status>
 
     // Categories and topic
     @GET(GET_TOPICS)

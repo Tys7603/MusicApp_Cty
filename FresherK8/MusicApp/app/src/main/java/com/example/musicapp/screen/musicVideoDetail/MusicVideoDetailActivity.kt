@@ -1,7 +1,6 @@
 package com.example.musicapp.screen.musicVideoDetail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -27,9 +26,9 @@ class MusicVideoDetailActivity : AppCompatActivity() {
     private val viewModel: MusicVideoDetailViewModel by viewModel()
     private val musicVideoAdapter = MusicVideoDetailAdapter(::onClickItem)
     private var mMusicVideo: MusicVideo? = null
-    private var mMusicVideosNext: ArrayList<MusicVideo>? = null
-    private var mMusicVideosBack = ArrayList<MusicVideo>()
-    private var positionMusicVideo = -1
+    private var mMusicVideos: ArrayList<MusicVideo>? = null
+    private var positionMusicVideo = 0
+    private var customPlayerUiController : CustomPlayerUiController? = null
     private val binding by lazy {
         ActivityMusicVideoDetailBinding.inflate(layoutInflater)
     }
@@ -72,8 +71,10 @@ class MusicVideoDetailActivity : AppCompatActivity() {
 
     private fun handlerEventViewModel() {
         viewModel.musicVideos.observe(this) {
-            mMusicVideosNext = it
-            musicVideoAdapter.submitList(it)
+            val modifiedList = it.toMutableList()
+            musicVideoAdapter.submitList(modifiedList)
+            mMusicVideos = it
+            mMusicVideos!!.add(0, mMusicVideo!!)
         }
     }
 
@@ -83,13 +84,13 @@ class MusicVideoDetailActivity : AppCompatActivity() {
 
         val listener: YouTubePlayerListener = object : AbstractYouTubePlayerListener() {
             override fun onReady(youTubePlayer: YouTubePlayer) {
-                val customPlayerUiController = CustomPlayerUiController(
+                customPlayerUiController = CustomPlayerUiController(
                     customPlayerUi,
                     youTubePlayer,
                     binding.youtubePlayerView,
                     ::onClickController
                 )
-                youTubePlayer.addListener(customPlayerUiController)
+                youTubePlayer.addListener(customPlayerUiController!!)
                 mMusicVideo?.let {
                     youTubePlayer.loadOrCueVideo(
                         lifecycle,
@@ -110,9 +111,11 @@ class MusicVideoDetailActivity : AppCompatActivity() {
         binding.youtubePlayerView.initialize(listener, options)
     }
 
-    private fun onClickItem(musicVideo: MusicVideo) {
+    private fun onClickItem(musicVideo: MusicVideo, position : Int) {
         showLayout(true)
         getYouTubePlayerWhenReady(musicVideo)
+        positionMusicVideo = position
+        customPlayerUiController!!.updateUI()
     }
 
     private fun getYouTubePlayerWhenReady(musicVideo: MusicVideo){
@@ -132,8 +135,6 @@ class MusicVideoDetailActivity : AppCompatActivity() {
         })
         binding.musicVideo = musicVideo
         mMusicVideo = musicVideo
-        mMusicVideosBack.add(musicVideo)
-        mMusicVideosNext!!.remove(musicVideo)
     }
 
     private fun onClickController(enum : Constant.ClickControllerPlayerUi){
@@ -152,31 +153,21 @@ class MusicVideoDetailActivity : AppCompatActivity() {
 
     private fun nextVideoMusic(){
         positionMusicVideo ++
-        //test
-        if (positionMusicVideo >= mMusicVideosNext!!.size){
-            SnackBarManager.showMessage(binding.imageView13, "End Video")
-            return
+        if (positionMusicVideo >= mMusicVideos!!.size){
+           positionMusicVideo = 0
         }
-        getYouTubePlayerWhenReady(mMusicVideosNext!![positionMusicVideo])
-        mMusicVideosBack.add(mMusicVideosNext!![positionMusicVideo])
+        getYouTubePlayerWhenReady(mMusicVideos!![positionMusicVideo])
+        customPlayerUiController!!.updateUI()
     }
 
     private fun backVideoMusic(){
         positionMusicVideo --
-        // test
         if (positionMusicVideo < 0){
-            SnackBarManager.showMessage(binding.imageView13, "Firt Video")
-            return
+           positionMusicVideo = mMusicVideos!!.size - 1
         }
-        getYouTubePlayerWhenReady(mMusicVideosNext!![positionMusicVideo])
+        getYouTubePlayerWhenReady(mMusicVideos!![positionMusicVideo])
+        customPlayerUiController!!.updateUI()
     }
-
-    /**
-     * issue : next , back
-     * ideal : lúc chuyển màn có 1 list default
-     *         - next : chuyển tới vị trí đầu tiên của mảng, xóa vị trí đầu tiền , lưu vào 1 mang moi
-     *         - back : quay ve vi tri cuoi cung , sublist lai adapter + shuffle
-     */
 
     private fun showLayout(isShow : Boolean){
         if (isShow){
@@ -192,6 +183,6 @@ class MusicVideoDetailActivity : AppCompatActivity() {
         super.onDestroy()
         binding.youtubePlayerView.release()
         mMusicVideo = null
-        mMusicVideosNext = null
+        mMusicVideos = null
     }
 }

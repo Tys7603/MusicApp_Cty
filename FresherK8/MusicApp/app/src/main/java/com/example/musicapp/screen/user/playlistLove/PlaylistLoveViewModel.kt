@@ -1,4 +1,6 @@
 package com.example.musicapp.screen.user.playlistLove
 
-class PlaylistLoveViewModel {
+import com.example.musicapp.shared.base.BaseViewModel
+
+class PlaylistLoveViewModel : BaseViewModel() {
 }

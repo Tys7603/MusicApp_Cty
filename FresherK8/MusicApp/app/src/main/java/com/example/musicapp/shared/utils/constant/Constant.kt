@@ -36,6 +36,6 @@ object Constant {
     enum class ClickControllerPlayerUi(){
         ON_BACK,
         ON_NEXT_VIDEO,
-        ON_BACK_VIDEO
+        ON_BACK_VIDEO,
     }
 }

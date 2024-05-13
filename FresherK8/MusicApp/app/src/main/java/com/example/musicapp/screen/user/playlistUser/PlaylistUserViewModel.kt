@@ -1,4 +1,30 @@
 package com.example.musicapp.screen.user.playlistUser
 
-class PlaylistUserViewModel {
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.example.musicapp.data.model.PlaylistUser
+import com.example.musicapp.data.repositories.userRepository.UserRepository
+import com.example.musicapp.shared.base.BaseViewModel
+import com.google.firebase.auth.FirebaseAuth
+
+class PlaylistUserViewModel (private val userRepository: UserRepository) : BaseViewModel() {
+    private val _playlistsUser = MutableLiveData<ArrayList<PlaylistUser>>()
+    val playlistUser : LiveData<ArrayList<PlaylistUser>> = _playlistsUser
+
+    init {
+        fetchPlaylistsUser()
+    }
+
+    private fun fetchPlaylistsUser() {
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.let {
+            launchTaskSync(
+                onRequest = { userRepository.getListPlaylistUser(user.uid) },
+                onSuccess = { _playlistsUser.value = it },
+                onFailure = { Log.e("fetchMusicVideo", "Failed: $it") },
+                onError = { exception.value = it }
+            )
+        }
+    }
 }

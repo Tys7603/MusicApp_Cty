@@ -47,14 +47,13 @@ const getListPlaylistMoodTodayController = async (req, res) => {
 
 }
 
-// add playlist love
-
-const createPlaylistLoveController = async (req, res) => {
+// create playlist user
+const createPlaylistUserController = async (req, res) => {
 
   try {
     const { namePlaylist, userId } = req.body
 
-    const playlists = await model.createPlaylistLove(namePlaylist, userId)
+    const playlists = await model.createPlaylistUser(namePlaylist, userId)
 
     res.json({ status: 200, playlists })
 
@@ -67,43 +66,38 @@ const createPlaylistLoveController = async (req, res) => {
 // get playlist love
 
 const getListPlaylistByUserIdController = async (req, res) => {
-
   try {
-    const { userId } = req.params
-    const playlists = await model.getListPlaylistByIdUser(userId)
+    const { userId } = req.params;
+    const playlists = await model.getListPlaylistByIdUser(userId);
 
-    // Tạo một đối tượng Map để lưu trữ các playlist theo tên
+    // Tạo một đối tượng Map để lưu trữ các playlist theo tên và hình ảnh
     const playlistMap = new Map();
 
-    // Duyệt qua danh sách playlists và gộp chung name_artist cho các playlist cùng tên
     playlists.forEach(playlist => {
-      const { playlist_id, playlist_name, playlist_image, name_artist } = playlist;
-      if (playlistMap.has(playlist_name)) {
-        // Nếu playlist_name đã tồn tại trong Map, cập nhật name_artist
-        const existingPlaylist = playlistMap.get(playlist_name);
-
-        existingPlaylist.name_artist += `, ${name_artist}`;
+      if (playlistMap.has(playlist.playlist_user_name)) {
+        playlistMap.get(playlist.playlist_user_name).name_artist += ", " + playlist.name_artist;
       } else {
-        // Nếu playlist_name chưa tồn tại trong Map, thêm mới
-
-        playlistMap.set(playlist_name, { playlist_id, playlist_name, playlist_image, name_artist });
+        playlistMap.set(playlist.playlist_user_name, { ...playlist });
       }
     });
 
     // Chuyển đổi Map thành mảng và gửi về client
-    const mergedPlaylists = Array.from(playlistMap.values());
+     const mergedPlaylists = Array.from(playlistMap.values());
 
+    mergedPlaylists.forEach(playlist => {
+      playlist.song_image = playlists.find(p => p.playlist_user_name === playlist.playlist_user_name).song_image;
+    });
+  
     res.json({ status: 200, playlists: mergedPlaylists });
-
   } catch (error) {
-    res.json({ status: "400", message: error.message });
+    res.json({ status: 400, message: error.message });
   }
-
 }
+
 
 module.exports = {
   getListPlaylistController,
   getListPlaylistMoodTodayController,
-  createPlaylistLoveController,
-  getListPlaylistByUserIdController
+  getListPlaylistByUserIdController,
+  createPlaylistUserController
 }
