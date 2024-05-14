@@ -11,5 +11,6 @@ interface UserRepository {
     suspend fun createUser(userId: String): DataResult<Boolean>
     suspend fun getListPlaylistUser(userId: String): DataResult<ArrayList<PlaylistUser>>
     suspend fun createPlaylistUser(userId: String, namePlaylist: String): DataResult<Boolean>
+    suspend fun insertSongPlaylistUser(playlistUserId: Int, songId: Int): DataResult<Boolean>
     suspend fun deletePlaylistUser(playlistUserId: String): DataResult<Boolean>
 }

@@ -16,6 +16,11 @@ class UserRemoteImpl : UserDataSource {
         namePlaylist: String
     ) = ApiClient.apiService.createPlaylistUser(userId, namePlaylist)
 
+    override suspend fun insertSongPlaylistUser(
+        playlistUserId: Int,
+        songId: Int
+    ) = ApiClient.apiService.insertSongPlaylistUser(playlistUserId, songId)
+
     override suspend fun deletePlaylistUser(playlistUserId: String) =
         ApiClient.apiService.deletePlaylistUser(playlistUserId)
 }

@@ -42,25 +42,56 @@ const getListPlaylistByIdUser = async (userId) => {
     "RIGHT JOIN playlist_user as plu ON pus.playlist_user_id = plu.playlist_user_id " +
     "WHERE plu.user_id = ? " +
     "GROUP BY plu.playlist_user_id " +
-    "ORDER BY song_count DESC " 
-  
+    "ORDER BY song_count DESC "
+
   return await queryDatabase(query, [userId])
 }
 
-// xoa playlist user
-
+// Xóa playlist người dùng
 const deletePlaylistUserById = async (playlistUserId) => {
 
   const query = "DELETE FROM `playlist_user` WHERE `playlist_user_id` IN (?);"
-  
+
   return await queryDatabase(query, [playlistUserId])
 }
 
+// Thêm bài hát vào playlist người dùng
+const createSongIntoPlaylistByUserId = async (playlistUserId, songId) => {
+
+  const querySelect = "SELECT * FROM playlist_user_song " +
+    "WHERE playlist_user_id = ? AND song_id = ?"
+
+  const queryCreate = "INSERT INTO playlist_user_song(playlist_user_id, song_id) VALUES(?, ?)"
+
+  try {
+    // Bắt đầu giao dịch
+    await queryDatabase("START TRANSACTION");
+
+    // Thực hiện truy vấn 
+    const results = await queryDatabase(querySelect, [playlistUserId, songId]);
+
+    if (results.length > 0) {
+      await queryDatabase("ROLLBACK");
+      return { status: 409 };
+    } else {
+      await queryDatabase(queryCreate, [playlistUserId, songId]);
+      await queryDatabase("COMMIT");
+      return { status: 200 };
+    }
+
+  } catch (error) {
+    // Rollback giao dịch nếu có lỗi
+    await queryDatabase("ROLLBACK");
+    // Trả về kết quả lỗi và thông điệp lỗi
+    return { status: 400, message: error.message };
+  }
+}
 
 module.exports = {
   getListPlaylist,
   getListPlaylistMoodToday,
   createPlaylistUser,
   getListPlaylistByIdUser,
-  deletePlaylistUserById
+  deletePlaylistUserById,
+  createSongIntoPlaylistByUserId
 }

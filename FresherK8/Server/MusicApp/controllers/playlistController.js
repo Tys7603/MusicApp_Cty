@@ -71,7 +71,7 @@ const getListPlaylistByUserIdController = async (req, res) => {
     const defaultImageUrl = "https://iili.io/HlHy9Yx.png";
 
     const playlists = await model.getListPlaylistByIdUser(userId);
-  
+
     const updatedPlaylists = playlists.map(playlist => {
       if (!playlist.song_image) {
         playlist.song_image = defaultImageUrl;
@@ -79,7 +79,7 @@ const getListPlaylistByUserIdController = async (req, res) => {
       return playlist;
     });
 
-    res.json({ status: 200, playlists : updatedPlaylists });
+    res.json({ status: 200, playlists: updatedPlaylists });
   } catch (error) {
     res.json({ status: 400, message: error.message });
   }
@@ -99,11 +99,23 @@ const deletePlaylistUserByIdController = async (req, res) => {
   }
 }
 
+const createSongIntoPlaylistByUserIdController = async (req, res) => {
+  try {
+    const { playlistUserId, songId } = req.body;
+
+    const playlists = await model.createSongIntoPlaylistByUserId(playlistUserId, songId);
+
+    res.json(playlists);
+  } catch (error) {
+    res.json({ status: 400, message: error.message });
+  }
+}
 
 module.exports = {
   getListPlaylistController,
   getListPlaylistMoodTodayController,
   getListPlaylistByUserIdController,
   createPlaylistUserController,
-  deletePlaylistUserByIdController
+  deletePlaylistUserByIdController,
+  createSongIntoPlaylistByUserIdController
 }

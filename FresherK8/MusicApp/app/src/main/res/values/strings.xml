@@ -53,4 +53,6 @@
     <string name="ch_n_playlist">Chọn playlist</string>
     <string name="ch_n_t_t_c">Chọn tất cả</string>
     <string name="x_a">Xóa</string>
+    <string name="th_m_v_o_playlist">Thêm vào playlist</string>
+    <string name="ch_n_playlist_th_m_b_i_h_t_v_o">Chọn playlist để thêm bài hát vào</string>
 </resources>

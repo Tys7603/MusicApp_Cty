@@ -23,6 +23,8 @@ import com.example.musicapp.databinding.FragmentMusicBinding
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.shared.utils.constant.Constant.KEY_PLAY_CLICK
 import com.example.musicapp.screen.base.BaseService
+import com.example.musicapp.screen.music.adapter.BottomSheetAddSongPlaylist
+import com.example.musicapp.screen.user.adapter.BottomSheetPlaylist
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.utils.BooleanProperty
@@ -135,6 +137,14 @@ class MusicFragment : Fragment(), BaseService {
             }
         })
         binding.btnAddLove.setOnClickListener { checkUserLogin() }
+        binding.btnAddPlaylist.setOnClickListener { openBottomSheet() }
+    }
+
+    private fun openBottomSheet() {
+        position = sharedPreferences.getInt(KEY_POSITION, 0)
+        val bottomSheet = BottomSheetAddSongPlaylist(mSongs!![position], binding.btnPlay)
+        bottomSheet.show(parentFragmentManager, bottomSheet.tag)
+        bottomSheet.isCancelable = false
     }
 
     private fun checkUserLogin() {

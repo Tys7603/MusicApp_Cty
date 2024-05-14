@@ -2,6 +2,7 @@ package com.example.musicapp.shared.utils.constant
 
 object Constant {
     const val STATUS = 200
+    const val STATUS_DUPLICATE = 409
     const val TAG_ERROR = "Error"
     const val SONG_COMPLETED = "song_completed"
     const val URL_IMAGE = "https://cdn-icons-png.flaticon.com/512/1053/1053244.png"

@@ -15,6 +15,9 @@ class PlaylistUserViewModel(private val userRepository: UserRepository) : BaseVi
     private val _isCreatePlaylist = MutableLiveData<Boolean>()
     val isCreatePlaylist: LiveData<Boolean> = _isCreatePlaylist
 
+    private val _isInsertSongPlaylist = MutableLiveData<Boolean>()
+    val isInsertSongPlaylist: LiveData<Boolean> = _isInsertSongPlaylist
+
     var playlistName = ""
 
     init {
@@ -43,6 +46,18 @@ class PlaylistUserViewModel(private val userRepository: UserRepository) : BaseVi
                 onError = { exception.value = it }
             )
         }
+    }
+
+    fun insertSongPlaylistUser(
+        playlistUserId: Int,
+        songId: Int
+    ) {
+        launchTaskSync(
+            onRequest = { userRepository.insertSongPlaylistUser(playlistUserId, songId) },
+            onSuccess = { _isInsertSongPlaylist.value = it },
+            onFailure = { Log.e("createPlaylistUser", "Failed: $it") },
+            onError = { exception.value = it }
+        )
     }
 
     fun deletePlaylistUser(playlistsUserId: String) {

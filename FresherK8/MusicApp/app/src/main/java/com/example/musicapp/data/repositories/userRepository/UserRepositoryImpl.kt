@@ -5,9 +5,9 @@ import com.example.musicapp.data.source.UserDataSource
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.utils.scheduler.DataResult
 
-class UserRepositoryImpl (private val dataSource: UserDataSource) : UserRepository {
+class UserRepositoryImpl(private val dataSource: UserDataSource) : UserRepository {
 
-    override suspend fun createUser(userId : String) : DataResult<Boolean>{
+    override suspend fun createUser(userId: String): DataResult<Boolean> {
         return try {
             val response = dataSource.createUser(userId)
             if (response.body() != null && response.body()!!.status == Constant.STATUS) {
@@ -41,6 +41,24 @@ class UserRepositoryImpl (private val dataSource: UserDataSource) : UserReposito
             val response = dataSource.createPlaylistUser(userId, namePlaylist)
             if (response.body() != null && response.body()!!.status == Constant.STATUS) {
                 DataResult.Success(true)
+            } else {
+                DataResult.Failure(Constant.CALL_API_ERROR)
+            }
+        } catch (e: Exception) {
+            DataResult.Error(e)
+        }
+    }
+
+    override suspend fun insertSongPlaylistUser(
+        playlistUserId: Int,
+        songId: Int
+    ): DataResult<Boolean> {
+        return try {
+            val response = dataSource.insertSongPlaylistUser(playlistUserId, songId)
+            if (response.body() != null && response.body()!!.status == Constant.STATUS) {
+                DataResult.Success(true)
+            } else if (response.body() != null && response.body()!!.status == Constant.STATUS_DUPLICATE) {
+                DataResult.Success(false)
             } else {
                 DataResult.Failure(Constant.CALL_API_ERROR)
             }
