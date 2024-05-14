@@ -28,6 +28,7 @@
     <string name="playlist_t_o">Playlist Đã Tạo</string>
     <string name="playlist_y_u_th_ch">Playlist Yêu Thích</string>
     <string name="_0_b_i_h_t">0 bài hát</string>
+    <string name="b_i_h_t">&#160; bài hát</string>
     <string name="song">&#160;track</string>
     <string name="y_u_th_ch">Yêu thích</string>
     <string name="t_i">Đã tải</string>
@@ -48,4 +49,7 @@
     <string name="xem_ti_p">Xem tiếp</string>
     <string name="kh_ng_c_video_nh_c_n_o">Không có video nhạc nào</string>
     <string name="_10s">10s</string>
+    <string name="img_pla">https://iili.io/HlHy9Yx.png</string>
+    <string name="ch_n_playlist">Chọn playlist</string>
+    <string name="ch_n_t_t_c">Chọn tất cả</string>
 </resources>

@@ -68,27 +68,34 @@ const createPlaylistUserController = async (req, res) => {
 const getListPlaylistByUserIdController = async (req, res) => {
   try {
     const { userId } = req.params;
+    const defaultImageUrl = "https://iili.io/HlHy9Yx.png";
+
     const playlists = await model.getListPlaylistByIdUser(userId);
-
-    // Tạo một đối tượng Map để lưu trữ các playlist theo tên và hình ảnh
-    const playlistMap = new Map();
-
-    playlists.forEach(playlist => {
-      if (playlistMap.has(playlist.playlist_user_name)) {
-        playlistMap.get(playlist.playlist_user_name).name_artist += ", " + playlist.name_artist;
-      } else {
-        playlistMap.set(playlist.playlist_user_name, { ...playlist });
-      }
-    });
-
-    // Chuyển đổi Map thành mảng và gửi về client
-     const mergedPlaylists = Array.from(playlistMap.values());
-
-    mergedPlaylists.forEach(playlist => {
-      playlist.song_image = playlists.find(p => p.playlist_user_name === playlist.playlist_user_name).song_image;
-    });
   
-    res.json({ status: 200, playlists: mergedPlaylists });
+    const updatedPlaylists = playlists.map(playlist => {
+      if (!playlist.song_image) {
+        playlist.song_image = defaultImageUrl;
+      }
+      return playlist;
+    });
+
+    res.json({ status: 200, playlists : updatedPlaylists });
+  } catch (error) {
+    res.json({ status: 400, message: error.message });
+  }
+}
+
+const deletePlaylistUserByIdController = async (req, res) => {
+  try {
+    const { playlistUserId } = req.body;
+
+    const listPlaylistUser = JSON.parse(playlistUserId)
+
+    console.log(listPlaylistUser)
+
+    const playlists = await model.deletePlaylistUserById(listPlaylistUser);
+
+    res.json({ status: 200, playlists });
   } catch (error) {
     res.json({ status: 400, message: error.message });
   }
@@ -99,5 +106,6 @@ module.exports = {
   getListPlaylistController,
   getListPlaylistMoodTodayController,
   getListPlaylistByUserIdController,
-  createPlaylistUserController
+  createPlaylistUserController,
+  deletePlaylistUserByIdController
 }

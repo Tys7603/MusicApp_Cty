@@ -8,7 +8,7 @@ object ManagerUrl {
     const val GET_PLAYLIST = "playlists"
     const val GET_PLAYLIST_MODE_TODAY = "playlists/mood/today"
     const val GET_PLAYLIST_USER = "playlists/{userId}"
-    const val CREATE_PLAYLIST_USER = "playlists/user"
+    const val CREATE_PLAYLIST_USER = "playlist/user"
 
     // category and topic
     const val GET_TOPICS = "topics"

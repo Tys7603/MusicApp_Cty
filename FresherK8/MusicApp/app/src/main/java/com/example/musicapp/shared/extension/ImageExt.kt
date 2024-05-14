@@ -9,11 +9,15 @@ import com.example.musicapp.R
 
 @BindingAdapter("imageUrl")
 fun ImageView.loadImageUrl(url : String){
-    Glide.with(context)
-        .load(url)
-        .centerCrop()
-        .placeholder(R.drawable.img_placeholder)
-        .into(this)
+    if (url.isEmpty()) {
+        this.setImageResource(R.drawable.img_placeholder)
+    } else {
+        Glide.with(context)
+            .load(url)
+            .centerCrop()
+            .placeholder(R.drawable.img_placeholder)
+            .into(this)
+    }
 }
 
 @BindingAdapter("imageUrlUser")

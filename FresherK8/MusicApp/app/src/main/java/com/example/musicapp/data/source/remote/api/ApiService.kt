@@ -51,6 +51,7 @@ interface ApiService {
     @GET(GET_PLAYLIST_USER)
     suspend fun getListPlaylistUser(@Path("userId") userId: String): Response<PlaylistUserRepository>
 
+    @FormUrlEncoded
     @POST(CREATE_PLAYLIST_USER)
     suspend fun createPlaylistUser(
         @Field("userId") userId: String,

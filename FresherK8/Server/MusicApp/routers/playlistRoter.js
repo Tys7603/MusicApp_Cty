@@ -7,5 +7,6 @@ router.get('/playlists', controller.getListPlaylistController);
 router.get('/playlists/mood/today', controller.getListPlaylistMoodTodayController);
 router.post('/playlist/user', controller.createPlaylistUserController);
 router.get('/playlists/:userId', controller.getListPlaylistByUserIdController);
+router.delete('/playlistsUser', controller.deletePlaylistUserByIdController);
 
 module.exports = router;
