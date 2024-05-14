@@ -8,12 +8,12 @@ import com.example.musicapp.data.repositories.userRepository.UserRepository
 import com.example.musicapp.shared.base.BaseViewModel
 import com.google.firebase.auth.FirebaseAuth
 
-class PlaylistUserViewModel (private val userRepository: UserRepository) : BaseViewModel() {
+class PlaylistUserViewModel(private val userRepository: UserRepository) : BaseViewModel() {
     private val _playlistsUser = MutableLiveData<ArrayList<PlaylistUser>>()
-    val playlistUser : LiveData<ArrayList<PlaylistUser>> = _playlistsUser
+    val playlistUser: LiveData<ArrayList<PlaylistUser>> = _playlistsUser
 
-    private val _isCreatePlaylist= MutableLiveData<Boolean>()
-    val isCreatePlaylist : LiveData<Boolean> = _isCreatePlaylist
+    private val _isCreatePlaylist = MutableLiveData<Boolean>()
+    val isCreatePlaylist: LiveData<Boolean> = _isCreatePlaylist
 
     var playlistName = ""
 
@@ -33,7 +33,7 @@ class PlaylistUserViewModel (private val userRepository: UserRepository) : BaseV
         }
     }
 
-    fun createPlaylistUser(){
+    fun createPlaylistUser() {
         val user = FirebaseAuth.getInstance().currentUser
         user?.let {
             launchTaskSync(
@@ -43,5 +43,14 @@ class PlaylistUserViewModel (private val userRepository: UserRepository) : BaseV
                 onError = { exception.value = it }
             )
         }
+    }
+
+    fun deletePlaylistUser(playlistsUserId: String) {
+        launchTaskSync(
+            onRequest = { userRepository.deletePlaylistUser(playlistsUserId) },
+            onSuccess = { fetchPlaylistsUser() },
+            onFailure = { Log.e("TAG", "onFailure: $it") },
+            onError = { Log.e("TAG", "onError: $it") }
+        )
     }
 }

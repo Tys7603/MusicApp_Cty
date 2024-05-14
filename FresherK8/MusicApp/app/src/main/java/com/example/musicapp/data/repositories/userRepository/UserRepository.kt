@@ -8,8 +8,8 @@ import com.example.musicapp.shared.utils.scheduler.DataResult
 import retrofit2.Response
 
 interface UserRepository {
-    suspend fun createUser(userId : String) : DataResult<Boolean>
+    suspend fun createUser(userId: String): DataResult<Boolean>
     suspend fun getListPlaylistUser(userId: String): DataResult<ArrayList<PlaylistUser>>
-    suspend fun createPlaylistUser(userId: String, namePlaylist: String) : DataResult<Boolean>
-
+    suspend fun createPlaylistUser(userId: String, namePlaylist: String): DataResult<Boolean>
+    suspend fun deletePlaylistUser(playlistUserId: String): DataResult<Boolean>
 }

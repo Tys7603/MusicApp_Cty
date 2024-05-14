@@ -48,4 +48,17 @@ class UserRepositoryImpl (private val dataSource: UserDataSource) : UserReposito
             DataResult.Error(e)
         }
     }
+
+    override suspend fun deletePlaylistUser(playlistUserId: String): DataResult<Boolean> {
+        return try {
+            val response = dataSource.deletePlaylistUser(playlistUserId)
+            if (response.body() != null && response.body()!!.status == Constant.STATUS) {
+                DataResult.Success(true)
+            } else {
+                DataResult.Failure(Constant.CALL_API_ERROR)
+            }
+        } catch (e: Exception) {
+            DataResult.Error(e)
+        }
+    }
 }

@@ -20,15 +20,17 @@ import com.example.musicapp.shared.widget.SnackBarManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BottomSheetSelect(
-    private val mListener : () -> Unit,
-    private val keySelect : String
+    private val mListener: () -> Unit,
+    private val keySelect: String
 ) : BottomSheetDialogFragment() {
     private var binding: LayoutBottomSheetSelectBinding? = null
     private val viewModel: PlaylistUserViewModel by viewModel()
     private val playlistUserAdapter = PlaylistUserAdapter(::onItemClick, 1)
+    private var mPlaylistsUser: ArrayList<Int>? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val mBottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
@@ -47,7 +49,6 @@ class BottomSheetSelect(
             }
         }
 
-
         return mBottomSheetDialog
     }
 
@@ -59,13 +60,32 @@ class BottomSheetSelect(
     }
 
     private fun handlerEventViewModel() {
-        viewModel.playlistUser.observe(this){
+        viewModel.playlistUser.observe(this) {
             playlistUserAdapter.submitList(it)
         }
     }
 
     private fun handlerEvent() {
-        binding!!.btnCancel.setOnClickListener { dismiss() }
+        binding!!.btnCancel.setOnClickListener {
+            dismiss()
+            mListener.invoke()
+        }
+        binding!!.cbSelectAll.setOnClickListener {
+            val isChecked = binding!!.cbSelectAll.isChecked
+            if (!isChecked) {
+                playlistUserAdapter.noSelectAllItem()
+                binding!!.cbSelectAll.text = SELECT_ALL
+            } else {
+                playlistUserAdapter.selectAllItem()
+                binding!!.cbSelectAll.text = NO_SELECT
+            }
+        }
+        binding!!.btnDeletePlaylistUser.setOnClickListener {
+            val listString = Gson().toJson(mPlaylistsUser!!)
+            viewModel.deletePlaylistUser(
+                listString
+            )
+        }
     }
 
     private fun initViewModel() {
@@ -73,18 +93,41 @@ class BottomSheetSelect(
         binding!!.lifecycleOwner = this
     }
 
-
     private fun initRecyclerView() {
+        mPlaylistsUser = ArrayList()
         binding!!.rcvPlaylistSelect.setAdapterLinearVertical(playlistUserAdapter)
     }
 
+    private fun onItemClick(boolean: Boolean, any: Any) {
+        when (any) {
+            is PlaylistUser -> {
+                if (boolean) {
+                    mPlaylistsUser!!.add(any.playlistUserId)
+                } else {
+                    mPlaylistsUser!!.remove(any.playlistUserId)
+                }
+            }
 
-    private fun onItemClick(playlistUser: PlaylistUser){
+            is Boolean -> {
+                if (boolean) {
+                    binding!!.cbSelectAll.text = NO_SELECT
+                    binding!!.cbSelectAll.isChecked = true
+                } else {
+                    binding!!.cbSelectAll.text = SELECT_ALL
+                    binding!!.cbSelectAll.isChecked = false
+                }
+            }
+        }
+    }
 
+    companion object {
+        const val SELECT_ALL = "Chọn tất cả"
+        const val NO_SELECT = "Bỏ chọn"
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+        mPlaylistsUser = null
     }
 }

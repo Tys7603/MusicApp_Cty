@@ -49,7 +49,7 @@
             app:srcCompat="@drawable/baseline_close_24" />
 
         <CheckBox
-            android:id="@+id/checkBox3"
+            android:id="@+id/cb_select_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -65,10 +65,10 @@
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+            app:layout_constraintBottom_toTopOf="@+id/btn_delete_playlist_user"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/checkBox3"
+            app:layout_constraintTop_toBottomOf="@+id/cb_select_all"
             app:layout_constraintVertical_bias="0.0"
             tools:itemCount="4"
             tools:listitem="@layout/item_select_playlist">
@@ -76,7 +76,7 @@
         </androidx.recyclerview.widget.RecyclerView>
 
         <LinearLayout
-            android:id="@+id/linearLayout3"
+            android:id="@+id/btn_delete_playlist_user"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:orientation="horizontal"
@@ -92,7 +92,7 @@
                 style="@style/TextTile"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Xóa" />
+                android:text="@string/x_a" />
         </LinearLayout>
 
 

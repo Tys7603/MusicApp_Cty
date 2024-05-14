@@ -87,11 +87,9 @@ const getListPlaylistByUserIdController = async (req, res) => {
 
 const deletePlaylistUserByIdController = async (req, res) => {
   try {
-    const { playlistUserId } = req.body;
+    const { playlistUserId } = req.query;
 
     const listPlaylistUser = JSON.parse(playlistUserId)
-
-    console.log(listPlaylistUser)
 
     const playlists = await model.deletePlaylistUserById(listPlaylistUser);
 

@@ -51,9 +51,6 @@ const getListPlaylistByIdUser = async (userId) => {
 
 const deletePlaylistUserById = async (playlistUserId) => {
 
-
-  console.log(playlistUserId)
-
   const query = "DELETE FROM `playlist_user` WHERE `playlist_user_id` IN (?);"
   
   return await queryDatabase(query, [playlistUserId])

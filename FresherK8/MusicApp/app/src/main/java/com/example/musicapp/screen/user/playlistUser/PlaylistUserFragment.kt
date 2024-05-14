@@ -60,19 +60,20 @@ class PlaylistUserFragment : Fragment() {
     private fun openBottomSheetCreatePlaylist() {
         val bottomSheet = BottomSheetPlaylist(::onItemClickBottomSheet)
         bottomSheet.show(parentFragmentManager, bottomSheet.tag)
+        bottomSheet.isCancelable = false
     }
 
     private fun openBottomSheetSelectPlaylist() {
         val bottomSheet = BottomSheetSelect(::onItemClickBottomSheet, "playlistSelect")
         bottomSheet.show(parentFragmentManager, bottomSheet.tag)
+        bottomSheet.isCancelable = false
     }
 
     private fun onItemClickBottomSheet(){
         viewModel.fetchPlaylistsUser()
     }
 
-    private fun onItemClick(playlistUser: PlaylistUser){
+    private fun onItemClick(boolean: Boolean, any: Any){
 
     }
-
 }

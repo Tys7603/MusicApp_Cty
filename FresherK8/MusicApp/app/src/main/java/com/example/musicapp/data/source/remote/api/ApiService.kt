@@ -23,6 +23,7 @@ import com.example.musicapp.data.model.reponse.TopicRepository
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_PLAYLIST_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_USER
+import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_PLAYLIST_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO_EXCLUDING_ID
@@ -38,6 +39,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
 
@@ -56,6 +58,11 @@ interface ApiService {
     suspend fun createPlaylistUser(
         @Field("userId") userId: String,
         @Field("namePlaylist") namePlaylist: String
+    ): Response<Status>
+
+    @DELETE(DELETE_PLAYLIST_USER)
+    suspend fun deletePlaylistUser(
+        @Query("playlistUserId") playlistUserId: String
     ): Response<Status>
 
     // Categories and topic

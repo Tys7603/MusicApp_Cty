@@ -1,5 +1,6 @@
 package com.example.musicapp.screen.user.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -10,8 +11,8 @@ import com.example.musicapp.databinding.ItemSelectPlaylistBinding
 import com.example.musicapp.shared.utils.GenericDiffCallback
 
 class PlaylistUserAdapter(
-    private var mListener: (PlaylistUser) -> Unit,
-    private var type : Int
+    private var mListener: (Boolean, Any) -> Unit,
+    private var type: Int
 ) : ListAdapter<PlaylistUser, RecyclerView.ViewHolder>(GenericDiffCallback<PlaylistUser>()) {
 
     companion object {
@@ -20,17 +21,27 @@ class PlaylistUserAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when(viewType){
+        return when (viewType) {
             TYPE_SELECT -> {
                 val binding =
-                    ItemSelectPlaylistBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                    ItemSelectPlaylistBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
                 PlaylistUserSelectViewHolder(binding)
             }
+
             TYPE_FRAGMENT -> {
                 val binding =
-                    ItemPlaylistListUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                    ItemPlaylistListUserBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
                 PlaylistUserFragmentViewHolder(binding)
             }
+
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -43,27 +54,57 @@ class PlaylistUserAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (type == TYPE_SELECT){
+        return if (type == TYPE_SELECT) {
             TYPE_SELECT
-        }else{
+        } else {
             TYPE_FRAGMENT
         }
     }
 
-    inner class PlaylistUserFragmentViewHolder(val binding: ItemPlaylistListUserBinding) : RecyclerView.ViewHolder(binding.root) {
+    @SuppressLint("NotifyDataSetChanged")
+    fun selectAllItem() {
+        currentList.forEach { it.isSelected = true }
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun noSelectAllItem() {
+        currentList.forEach { it.isSelected = false }
+        notifyDataSetChanged()
+    }
+
+    fun checkBoxSelectAll(): Boolean {
+        for (plU in currentList) {
+            if (!plU.isSelected) {
+                return false
+            }
+        }
+        return true
+    }
+
+    inner class PlaylistUserFragmentViewHolder(val binding: ItemPlaylistListUserBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(playlistUser: PlaylistUser) {
             binding.playlistUser = playlistUser
             binding.root.setOnClickListener {
-                mListener.invoke(playlistUser)
+                mListener.invoke(true, playlistUser)
             }
         }
     }
 
-    inner class PlaylistUserSelectViewHolder(val binding: ItemSelectPlaylistBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class PlaylistUserSelectViewHolder(val binding: ItemSelectPlaylistBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(playlistUser: PlaylistUser) {
             binding.playlistUser = playlistUser
-            binding.root.setOnClickListener {
-                mListener.invoke(playlistUser)
+            binding.checkBox2.isChecked = playlistUser.isSelected
+            binding.checkBox2.setOnCheckedChangeListener { _, isChecked ->
+                playlistUser.isSelected = isChecked
+                if (checkBoxSelectAll()) {
+                    mListener.invoke(true, Boolean)
+                } else {
+                    mListener.invoke(false, Boolean)
+                }
+                mListener.invoke(isChecked, playlistUser)
             }
         }
     }

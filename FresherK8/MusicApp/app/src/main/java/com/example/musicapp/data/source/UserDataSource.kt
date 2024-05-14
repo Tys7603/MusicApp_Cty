@@ -9,4 +9,5 @@ interface UserDataSource {
     suspend fun createUser(userId: String): Response<User>
     suspend fun getListPlaylistUser(userId: String): Response<PlaylistUserRepository>
     suspend fun createPlaylistUser(userId: String, namePlaylist: String): Response<Status>
+    suspend fun deletePlaylistUser(playlistUserId: String): Response<Status>
 }
