@@ -12,17 +12,17 @@ import com.example.musicapp.shared.utils.GenericDiffCallback
 
 class TopicMVAdapter(
     private val mListener: (Topic) -> Unit
-) : ListAdapter<Topic, TopicMVAdapter.ViewHolder>(GenericDiffCallback<Topic>()) {
+) : ListAdapter<Topic, TopicMVAdapter.TopicMVViewHolder>(GenericDiffCallback<Topic>()) {
 
     private var selectedItem = 0
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopicMVViewHolder {
         val binding =
             ItemTopicMvBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+        return TopicMVViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TopicMVViewHolder, position: Int) {
         holder.bind(currentList[position], selectedItem == position)
     }
 
@@ -50,7 +50,7 @@ class TopicMVAdapter(
         )
     }
 
-    inner class ViewHolder(val binding: ItemTopicMvBinding) :
+    inner class TopicMVViewHolder(val binding: ItemTopicMvBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(topic: Topic, isSelected: Boolean) {

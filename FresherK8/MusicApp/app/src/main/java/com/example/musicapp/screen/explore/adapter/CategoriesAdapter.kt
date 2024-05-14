@@ -2,7 +2,6 @@ package com.example.musicapp.screen.explore.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.databinding.ItemCategoryBinding
@@ -12,23 +11,23 @@ import kotlin.math.min
 
 class CategoriesAdapter(
     private var mListener: (Category) -> Unit
-) : ListAdapter<Category, CategoriesAdapter.ViewHolder>(GenericDiffCallback<Category>()) {
+) : ListAdapter<Category, CategoriesAdapter.CategoriesViewHolder>(GenericDiffCallback<Category>()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesViewHolder {
         val binding =
             ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+        return CategoriesViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
         return min(currentList.size, 8)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CategoriesViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
 
-    inner class ViewHolder(private val binding: ItemCategoryBinding) :
+    inner class CategoriesViewHolder(private val binding: ItemCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(category: Category) {
             binding.category = category

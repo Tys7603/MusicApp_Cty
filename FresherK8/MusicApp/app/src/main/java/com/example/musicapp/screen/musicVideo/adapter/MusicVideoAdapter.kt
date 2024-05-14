@@ -10,19 +10,19 @@ import com.example.musicapp.shared.utils.GenericDiffCallback
 
 class MusicVideoAdapter(
     private val mListener: (MusicVideo) -> Unit,
-) : ListAdapter<MusicVideo, MusicVideoAdapter.ViewHolder>(GenericDiffCallback<MusicVideo>()) {
+) : ListAdapter<MusicVideo, MusicVideoAdapter.MusicVideoViewHolder>(GenericDiffCallback<MusicVideo>()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicVideoViewHolder {
         val binding =
             ItemMvBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+        return MusicVideoViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MusicVideoViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
 
-    inner class ViewHolder(val binding: ItemMvBinding) :
+    inner class MusicVideoViewHolder(val binding: ItemMvBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(musicVideo: MusicVideo) {

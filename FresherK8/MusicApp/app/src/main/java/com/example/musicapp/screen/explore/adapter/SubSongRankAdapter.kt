@@ -10,22 +10,22 @@ import com.example.musicapp.data.model.Song
 import com.example.musicapp.shared.utils.GenericDiffCallback
 import kotlin.math.min
 
-class SubSongRankAdapter : ListAdapter<Song, SubSongRankAdapter.ViewHolder>(GenericDiffCallback<Song>()) {
+class SubSongRankAdapter : ListAdapter<Song, SubSongRankAdapter.SubSongRankViewHolder>(GenericDiffCallback<Song>()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubSongRankViewHolder {
         val binding = ItemSocialRankBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+        return SubSongRankViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
         return min(currentList.size, 5)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SubSongRankViewHolder, position: Int) {
         holder.bind(currentList[position], position)
     }
 
-    class ViewHolder(private val binding: ItemSocialRankBinding) :
+    class SubSongRankViewHolder(private val binding: ItemSocialRankBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
         fun bind(song: Song, position: Int) {

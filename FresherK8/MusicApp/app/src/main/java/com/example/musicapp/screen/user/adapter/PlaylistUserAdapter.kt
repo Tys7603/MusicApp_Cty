@@ -2,14 +2,11 @@ package com.example.musicapp.screen.user.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.data.model.PlaylistUser
-import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.ItemPlaylistListUserBinding
 import com.example.musicapp.databinding.ItemSelectPlaylistBinding
-import com.example.musicapp.databinding.ItemSongListBinding
 import com.example.musicapp.shared.utils.GenericDiffCallback
 
 class PlaylistUserAdapter(
@@ -27,12 +24,12 @@ class PlaylistUserAdapter(
             TYPE_SELECT -> {
                 val binding =
                     ItemSelectPlaylistBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                ViewHolderPlaylistUserSelect(binding)
+                PlaylistUserSelectViewHolder(binding)
             }
             TYPE_FRAGMENT -> {
                 val binding =
                     ItemPlaylistListUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                ViewHolderPlaylistUserFragment(binding)
+                PlaylistUserFragmentViewHolder(binding)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -40,8 +37,8 @@ class PlaylistUserAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ViewHolderPlaylistUserFragment -> holder.bind(currentList[position])
-            is ViewHolderPlaylistUserSelect -> holder.bind(currentList[position])
+            is PlaylistUserFragmentViewHolder -> holder.bind(currentList[position])
+            is PlaylistUserSelectViewHolder -> holder.bind(currentList[position])
         }
     }
 
@@ -53,7 +50,7 @@ class PlaylistUserAdapter(
         }
     }
 
-    inner class ViewHolderPlaylistUserFragment(val binding: ItemPlaylistListUserBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class PlaylistUserFragmentViewHolder(val binding: ItemPlaylistListUserBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(playlistUser: PlaylistUser) {
             binding.playlistUser = playlistUser
             binding.root.setOnClickListener {
@@ -62,7 +59,7 @@ class PlaylistUserAdapter(
         }
     }
 
-    inner class ViewHolderPlaylistUserSelect(val binding: ItemSelectPlaylistBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class PlaylistUserSelectViewHolder(val binding: ItemSelectPlaylistBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(playlistUser: PlaylistUser) {
             binding.playlistUser = playlistUser
             binding.root.setOnClickListener {
