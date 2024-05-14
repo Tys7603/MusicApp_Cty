@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.data.model.Album
-import com.example.musicapp.databinding.ItemAlbumNewBinding
+import com.example.musicapp.databinding.ItemAlbumBinding
 import com.example.musicapp.shared.utils.GenericDiffCallback
 import kotlin.math.min
 
@@ -15,7 +15,7 @@ class AlbumAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumViewHolder {
         val binding =
-            ItemAlbumNewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemAlbumBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return AlbumViewHolder(binding)
     }
 
@@ -27,7 +27,7 @@ class AlbumAdapter(
         holder.bind(currentList[position])
     }
 
-    inner class AlbumViewHolder(private val binding: ItemAlbumNewBinding) :
+    inner class AlbumViewHolder(private val binding: ItemAlbumBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(album: Album) {
             binding.albumLove = album
