@@ -48,7 +48,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
             app:cardCornerRadius="10dp"
-            app:layout_constraintBottom_toTopOf="@+id/tv_name_song"
+            app:layout_constraintBottom_toTopOf="@+id/btn_lyrics"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,8 +56,8 @@
 
             <ImageView
                 android:id="@+id/img_song"
-                android:layout_width="300dp"
-                android:layout_height="300dp"
+                android:layout_width="260dp"
+                android:layout_height="260dp"
                 app:srcCompat="@drawable/img_placeholder" />
         </androidx.cardview.widget.CardView>
 
@@ -74,6 +74,17 @@
             app:layout_constraintBottom_toTopOf="@+id/tv_name_artist_song"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/btn_lyrics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="@string/ch_m_v_o_xem_l_i_b_i_h_t"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/tv_name_song"
+            app:layout_constraintEnd_toEndOf="@+id/layout"
+            app:layout_constraintStart_toStartOf="@+id/layout" />
 
         <TextView
             android:id="@+id/tv_name_artist_song"
