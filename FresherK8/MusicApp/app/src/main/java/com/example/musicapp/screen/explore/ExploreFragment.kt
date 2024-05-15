@@ -2,6 +2,7 @@ package com.example.musicapp.screen.explore
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -22,12 +23,14 @@ import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.FragmentExploreBinding
+import com.example.musicapp.screen.musicVideoDetail.MusicVideoDetailActivity
 import com.example.musicapp.screen.song.SongActivity
 import com.example.musicapp.screen.songDetail.SongDetailActivity
 import com.example.musicapp.screen.topic.TopicActivity
 import com.example.musicapp.shared.extension.setAdapterGrid
 import com.example.musicapp.shared.extension.setAdapterLinearHorizontal
 import com.example.musicapp.shared.utils.GetValue
+import com.example.musicapp.shared.utils.constant.Constant.KEY_INTENT_ITEM
 import java.util.Random
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -129,28 +132,19 @@ class ExploreFragment : Fragment() {
         when (item) {
             is Playlist -> {
                 val intent = Intent(requireContext(), SongDetailActivity::class.java)
-                val bundle = Bundle().apply {
-                    putParcelable(Constant.KEY_INTENT_ITEM, item)
-                }
-                intent.putExtra(KEY_BUNDLE_ITEM, bundle)
+                intent.putExtra(KEY_INTENT_ITEM, item)
                 startActivity(intent)
             }
 
             is Category -> {
                 val intent = Intent(requireContext(), TopicActivity::class.java)
-                val bundle = Bundle().apply {
-                    putParcelable(Constant.KEY_INTENT_ITEM, item)
-                }
-                intent.putExtra(KEY_BUNDLE_ITEM, bundle)
+                intent.putExtra(KEY_INTENT_ITEM, item)
                 startActivity(intent)
             }
 
             is Topic -> {
                 val intent = Intent(requireContext(), SongDetailActivity::class.java)
-                val bundle = Bundle().apply {
-                    putParcelable(Constant.KEY_INTENT_ITEM, item)
-                }
-                intent.putExtra(KEY_BUNDLE_ITEM, bundle)
+                intent.putExtra(KEY_INTENT_ITEM, item)
                 startActivity(intent)
             }
 
@@ -161,10 +155,7 @@ class ExploreFragment : Fragment() {
 
             is Album -> {
                 val intent = Intent(requireContext(), SongDetailActivity::class.java)
-                val bundle = Bundle().apply {
-                    putParcelable(Constant.KEY_INTENT_ITEM, item)
-                }
-                intent.putExtra(KEY_BUNDLE_ITEM, bundle)
+                intent.putExtra(KEY_INTENT_ITEM, item)
                 startActivity(intent)
             }
         }

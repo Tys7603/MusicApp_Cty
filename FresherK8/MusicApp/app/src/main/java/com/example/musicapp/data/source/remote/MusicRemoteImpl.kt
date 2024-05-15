@@ -1,7 +1,9 @@
 package com.example.musicapp.data.source.remote
 
+import com.example.musicapp.data.model.reponse.SongRepository
 import com.example.musicapp.data.source.MusicDataSource
 import com.example.musicapp.data.source.remote.api.ApiClient
+import retrofit2.Response
 
 
 class MusicRemoteImpl : MusicDataSource.Remote{
@@ -15,5 +17,11 @@ class MusicRemoteImpl : MusicDataSource.Remote{
     override suspend fun deleteSongLove(songLoveId: Int) = ApiClient.apiService.deleteSongLove(songLoveId)
 
     override suspend fun getListSongAgain(user: String) = ApiClient.apiService.getListSongAgain(user)
+
+    override suspend fun getListSongTopic(id: Int) = ApiClient.apiService.getListSongTopicById(id)
+
+    override suspend fun getListSongPlaylist(id: Int) = ApiClient.apiService.getListSongPlaylistById(id)
+
+    override suspend fun getListSongAlbum(id: Int) = ApiClient.apiService.getListSongAlbumById(id)
 
 }

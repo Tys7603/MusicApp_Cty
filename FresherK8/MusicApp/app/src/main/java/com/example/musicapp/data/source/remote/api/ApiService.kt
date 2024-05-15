@@ -30,6 +30,7 @@ import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO_EXCLUDING_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_PLAYLIST_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_PLAYLIST_USER
+import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_ALBUM_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_PLAYLIST_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_TOPIC_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_LOVE
@@ -108,6 +109,9 @@ interface ApiService {
 
     @GET(GET_SONG_BY_TOPIC_ID)
     suspend fun getListSongTopicById(@Path("topicId") topicId: Int): Response<SongRepository>
+
+    @GET(GET_SONG_BY_ALBUM_ID)
+    suspend fun getListSongAlbumById(@Path("albumId") albumId: Int): Response<SongRepository>
 
     @FormUrlEncoded
     @POST(CREATE_SONG_LOVE)

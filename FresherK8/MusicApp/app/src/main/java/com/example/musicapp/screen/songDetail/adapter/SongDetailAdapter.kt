@@ -9,7 +9,7 @@ import com.example.musicapp.databinding.ItemSongListBinding
 import com.example.musicapp.shared.utils.GenericDiffCallback
 
 class SongDetailAdapter(
-    private var mListener: (Song) -> Unit
+    private var mListener: (Song, Int) -> Unit
 ) : ListAdapter<Song, SongDetailAdapter.SongDetailViewHolder>(GenericDiffCallback<Song>()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongDetailViewHolder {
@@ -26,7 +26,7 @@ class SongDetailAdapter(
         fun bind(song: Song) {
             binding.song = song
             binding.root.setOnClickListener {
-                mListener.invoke(song)
+                mListener.invoke(song, layoutPosition)
             }
         }
     }

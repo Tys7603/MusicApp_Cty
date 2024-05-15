@@ -1,8 +1,11 @@
 package com.example.musicapp.screen.songDetail
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -12,21 +15,29 @@ import com.example.musicapp.R
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.utils.constant.Constant.KEY_BUNDLE_ITEM
 import com.example.musicapp.data.model.Album
+import com.example.musicapp.data.model.MusicVideo
 import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.ActivitySongDetailBinding
+import com.example.musicapp.screen.musicVideo.MusicVideoViewModel
+import com.example.musicapp.screen.song.SongActivity
+import com.example.musicapp.screen.songDetail.adapter.SongDetailAdapter
 import com.example.musicapp.shared.extension.loadImageUrl
+import com.example.musicapp.shared.extension.setAdapterLinearVertical
+import com.example.musicapp.shared.utils.constant.Constant.KEY_INTENT_ITEM
+import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_SONG
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SongDetailActivity : AppCompatActivity() {
+
+    private val viewModel: SongDetailViewModel by viewModel()
+    private val songAdapter = SongDetailAdapter(::onItemClick)
     private val binding by lazy {
         ActivitySongDetailBinding.inflate(layoutInflater)
     }
-
-    private val mPresenter by lazy {
-        SongListPresenter()
-    }
     private var mSong : ArrayList<Song>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,11 +49,39 @@ class SongDetailActivity : AppCompatActivity() {
             insets
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            initValue()
-        }
-
+        initValue()
         handleEvent()
+        initViewModel()
+        initRecyclerView()
+        handleEventViewModel()
+    }
+
+    private fun handleEventViewModel() {
+        viewModel.songTopic.observe(this){
+            songAdapter.submitList(it)
+            mSong = it
+            initQuantitySong(it)
+        }
+        viewModel.songPlaylist.observe(this){
+            songAdapter.submitList(it)
+            mSong = it
+            initQuantitySong(it)
+        }
+        viewModel.songAlbum.observe(this){
+            songAdapter.submitList(it)
+            mSong = it
+            initQuantitySong(it)
+        }
+    }
+
+    private fun initViewModel() {
+        binding.songDetailViewModel = viewModel
+        binding.lifecycleOwner = this
+    }
+
+    private fun initRecyclerView() {
+        binding.rcvPlaylistActivity.setAdapterLinearVertical(songAdapter)
+        binding.rcvPlaylistActivity.isNestedScrollingEnabled = false
     }
 
     private fun handleEvent() {
@@ -51,18 +90,14 @@ class SongDetailActivity : AppCompatActivity() {
         }
     }
 
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun initValue() {
-        val bundle = intent.getBundleExtra(KEY_BUNDLE_ITEM)
-        when(val item = bundle?.getParcelable(Constant.KEY_INTENT_ITEM, Parcelable::class.java)){
-
+        when(val item = intent.getParcelableExtra<Parcelable>(KEY_INTENT_ITEM)){
             is Playlist -> {
                 item.image.let { binding.imgSongActivity.loadImageUrl(it) }
                 item.image.let { binding.imgBgPlaylistActivity.loadImageUrl(it) }
                 binding.tvNamePlaylistActivity.text = item.name
                 binding.tvNameArtistPlaylistActivity.text = item.nameArtist
-//                mPresenter.getListSongPlaylist(item.id)
+                viewModel.fetchSongPlaylist(item.id)
             }
 
             is Album -> {
@@ -70,7 +105,7 @@ class SongDetailActivity : AppCompatActivity() {
                 item.albumImage.let { binding.imgBgPlaylistActivity.loadImageUrl(it) }
                 binding.tvNamePlaylistActivity.text = item.albumName
                 binding.tvNameArtistPlaylistActivity.text = item.nameArtist
-//                mPresenter.getListSongPlaylist(item.albumId)
+                viewModel.fetchSongAlbum(item.albumId)
             }
 
             is Topic -> {
@@ -78,31 +113,30 @@ class SongDetailActivity : AppCompatActivity() {
                 item.image.let { binding.imgBgPlaylistActivity.loadImageUrl(it) }
                 binding.tvNamePlaylistActivity.text = item.name
                 binding.tvNameArtistPlaylistActivity.text = ""
-//                mPresenter.getListSongTopic(item.id)
+                viewModel.fetchSongTopic(item.id)
             }
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    private fun initQuantitySong(songs: ArrayList<Song>){
+        val quantity = if (songs.isNotEmpty()) {
+            songs.size
+        } else {
+            0
+        }
+        binding.tvQuantitySongPlaylistActivity.text = "$quantity $SONG"
+    }
 
-//    @SuppressLint("SetTextI18n")
-//    override fun onListSong(songs: ArrayList<Song>) {
-//        val adapter = SongDetailAdapter(songs, this)
-//        binding.rcvPlaylistActivity.layoutManager = LinearLayoutManager(this)
-//        binding.rcvPlaylistActivity.adapter = adapter
-//        binding.tvQuantitySongPlaylistActivity.text = songs.size.toString() + SONG
-//        binding.rcvPlaylistActivity.isNestedScrollingEnabled = false
-//        mSong = songs
-//    }
-//
-//    companion object{
-//        const val SONG = " bài hát"
-//    }
-//
-//    override fun onItemClick(item: Any) {
-//        val intent = Intent(this, SongActivity::class.java)
-//        intent.putExtra(ConstantBase.KEY_POSITION_SONG, item as Int)
-//        intent.putParcelableArrayListExtra(KEY_INTENT_ITEM, mSong)
-//        startActivity(intent)
-//    }
+    companion object{
+        const val SONG = " bài hát"
+    }
+
+    private fun onItemClick(song: Song, position : Int) {
+        val intent = Intent(this, SongActivity::class.java)
+        intent.putExtra(KEY_POSITION_SONG, position)
+        intent.putParcelableArrayListExtra(KEY_INTENT_ITEM, mSong)
+        startActivity(intent)
+    }
 
 }
