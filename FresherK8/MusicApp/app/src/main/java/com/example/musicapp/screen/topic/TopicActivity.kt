@@ -2,6 +2,7 @@ package com.example.musicapp.screen.topic
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -36,9 +37,7 @@ class TopicActivity : AppCompatActivity() {
             insets
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            initValue()
-        }
+        initValue()
         initViewModel()
         handleEventViewModel()
         handleEvent()
@@ -62,10 +61,9 @@ class TopicActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun initValue() {
-        val bundle = intent.getBundleExtra(Constant.KEY_BUNDLE_ITEM)
-        val category = bundle?.getParcelable(Constant.KEY_INTENT_ITEM, Category::class.java)
+        val category = intent.getParcelableExtra<Category>(Constant.KEY_INTENT_ITEM)
+        Log.d("TAG", "initValue: " + category.toString())
         binding.tvNameCategoryTopic.text = category?.name
         category?.let { viewModel.fetchTopic(it.id) }
     }

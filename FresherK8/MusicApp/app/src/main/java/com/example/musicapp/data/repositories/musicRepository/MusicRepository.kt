@@ -3,10 +3,12 @@ package com.example.musicapp.data.repositories.musicRepository
 import androidx.lifecycle.LiveData
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
+import com.example.musicapp.data.model.reponse.SongRepository
 import com.example.musicapp.data.source.local.dao.SongDao
 import com.example.musicapp.data.source.remote.api.ApiClient
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.utils.scheduler.DataResult
+import retrofit2.Response
 
 
 interface MusicRepository {
@@ -23,6 +25,12 @@ interface MusicRepository {
     suspend fun deleteSongLove(songLoveId: Int): DataResult<Boolean>
 
     suspend fun getListListenAgain(userID: String): DataResult<ArrayList<SongAgain>>
+
+    suspend fun getListSongTopic(id : Int) : DataResult<ArrayList<Song>>
+
+    suspend fun getListSongPlaylist(id: Int): DataResult<ArrayList<Song>>
+
+    suspend fun getListSongAlbum(id: Int): DataResult<ArrayList<Song>>
 
     /**
      * Local

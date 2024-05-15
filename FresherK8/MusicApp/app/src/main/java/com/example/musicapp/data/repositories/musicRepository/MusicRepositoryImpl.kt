@@ -87,4 +87,43 @@ class MusicRepositoryImpl(
         }
 
     }
+
+    override suspend fun getListSongTopic(id: Int): DataResult<ArrayList<Song>> {
+        return try {
+            val response = remote.getListSongTopic(id)
+            if (response.body() != null && response.body()!!.status == Constant.STATUS) {
+                DataResult.Success(response.body()!!.songs)
+            } else {
+                DataResult.Failure(Constant.CALL_API_ERROR)
+            }
+        } catch (e: Exception) {
+            DataResult.Error(e)
+        }
+    }
+
+    override suspend fun getListSongPlaylist(id: Int): DataResult<ArrayList<Song>> {
+        return try {
+            val response = remote.getListSongPlaylist(id)
+            if (response.body() != null && response.body()!!.status == Constant.STATUS) {
+                DataResult.Success(response.body()!!.songs)
+            } else {
+                DataResult.Failure(Constant.CALL_API_ERROR)
+            }
+        } catch (e: Exception) {
+            DataResult.Error(e)
+        }
+    }
+
+    override suspend fun getListSongAlbum(id: Int): DataResult<ArrayList<Song>> {
+        return try {
+            val response = remote.getListSongAlbum(id)
+            if (response.body() != null && response.body()!!.status == Constant.STATUS) {
+                DataResult.Success(response.body()!!.songs)
+            } else {
+                DataResult.Failure(Constant.CALL_API_ERROR)
+            }
+        } catch (e: Exception) {
+            DataResult.Error(e)
+        }
+    }
 }

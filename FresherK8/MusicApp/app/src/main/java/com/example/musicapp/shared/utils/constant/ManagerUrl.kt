@@ -25,6 +25,7 @@ object ManagerUrl {
     const val GET_SONG_RANK = "songs/rank/listen"
     const val GET_SONG_BY_PLAYLIST_ID = "songs/playlist/{playlistId}"
     const val GET_SONG_BY_TOPIC_ID = "songs/topic/{topicId}"
+    const val GET_SONG_BY_ALBUM_ID = "songs/album/{albumId}"
     const val CREATE_SONG_LOVE = "song/love"
     const val DELETE_SONG_LOVE = "song/love/{songLoveId}"
     const val GET_SONG_LOVE = "songs/love/{userId}"
