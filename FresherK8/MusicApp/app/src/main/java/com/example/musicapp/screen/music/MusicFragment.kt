@@ -31,6 +31,7 @@ import com.example.musicapp.shared.utils.DownloadMusic
 import com.example.musicapp.shared.utils.constant.Constant.KEY_AUTO_RESTART
 import com.example.musicapp.shared.utils.constant.Constant.KEY_DOWN
 import com.example.musicapp.shared.utils.constant.Constant.KEY_INTENT_ITEM
+import com.example.musicapp.shared.utils.constant.Constant.KEY_LYRIC_NEW
 import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION
 import com.example.musicapp.shared.utils.constant.Constant.KEY_SHUFFLE
 import com.example.musicapp.shared.utils.constant.Constant.VALUE_DEFAULT
@@ -284,6 +285,7 @@ class MusicFragment : Fragment(), BaseService {
         isPlaySelected = true
         initValueSong()
         checkSongLove()
+        sharedPreferences.edit().putBoolean(KEY_LYRIC_NEW, true).apply()
     }
 
     // nghe lại bài nhạc

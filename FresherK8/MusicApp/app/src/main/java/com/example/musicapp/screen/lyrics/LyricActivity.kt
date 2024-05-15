@@ -5,13 +5,17 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.musicapp.R
 import com.example.musicapp.data.model.Lyric
 import com.example.musicapp.data.model.Song
@@ -20,18 +24,41 @@ import com.example.musicapp.screen.lyrics.adapter.LyricsAdapter
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.constant.Constant
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LyricActivity : AppCompatActivity() {
+    private var handler: Handler? = null
+    private var updateRunnable: Runnable? = null
+    private val viewModel: LyricViewModel by viewModel()
     private var isServiceBound = false // kiểm tra kết nối service
     private var musicService: MusicService? = null
-    private var lyricsAdapter =  LyricsAdapter()
+    private var lyricsAdapter = LyricsAdapter()
     private var currentLyricIndex = 0
+    private var isLyricNew = false
 
     private val binding by lazy {
         ActivityLyricBinding.inflate(layoutInflater)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    private val sharedPreferences: SharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(this)
+    }
+
+    private val serviceConnection = object : ServiceConnection {
+        // kết nối thành công lấy được đối tượng IBinder để try cập music service
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as MusicService.LocalBinder
+            musicService = binder.getService()
+            isServiceBound = true
+            syncLyricsWithMusic()
+        }
+
+        // ngắt kết nối music service
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            isServiceBound = false
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -41,10 +68,51 @@ class LyricActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        initSharedPreferences()
+        initValue()
+        initViewModel()
+        initRecyclerView()
+        handlerViewModel()
+        handlerEvent()
+        setOnCompleteListener()
+    }
 
-        val lyricsList = listOf(
+    private fun initSharedPreferences() {
+        isLyricNew = sharedPreferences.getBoolean(Constant.KEY_LYRIC_NEW, false)
+
+        if (isLyricNew) {
+            sharedPreferences.edit().putBoolean(Constant.KEY_LYRIC_NEW, false).apply()
+            sharedPreferences.edit().putInt(Constant.KEY_LYRIC, 0).apply()
+        }
+
+        currentLyricIndex = sharedPreferences.getInt(Constant.KEY_LYRIC, 0)
+    }
+
+    private fun initValue() {
+        val song = intent.getParcelableExtra<Song>(Constant.KEY_INTENT_ITEM)
+        binding.song = song
+    }
+
+    private fun initViewModel() {
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+    }
+
+    private fun initRecyclerView() {
+        binding.rcvLyric.setAdapterLinearVertical(lyricsAdapter)
+    }
+
+    private fun handlerEvent() {
+       binding.btnClose.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
+    }
+
+    private fun handlerViewModel() {
+        val lyrics = arrayListOf(
             Lyric(5020, "(Maiki 'bout to flip, ey)"),
-            Lyric(13760, "Low G có c- đẹp và tao nghĩ nó nên được trưng bày trong lồng viện bảo tàng"),
+            Lyric(
+                13760,
+                "Low G có c- đẹp và tao nghĩ nó nên được trưng bày trong lồng viện bảo tàng"
+            ),
             Lyric(17470, "Ướp nó lạnh xong để vào bảo quản, tiền bảo đảm là cả một đảo vàng"),
             Lyric(20850, "Lúc đấy thì tao chết xừ òi, nhưng con cháu được uống rượu hảo hạng"),
             Lyric(24360, "Còn tiền thừa cho đi tán gái, party linh tinh để nó bảo bạn"),
@@ -61,10 +129,16 @@ class LyricActivity : AppCompatActivity() {
             Lyric(45070, "Đỉnh cao, biết lắng nghe, ga lăng, nam tính, giàu"),
             Lyric(48020, "Hết cả hơi"),
             Lyric(49960, "Nói chung là hút gái"),
-            Lyric(50880, "Đi tán gái tao hâm hâm dở dở nhưng mà không hiểu sao các em nhắn tao hoài"),
+            Lyric(
+                50880,
+                "Đi tán gái tao hâm hâm dở dở nhưng mà không hiểu sao các em nhắn tao hoài"
+            ),
             Lyric(54290, "Đưa một em lên hotel Hàng Bài, em đang cởi áo tự nhiên tao dừng lại"),
             Lyric(57970, "Tao bảo em, \"View Hồ Tây đẹp quá em ạ!\", xong ra cửa sổ rap freestyle"),
-            Lyric(61300, "Người Hà Nội nên là tính tao cục và đôi khi em ấy hứng lúc tao chửi bậy (ơ, thật à?)"),
+            Lyric(
+                61300,
+                "Người Hà Nội nên là tính tao cục và đôi khi em ấy hứng lúc tao chửi bậy (ơ, thật à?)"
+            ),
             Lyric(66930, "Hơi kì nhưng mà đúng đấy (mm)"),
             Lyric(68210, "Tao thấy cứng và nó đứng lúc tao ngủ dậy"),
             Lyric(70110, "Và nó dài đến mức có thể đu dây (ey)"),
@@ -73,7 +147,10 @@ class LyricActivity : AppCompatActivity() {
             Lyric(78550, "Vòng một là filler bên trong, vừa làm về, trông mới tinh (ah)"),
             Lyric(81950, "Em ấy éo hiểu đang nghe rap, hay đang nghe Low G podcast (ey)"),
             Lyric(85450, "Low G thư giãn, Low G nói về những chủ đề suy ngẫm như là"),
-            Lyric(88350, "Low G có c- đẹp và tao nghĩ nó nên được trưng bày trong lồng viện bảo tàng"),
+            Lyric(
+                88350,
+                "Low G có c- đẹp và tao nghĩ nó nên được trưng bày trong lồng viện bảo tàng"
+            ),
             Lyric(92080, "Ướp nó lạnh xong để vào bảo quản, tiền bảo đảm là cả một đảo vàng"),
             Lyric(95420, "Lúc đấy thì tao chết xừ òi, nhưng con cháu được uống rượu hảo hạng"),
             Lyric(98920, "Còn tiền thừa cho đi tán gái, party linh tinh để nó bảo bạn"),
@@ -89,82 +166,83 @@ class LyricActivity : AppCompatActivity() {
             Lyric(119490, "Body như B52 nhờ uống vitamin C, D hai năm"),
             Lyric(122330, "BMW E52, nhẫn iced out, âm 25 độ F"),
             Lyric(125870, "Fan Low Gờ nên em H \"An Thần\" cả năm vừa rồi mỗi khi em đang high"),
-            Lyric(129260, "Một phút đầu tao thơm má em, xong năm phút sau tao chơi má em (cái gì?)"),
-            Lyric(132950, "Em muốn cosplay AMEE, nên tao vẽ ria mèo lên má em (à) (meo mèo meo meo)"),
+            Lyric(
+                129260,
+                "Một phút đầu tao thơm má em, xong năm phút sau tao chơi má em (cái gì?)"
+            ),
+            Lyric(
+                132950,
+                "Em muốn cosplay AMEE, nên tao vẽ ria mèo lên má em (à) (meo mèo meo meo)"
+            ),
             Lyric(137230, "Ba em nhìn mặt tao thấy khá quen, hỏi tao là thằng nào"),
             Lyric(140050, "Tao vừa nói tên tao, chú ấy cúi đầu xuống chào (sheesh)"),
             Lyric(143250, "Em tao ở nhà penthouse rủ ghệ bem nhau đêm sau nhưng mà không ổn lắm"),
-            Lyric(146800, "Suốt ngày truyền năng lượng tích cực nhưng để giấu chuyện gì đấy trong một năm (ey)"),
+            Lyric(
+                146800,
+                "Suốt ngày truyền năng lượng tích cực nhưng để giấu chuyện gì đấy trong một năm (ey)"
+            ),
             Lyric(150160, "Turned out em làm booking bar, bảo sao cứ gặp ai là em ý quý"),
             Lyric(153670, "Lan tỏa tình yêu khắp mọi lúc, xong em lan tỏa luôn con mẹ STDs"),
             Lyric(157610, "Ơ, thế không biết STD là gì à?"),
             Lyric(160880, "Thôi lên mạng search Google đi, đừng bắt người ta phải giải thích"),
-            Lyric(163750, "Không lại bảo là, \"Anh Long rap gì mà bậy thế, rap gì mà ghê thế, eo ôi!\""),
+            Lyric(
+                163750,
+                "Không lại bảo là, \"Anh Long rap gì mà bậy thế, rap gì mà ghê thế, eo ôi!\""
+            ),
             Lyric(168210, "Rap gì mà STDs các kiểu\""),
-            Lyric(170630, "Low G có c- đẹp và tao nghĩ nó nên được trưng bày trong lồng viện bảo tàng")
+            Lyric(
+                170630,
+                "Low G có c- đẹp và tao nghĩ nó nên được trưng bày trong lồng viện bảo tàng"
+            )
         )
-
-
-        lyricsAdapter.submitList(lyricsList)
-        binding.rcvLyric.setAdapterLinearVertical(lyricsAdapter)
-
-
-//        musicService?.setOnCompletionListener {
-//            // Reset khi phát xong
-//            currentLyricIndex = 0
-//            lyricsAdapter.highlightedPosition = -1
-//            lyricsAdapter.notifyDataSetChanged()
-//        }
-
-//        musicService?.start()
-//        syncLyricsWithMusic()
-
-        initValue()
-        initViewModel()
+        lyricsAdapter.submitList(lyrics)
     }
 
-    private fun initValue() {
-        val song = intent.getParcelableExtra<Song>(Constant.KEY_INTENT_ITEM)
-        binding.song = song
+    @SuppressLint("NotifyDataSetChanged")
+    private fun setOnCompleteListener() {
+        musicService?.setOnCompletionListener {
+            currentLyricIndex = 0
+            lyricsAdapter.highlightedPosition = -1
+            lyricsAdapter.notifyDataSetChanged()
+        }
     }
 
-    private fun initViewModel() {
-        TODO("Not yet implemented")
-    }
-
-    private fun syncLyricsWithMusic() {
-        val handler = Handler()
-        handler.post(object : Runnable {
-            @SuppressLint("NotifyDataSetChanged")
+    fun syncLyricsWithMusic() {
+        val handler = Handler(Looper.getMainLooper())
+        val updateRunnable = object : Runnable {
             override fun run() {
                 val currentPosition = musicService?.getCurrentPosition()?.toLong()
-                if (currentLyricIndex < lyricsAdapter.itemCount && currentPosition!! >= lyricsAdapter.currentList[currentLyricIndex].startTimeMs) {
-                    // Cập nhật vị trí lyric hiện tại
-                    lyricsAdapter.notifyItemChanged(lyricsAdapter.highlightedPosition)
-                    lyricsAdapter.highlightedPosition = currentLyricIndex
-                    lyricsAdapter.notifyItemChanged(currentLyricIndex)
-                    // Chuyển sang lyric tiếp theo
-                    currentLyricIndex++
-                    // Scroll to the highlighted lyric
-                    binding.rcvLyric.scrollToPosition(currentLyricIndex)
+                if (currentPosition != null) {
+                    // Kiểm tra và cập nhật vị trí lyric nếu cần thiết
+                    while (currentLyricIndex < lyricsAdapter.itemCount && currentPosition >= lyricsAdapter.currentList[currentLyricIndex].startTimeMs) {
+                        highlightText()
+                        currentLyricIndex++
+                    }
+                    scrollToPositionHighlightText()
                 }
-                handler.postDelayed(this, 100) // Kiểm tra mỗi 100ms
+                handler.postDelayed(this, 100)
             }
-        })
+        }
+        handler.post(updateRunnable)
     }
 
-    private val serviceConnection = object : ServiceConnection {
-        // kết nối thành công lấy được đối tượng IBinder để try cập music service
-        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            val binder = service as MusicService.LocalBinder
-            musicService = binder.getService()
-            isServiceBound = true
-        }
+    private fun highlightText(){
+        lyricsAdapter.notifyItemChanged(lyricsAdapter.highlightedPosition)
+        lyricsAdapter.highlightedPosition = currentLyricIndex
+        lyricsAdapter.notifyItemChanged(currentLyricIndex)
+    }
 
-        // ngắt kết nối music service
-        override fun onServiceDisconnected(arg0: ComponentName) {
-            isServiceBound = false
+    private fun scrollToPositionHighlightText(){
+        val layoutManager = binding.rcvLyric.layoutManager as LinearLayoutManager
+        if (currentLyricIndex > 1){
+            layoutManager.scrollToPositionWithOffset(currentLyricIndex - 2, 0)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        sharedPreferences.edit().putInt(Constant.KEY_LYRIC, currentLyricIndex)
+            .apply()
     }
 
     override fun onStart() {
@@ -180,5 +258,6 @@ class LyricActivity : AppCompatActivity() {
             isServiceBound = false
         }
         musicService = null
+        updateRunnable?.let { handler?.removeCallbacks(it) }
     }
 }
