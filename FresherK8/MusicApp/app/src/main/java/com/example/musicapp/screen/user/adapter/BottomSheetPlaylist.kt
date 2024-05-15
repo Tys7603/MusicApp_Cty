@@ -53,12 +53,12 @@ class BottomSheetPlaylist(
     }
 
     private fun handlerEvent() {
-        binding!!.btnCancel.setOnClickListener { dismiss() }
+        binding?.btnCancel?.setOnClickListener { dismiss() }
     }
 
     private fun initViewModel() {
-        binding!!.viewModel = viewModel
-        binding!!.lifecycleOwner = this
+        binding?.viewModel = viewModel
+        binding?.lifecycleOwner = this
     }
 
     private fun handlerEventViewModel() {
@@ -67,7 +67,7 @@ class BottomSheetPlaylist(
                 dismiss()
                 mListener.invoke()
             }else{
-                SnackBarManager.showMessage(binding!!.button2, Constant.FAILURE)
+                SnackBarManager.showMessage(binding?.button2, Constant.FAILURE)
             }
         }
     }

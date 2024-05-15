@@ -18,7 +18,7 @@ class SubSongRankAdapter : ListAdapter<Song, SubSongRankAdapter.SubSongRankViewH
     }
 
     override fun getItemCount(): Int {
-        return min(currentList.size, 5)
+        return currentList.size.coerceAtMost(5)
     }
 
     override fun onBindViewHolder(holder: SubSongRankViewHolder, position: Int) {

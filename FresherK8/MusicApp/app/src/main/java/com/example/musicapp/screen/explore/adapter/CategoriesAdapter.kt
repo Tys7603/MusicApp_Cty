@@ -20,7 +20,7 @@ class CategoriesAdapter(
     }
 
     override fun getItemCount(): Int {
-        return min(currentList.size, 8)
+        return currentList.size.coerceAtMost(8)
     }
 
     override fun onBindViewHolder(holder: CategoriesViewHolder, position: Int) {

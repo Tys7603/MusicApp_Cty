@@ -58,13 +58,13 @@ class BottomSheetAddSongPlaylist(private val song: Song, private val imageView: 
     }
 
     private fun handlerEvent() {
-        binding!!.btnCancel.setOnClickListener { dismiss() }
-        binding!!.btnAddPlaylistUser.setOnClickListener { openBottomSheetCreatePlaylist() }
+        binding?.btnCancel?.setOnClickListener { dismiss() }
+        binding?.btnAddPlaylistUser?.setOnClickListener { openBottomSheetCreatePlaylist() }
     }
 
     private fun initViewModel() {
-        binding!!.viewModel = viewModel
-        binding!!.lifecycleOwner = this
+        binding?.viewModel = viewModel
+        binding?.lifecycleOwner = this
     }
 
     private fun handlerEventViewModel() {
@@ -83,7 +83,7 @@ class BottomSheetAddSongPlaylist(private val song: Song, private val imageView: 
     }
 
     private fun initRecyclerView() {
-        binding!!.rcvAddPlaylistUser.setAdapterLinearVertical(playlistUserAdapter)
+        binding?.rcvAddPlaylistUser?.setAdapterLinearVertical(playlistUserAdapter)
     }
 
     private fun openBottomSheetCreatePlaylist() {

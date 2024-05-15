@@ -71,37 +71,37 @@ class BottomSheetSelect(
     }
 
     private fun handlerEvent() {
-        binding!!.btnCancel.setOnClickListener {
+        binding?.btnCancel?.setOnClickListener {
             dismiss()
             mListener.invoke()
         }
 
-        binding!!.cbSelectAll.setOnClickListener {
-            val isChecked = binding!!.cbSelectAll.isChecked
+        binding?.cbSelectAll?.setOnClickListener {
+            val isChecked = binding?.cbSelectAll?.isChecked
 
             when(keySelect){
                 KEY_SELECT_PLAYLIST_USER -> {
-                    if (!isChecked) {
+                    if (!isChecked!!) {
                         playlistUserAdapter.noSelectAllItem()
-                        binding!!.cbSelectAll.text = SELECT_ALL
+                        binding?.cbSelectAll?.text = SELECT_ALL
                     } else {
                         playlistUserAdapter.selectAllItem()
-                        binding!!.cbSelectAll.text = NO_SELECT
+                        binding?.cbSelectAll?.text = NO_SELECT
                     }
                 }
                 KEY_SELECT_PLAYLIST_LOVE ->{
-                    if (!isChecked) {
+                    if (!isChecked!!) {
                         playlistLoveAdapter.noSelectAllItem()
-                        binding!!.cbSelectAll.text = SELECT_ALL
+                        binding?.cbSelectAll?.text = SELECT_ALL
                     } else {
                         playlistLoveAdapter.selectAllItem()
-                        binding!!.cbSelectAll.text = NO_SELECT
+                        binding?.cbSelectAll?.text = NO_SELECT
                     }
                 }
             }
         }
-        binding!!.btnDeletePlaylistUser.setOnClickListener {
-            val listString = Gson().toJson(mPlaylistsUser!!)
+        binding?.btnDeletePlaylistUser?.setOnClickListener {
+            val listString = Gson().toJson(mPlaylistsUser)
 
             when(keySelect){
                 KEY_SELECT_PLAYLIST_USER -> {
@@ -123,23 +123,23 @@ class BottomSheetSelect(
     private fun initViewModel() {
         when(keySelect){
             KEY_SELECT_PLAYLIST_USER -> {
-                binding!!.viewModel = userViewModel
+                binding?.viewModel = userViewModel
             }
             KEY_SELECT_PLAYLIST_LOVE ->{
-                binding!!.loveViewModel = loveViewModel
+                binding?.loveViewModel = loveViewModel
             }
         }
-        binding!!.lifecycleOwner = this
+        binding?.lifecycleOwner = this
     }
 
     private fun initRecyclerView() {
         mPlaylistsUser = ArrayList()
         when(keySelect){
             KEY_SELECT_PLAYLIST_USER -> {
-                binding!!.rcvPlaylistSelect.setAdapterLinearVertical(playlistUserAdapter)
+                binding?.rcvPlaylistSelect?.setAdapterLinearVertical(playlistUserAdapter)
             }
             KEY_SELECT_PLAYLIST_LOVE ->{
-                binding!!.rcvPlaylistSelect.setAdapterLinearVertical(playlistLoveAdapter)
+                binding?.rcvPlaylistSelect?.setAdapterLinearVertical(playlistLoveAdapter)
             }
         }
     }
@@ -151,19 +151,19 @@ class BottomSheetSelect(
                 when (any) {
                     is PlaylistUser -> {
                         if (boolean) {
-                            mPlaylistsUser!!.add(any.playlistUserId)
+                            mPlaylistsUser?.add(any.playlistUserId)
                         } else {
-                            mPlaylistsUser!!.remove(any.playlistUserId)
+                            mPlaylistsUser?.remove(any.playlistUserId)
                         }
                     }
 
                     is Int -> {
                         if (boolean) {
-                            binding!!.cbSelectAll.text = NO_SELECT
-                            binding!!.cbSelectAll.isChecked = true
+                            binding?.cbSelectAll?.text = NO_SELECT
+                            binding?.cbSelectAll?.isChecked = true
                         } else {
-                            binding!!.cbSelectAll.text = SELECT_ALL
-                            binding!!.cbSelectAll.isChecked = false
+                            binding?.cbSelectAll?.text = SELECT_ALL
+                            binding?.cbSelectAll?.isChecked = false
                         }
                     }
                 }
@@ -172,19 +172,19 @@ class BottomSheetSelect(
                 when (any) {
                     is Playlist -> {
                         if (boolean) {
-                            mPlaylistsUser!!.add(any.playlistUserLoveId)
+                            mPlaylistsUser?.add(any.playlistUserLoveId)
                         } else {
-                            mPlaylistsUser!!.remove(any.playlistUserLoveId)
+                            mPlaylistsUser?.remove(any.playlistUserLoveId)
                         }
                     }
 
                     is Int -> {
                         if (boolean) {
-                            binding!!.cbSelectAll.text = NO_SELECT
-                            binding!!.cbSelectAll.isChecked = true
+                            binding?.cbSelectAll?.text = NO_SELECT
+                            binding?.cbSelectAll?.isChecked = true
                         } else {
-                            binding!!.cbSelectAll.text = SELECT_ALL
-                            binding!!.cbSelectAll.isChecked = false
+                            binding?.cbSelectAll?.text = SELECT_ALL
+                            binding?.cbSelectAll?.isChecked = false
                         }
                     }
                 }
