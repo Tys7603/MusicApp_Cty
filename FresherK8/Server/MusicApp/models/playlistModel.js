@@ -55,6 +55,14 @@ const deletePlaylistUserById = async (playlistUserId) => {
   return await queryDatabase(query, [playlistUserId])
 }
 
+// Xóa playlist yêu thích
+const deletePlaylistLoveById = async (playlistLoveId) => {
+
+  const query = "DELETE FROM `playlist_user_love` WHERE `playlist_user_love_id` IN (?);"
+
+  return await queryDatabase(query, [playlistLoveId])
+}
+
 // Thêm bài hát vào playlist người dùng
 const createSongIntoPlaylistByUserId = async (playlistUserId, songId) => {
 
@@ -87,11 +95,26 @@ const createSongIntoPlaylistByUserId = async (playlistUserId, songId) => {
   }
 }
 
+// Lấy danh sách playlist yêu thích
+const getListPlaylistLoveByIdUser = async (userId) => {
+
+  const query = "SELECT s.playlist_id, pl.playlist_name, pl.playlist_image, a.name_artist, plul.playlist_user_love_id " +
+    "FROM Song as s " +
+    "INNER JOIN Playlist as pl ON s.playlist_id = pl.playlist_id " +
+    "INNER JOIN Playlist_user_love as plul ON plul.playlist_id = pl.playlist_id " +
+    "INNER JOIN Album as a ON s.album_id = a.album_id " +
+    "WHERE plul.user_id = ?"
+
+  return await queryDatabase(query, [userId])
+}
+
 module.exports = {
   getListPlaylist,
   getListPlaylistMoodToday,
   createPlaylistUser,
   getListPlaylistByIdUser,
   deletePlaylistUserById,
-  createSongIntoPlaylistByUserId
+  createSongIntoPlaylistByUserId,
+  getListPlaylistLoveByIdUser,
+  deletePlaylistLoveById
 }

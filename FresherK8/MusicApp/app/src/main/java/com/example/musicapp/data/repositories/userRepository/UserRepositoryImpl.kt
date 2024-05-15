@@ -1,5 +1,6 @@
 package com.example.musicapp.data.repositories.userRepository
 
+import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.data.model.PlaylistUser
 import com.example.musicapp.data.source.UserDataSource
 import com.example.musicapp.shared.utils.constant.Constant
@@ -23,6 +24,19 @@ class UserRepositoryImpl(private val dataSource: UserDataSource) : UserRepositor
     override suspend fun getListPlaylistUser(userId: String): DataResult<ArrayList<PlaylistUser>> {
         return try {
             val response = dataSource.getListPlaylistUser(userId)
+            if (response.body() != null && response.body()!!.status == Constant.STATUS) {
+                DataResult.Success(response.body()!!.playlists)
+            } else {
+                DataResult.Failure(Constant.CALL_API_ERROR)
+            }
+        } catch (e: Exception) {
+            DataResult.Error(e)
+        }
+    }
+
+    override suspend fun getListPlaylistLove(userId: String): DataResult<ArrayList<Playlist>> {
+        return try {
+            val response = dataSource.getListPlaylistLove(userId)
             if (response.body() != null && response.body()!!.status == Constant.STATUS) {
                 DataResult.Success(response.body()!!.playlists)
             } else {
@@ -70,6 +84,19 @@ class UserRepositoryImpl(private val dataSource: UserDataSource) : UserRepositor
     override suspend fun deletePlaylistUser(playlistUserId: String): DataResult<Boolean> {
         return try {
             val response = dataSource.deletePlaylistUser(playlistUserId)
+            if (response.body() != null && response.body()!!.status == Constant.STATUS) {
+                DataResult.Success(true)
+            } else {
+                DataResult.Failure(Constant.CALL_API_ERROR)
+            }
+        } catch (e: Exception) {
+            DataResult.Error(e)
+        }
+    }
+
+    override suspend fun deletePlaylistLove(playlistLoveId: String): DataResult<Boolean> {
+        return try {
+            val response = dataSource.deletePlaylistLove(playlistLoveId)
             if (response.body() != null && response.body()!!.status == Constant.STATUS) {
                 DataResult.Success(true)
             } else {

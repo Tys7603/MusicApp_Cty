@@ -1,5 +1,6 @@
 package com.example.musicapp.data.repositories.userRepository
 
+import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.data.model.PlaylistUser
 import com.example.musicapp.data.model.reponse.PlaylistUserRepository
 import com.example.musicapp.data.source.remote.api.ApiClient
@@ -10,7 +11,9 @@ import retrofit2.Response
 interface UserRepository {
     suspend fun createUser(userId: String): DataResult<Boolean>
     suspend fun getListPlaylistUser(userId: String): DataResult<ArrayList<PlaylistUser>>
+    suspend fun getListPlaylistLove(userId: String): DataResult<ArrayList<Playlist>>
     suspend fun createPlaylistUser(userId: String, namePlaylist: String): DataResult<Boolean>
     suspend fun insertSongPlaylistUser(playlistUserId: Int, songId: Int): DataResult<Boolean>
     suspend fun deletePlaylistUser(playlistUserId: String): DataResult<Boolean>
+    suspend fun deletePlaylistLove(playlistLoveId: String): DataResult<Boolean>
 }

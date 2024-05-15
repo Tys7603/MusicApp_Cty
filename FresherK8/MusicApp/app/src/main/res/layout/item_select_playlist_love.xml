@@ -4,13 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
-            name="playlistUser"
-            type="com.example.musicapp.data.model.PlaylistUser" />
-
-        <variable
-            name="viewModel"
+            name="playlist"
             type="com.example.musicapp.data.model.Playlist" />
     </data>
 
@@ -21,7 +16,7 @@
         >
 
         <CheckBox
-            android:id="@+id/cb_select_user"
+            android:id="@+id/checkBox2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -37,12 +32,12 @@
             android:layout_marginBottom="8dp"
             app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cb_select_user"
+            app:layout_constraintStart_toEndOf="@+id/checkBox2"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/img_song_item"
-                imageUrl="@{playlistUser.songImage}"
+                imageUrl="@{playlist.image}"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 app:srcCompat="@drawable/song3" />
@@ -55,7 +50,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="24dp"
-            android:text="@{playlistUser.playlistUserName}"
+            android:text="@{playlist.name}"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/layout_song"
@@ -68,7 +63,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@{playlistUser.songQuantity + @string/b_i_h_t}"
+            android:text="@{playlist.nameArtist}"
             app:layout_constraintEnd_toEndOf="@+id/textView21"
             app:layout_constraintStart_toStartOf="@+id/textView21"
             app:layout_constraintTop_toBottomOf="@+id/textView21" />

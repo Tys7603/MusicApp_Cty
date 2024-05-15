@@ -6,15 +6,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.data.model.PlaylistUser
+import com.example.musicapp.databinding.ItemPlaylistListLoveBinding
 import com.example.musicapp.databinding.ItemPlaylistListUserBinding
 import com.example.musicapp.databinding.ItemSelectPlaylistBinding
+import com.example.musicapp.databinding.ItemSelectPlaylistLoveBinding
 import com.example.musicapp.shared.utils.GenericDiffCallback
 
-class PlaylistUserAdapter(
+class PlaylistLoveAdapter(
     private var mListener: (Boolean, Any) -> Unit,
     private var type: Int
-) : ListAdapter<PlaylistUser, RecyclerView.ViewHolder>(GenericDiffCallback<PlaylistUser>()) {
+) : ListAdapter<Playlist, RecyclerView.ViewHolder>(GenericDiffCallback<Playlist>()) {
 
     companion object {
         private const val TYPE_SELECT = 1
@@ -25,22 +28,22 @@ class PlaylistUserAdapter(
         return when (viewType) {
             TYPE_SELECT -> {
                 val binding =
-                    ItemSelectPlaylistBinding.inflate(
+                    ItemSelectPlaylistLoveBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
                     )
-                PlaylistUserSelectViewHolder(binding)
+                PlaylistLoveSelectViewHolder(binding)
             }
 
             TYPE_FRAGMENT -> {
                 val binding =
-                    ItemPlaylistListUserBinding.inflate(
+                    ItemPlaylistListLoveBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
                     )
-                PlaylistUserFragmentViewHolder(binding)
+                PlaylistLoveFragmentViewHolder(binding)
             }
 
             else -> throw IllegalArgumentException("Invalid view type")
@@ -49,8 +52,8 @@ class PlaylistUserAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is PlaylistUserFragmentViewHolder -> holder.bind(currentList[position])
-            is PlaylistUserSelectViewHolder -> holder.bind(currentList[position])
+            is PlaylistLoveFragmentViewHolder -> holder.bind(currentList[position])
+            is PlaylistLoveSelectViewHolder -> holder.bind(currentList[position])
         }
     }
 
@@ -83,25 +86,25 @@ class PlaylistUserAdapter(
         return true
     }
 
-    inner class PlaylistUserFragmentViewHolder(val binding: ItemPlaylistListUserBinding) :
+    inner class PlaylistLoveFragmentViewHolder(val binding: ItemPlaylistListLoveBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(playlistUser: PlaylistUser) {
-            binding.playlistUser = playlistUser
+        fun bind(playlist: Playlist) {
+            binding.playlist = playlist
             binding.root.setOnClickListener {
-                mListener.invoke(true, playlistUser)
+                mListener.invoke(true, playlist)
             }
         }
     }
 
-    inner class PlaylistUserSelectViewHolder(val binding: ItemSelectPlaylistBinding) :
+    inner class PlaylistLoveSelectViewHolder(val binding: ItemSelectPlaylistLoveBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(playlistUser: PlaylistUser) {
-            binding.playlistUser = playlistUser
-            binding.cbSelectUser.isChecked = playlistUser.isSelected
-            binding.cbSelectUser.setOnCheckedChangeListener { _, isChecked ->
-                playlistUser.isSelected = isChecked
+        fun bind(playlist: Playlist) {
+            binding.playlist = playlist
+            binding.checkBox2.isChecked = playlist.isSelected
+            binding.checkBox2.setOnCheckedChangeListener { _, isChecked ->
+                playlist.isSelected = isChecked
                 mListener.invoke(checkBoxSelectAll(), 0)
-                mListener.invoke(isChecked, playlistUser)
+                mListener.invoke(isChecked, playlist)
             }
         }
     }

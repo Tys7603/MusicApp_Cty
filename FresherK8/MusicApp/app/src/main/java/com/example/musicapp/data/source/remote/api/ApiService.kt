@@ -23,10 +23,12 @@ import com.example.musicapp.data.model.reponse.TopicRepository
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_PLAYLIST_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_USER
+import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_PLAYLIST_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_PLAYLIST_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO_EXCLUDING_ID
+import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_PLAYLIST_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_PLAYLIST_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_PLAYLIST_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_TOPIC_ID
@@ -54,6 +56,9 @@ interface ApiService {
     @GET(GET_PLAYLIST_USER)
     suspend fun getListPlaylistUser(@Path("userId") userId: String): Response<PlaylistUserRepository>
 
+    @GET(GET_PLAYLIST_LOVE)
+    suspend fun getListPlaylistLove(@Path("userId") userId: String): Response<PlaylistRepository>
+
     @FormUrlEncoded
     @POST(CREATE_PLAYLIST_USER)
     suspend fun createPlaylistUser(
@@ -71,6 +76,11 @@ interface ApiService {
     @DELETE(DELETE_PLAYLIST_USER)
     suspend fun deletePlaylistUser(
         @Query("playlistUserId") playlistUserId: String
+    ): Response<Status>
+
+    @DELETE(DELETE_PLAYLIST_LOVE)
+    suspend fun deletePlaylistLove(
+        @Query("playlistLoveId") playlistLoveId: String
     ): Response<Status>
 
     // Categories and topic
