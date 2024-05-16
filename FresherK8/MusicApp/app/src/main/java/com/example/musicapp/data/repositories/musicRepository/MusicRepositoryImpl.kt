@@ -2,6 +2,7 @@ package com.example.musicapp.data.repositories.musicRepository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.musicapp.data.model.Lyric
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.data.source.MusicDataSource
@@ -119,6 +120,19 @@ class MusicRepositoryImpl(
             val response = remote.getListSongAlbum(id)
             if (response.body() != null && response.body()!!.status == Constant.STATUS) {
                 DataResult.Success(response.body()!!.songs)
+            } else {
+                DataResult.Failure(Constant.CALL_API_ERROR)
+            }
+        } catch (e: Exception) {
+            DataResult.Error(e)
+        }
+    }
+
+    override suspend fun getLyricsBySongId(songId: Int): DataResult<ArrayList<Lyric>> {
+        return try {
+            val response = remote.getLyricsBySongId(songId)
+            if (response.body() != null && response.body()!!.status == Constant.STATUS) {
+                DataResult.Success(response.body()!!.lyrics)
             } else {
                 DataResult.Failure(Constant.CALL_API_ERROR)
             }

@@ -35,8 +35,9 @@ object Constant {
     const val SING_UP_EQUAL = "Mật khẩu không trùng khớp"
     const val SEN_EMAIL_FAILURE = "Gửi email thất bại"
     const val SEN_EMAIL_SUCCESS = "Gửi email thành công"
+    const val UPDATE_LYRIC = "UPDATE_LYRICS"
     // bỏ enum ở đây
-    enum class ClickControllerPlayerUi(){
+    enum class ClickControllerPlayerUi{
         ON_BACK,
         ON_NEXT_VIDEO,
         ON_BACK_VIDEO,

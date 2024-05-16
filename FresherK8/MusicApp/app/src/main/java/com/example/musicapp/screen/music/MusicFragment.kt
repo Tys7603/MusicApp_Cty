@@ -28,6 +28,7 @@ import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.utils.BooleanProperty
 import com.example.musicapp.shared.utils.DownloadMusic
+import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.utils.constant.Constant.KEY_AUTO_RESTART
 import com.example.musicapp.shared.utils.constant.Constant.KEY_DOWN
 import com.example.musicapp.shared.utils.constant.Constant.KEY_INTENT_ITEM
@@ -142,7 +143,7 @@ class MusicFragment : Fragment(), BaseService {
         binding.btnLyrics.setOnClickListener { putLyrics() }
     }
 
-    private fun putLyrics(){
+    private fun putLyrics() {
         position = sharedPreferences.getInt(KEY_POSITION, 0)
         val intent = Intent(requireContext(), LyricActivity::class.java)
         intent.putExtra(KEY_INTENT_ITEM, mSongs?.get(position))
@@ -153,7 +154,7 @@ class MusicFragment : Fragment(), BaseService {
         position = sharedPreferences.getInt(KEY_POSITION, 0)
         val song = mSongs?.get(position)
         song?.let {
-            val bottomSheet = BottomSheetAddSongPlaylist(it , binding.btnPlay)
+            val bottomSheet = BottomSheetAddSongPlaylist(it, binding.btnPlay)
             bottomSheet.show(parentFragmentManager, bottomSheet.tag)
             bottomSheet.isCancelable = false
         }
@@ -270,6 +271,7 @@ class MusicFragment : Fragment(), BaseService {
 
     //    // quay lại bài nhạc
     private fun backMusic() {
+        position = sharedPreferences.getInt(KEY_POSITION, 0)
         position--
         if (position < 0) {
             position = mSongs?.size!! - 1
@@ -286,6 +288,14 @@ class MusicFragment : Fragment(), BaseService {
         initValueSong()
         checkSongLove()
         sharedPreferences.edit().putBoolean(KEY_LYRIC_NEW, true).apply()
+        senBroadcastInitValue()
+    }
+
+    private fun senBroadcastInitValue() {
+        position = sharedPreferences.getInt(KEY_POSITION, 0)
+        val intent = Intent(Constant.UPDATE_LYRIC)
+        intent.putExtra(KEY_INTENT_ITEM, mSongs?.getOrNull(position))
+        requireContext().sendBroadcast(intent)
     }
 
     // nghe lại bài nhạc
@@ -349,22 +359,12 @@ class MusicFragment : Fragment(), BaseService {
     }
 
     private fun updateTimeSong() {
-        // Tạo một Handler liên kết với Looper của luồng chính
         val handler = Handler(Looper.getMainLooper())
-
-        // Đặt một hành động trì hoãn để cập nhật UI sau 100 mili giây
         handler.postDelayed({
-
-            // Cập nhật UI với vị trí hiện tại của trình phát nhạc
             binding.tvTimeSong.text =
                 musicService?.let { FormatUtils.formatTime(it.getCurrentPosition()) }
-
-            // set progress cho seekbar
             binding.seekBar.progress = musicService?.getCurrentPosition() ?: 0
-
-            // Đặt một hành động trì hoãn khác để gọi lại updateTimeSong sau 500 mili giây
             handler.postDelayed({ updateTimeSong() }, 500)
-
         }, 100)
     }
 

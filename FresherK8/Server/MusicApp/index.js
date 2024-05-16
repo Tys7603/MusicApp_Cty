@@ -22,6 +22,7 @@ var songRouter = require('./routers/songRouter.js')
 var songRankRouter = require('./routers/songRankRouter.js')
 var userRouter = require('./routers/userRouter.js')
 var musicVideoRouter = require('./routers/musicVideoRouter.js')
+var lyricRouter = require('./routers/lyric.router.js')
 
 // routers
 app.use("/api", playListRouter)
@@ -33,6 +34,7 @@ app.use("/api", songRouter)
 app.use("/api", songRankRouter)
 app.use("/api", userRouter)
 app.use("/api", musicVideoRouter)
+app.use("/api", lyricRouter)
 
 const port = 3000 || process.env.DB_PORT;
 server.listen(port, () => {

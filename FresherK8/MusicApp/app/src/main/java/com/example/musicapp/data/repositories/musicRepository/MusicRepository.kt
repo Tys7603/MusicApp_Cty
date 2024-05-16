@@ -1,6 +1,7 @@
 package com.example.musicapp.data.repositories.musicRepository
 
 import androidx.lifecycle.LiveData
+import com.example.musicapp.data.model.Lyric
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.data.model.reponse.SongRepository
@@ -31,6 +32,8 @@ interface MusicRepository {
     suspend fun getListSongPlaylist(id: Int): DataResult<ArrayList<Song>>
 
     suspend fun getListSongAlbum(id: Int): DataResult<ArrayList<Song>>
+
+    suspend fun getLyricsBySongId(songId: Int): DataResult<ArrayList<Lyric>>
 
     /**
      * Local
