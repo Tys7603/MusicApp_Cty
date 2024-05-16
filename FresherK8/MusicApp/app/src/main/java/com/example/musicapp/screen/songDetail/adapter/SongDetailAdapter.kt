@@ -2,7 +2,6 @@ package com.example.musicapp.screen.songDetail.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.data.model.Song
@@ -11,24 +10,24 @@ import com.example.musicapp.shared.utils.GenericDiffCallback
 
 class SongDetailAdapter(
     private var mListener: (Song) -> Unit
-) : ListAdapter<Song, SongDetailAdapter.ViewHolder>(GenericDiffCallback<Song>()) {
+) : ListAdapter<Song, SongDetailAdapter.SongDetailViewHolder>(GenericDiffCallback<Song>()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongDetailViewHolder {
         val binding =
             ItemSongListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+        return SongDetailViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SongDetailViewHolder, position: Int) {
         holder.bind(currentList[position])
-        holder.itemView.setOnClickListener {
-            mListener.invoke(currentList[position])
-        }
     }
 
-    class ViewHolder(val binding: ItemSongListBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class SongDetailViewHolder(val binding: ItemSongListBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(song: Song) {
             binding.song = song
+            binding.root.setOnClickListener {
+                mListener.invoke(song)
+            }
         }
     }
 }

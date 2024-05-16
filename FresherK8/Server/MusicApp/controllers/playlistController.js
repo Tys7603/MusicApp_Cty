@@ -47,14 +47,13 @@ const getListPlaylistMoodTodayController = async (req, res) => {
 
 }
 
-// add playlist love
-
-const createPlaylistLoveController = async (req, res) => {
+// create playlist user
+const createPlaylistUserController = async (req, res) => {
 
   try {
     const { namePlaylist, userId } = req.body
 
-    const playlists = await model.createPlaylistLove(namePlaylist, userId)
+    const playlists = await model.createPlaylistUser(namePlaylist, userId)
 
     res.json({ status: 200, playlists })
 
@@ -67,17 +66,78 @@ const createPlaylistLoveController = async (req, res) => {
 // get playlist love
 
 const getListPlaylistByUserIdController = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const defaultImageUrl = "https://iili.io/HlHy9Yx.png";
+
+    const playlists = await model.getListPlaylistByIdUser(userId);
+
+    const updatedPlaylists = playlists.map(playlist => {
+      if (!playlist.song_image) {
+        playlist.song_image = defaultImageUrl;
+      }
+      return playlist;
+    });
+
+    res.json({ status: 200, playlists: updatedPlaylists });
+  } catch (error) {
+    res.json({ status: 400, message: error.message });
+  }
+}
+
+const deletePlaylistUserByIdController = async (req, res) => {
+  try {
+    const { playlistUserId } = req.query;
+
+    const listPlaylistUser = JSON.parse(playlistUserId)
+
+    const playlists = await model.deletePlaylistUserById(listPlaylistUser);
+
+    res.json({ status: 200, playlists });
+  } catch (error) {
+    res.json({ status: 400, message: error.message });
+  }
+}
+
+const deletePlaylistLoveByIdController = async (req, res) => {
+  try {
+    const { playlistLoveId } = req.query;
+
+    const listPlaylistLove = JSON.parse(playlistLoveId)
+
+    const playlists = await model.deletePlaylistLoveById(listPlaylistLove);
+
+    res.json({ status: 200, playlists });
+  } catch (error) {
+    res.json({ status: 400, message: error.message });
+  }
+}
+
+
+const createSongIntoPlaylistByUserIdController = async (req, res) => {
+  try {
+    const { playlistUserId, songId } = req.body;
+
+    const playlists = await model.createSongIntoPlaylistByUserId(playlistUserId, songId);
+
+    res.json(playlists);
+  } catch (error) {
+    res.json({ status: 400, message: error.message });
+  }
+}
+
+const getListPlaylistLoveByUserIdController = async (req, res) => {
 
   try {
-    const { userId } = req.params
-    const playlists = await model.getListPlaylistByIdUser(userId)
+    const {userId} = req.params    
+    const playlists = await model.getListPlaylistLoveByIdUser(userId)
 
     // Tạo một đối tượng Map để lưu trữ các playlist theo tên
     const playlistMap = new Map();
 
     // Duyệt qua danh sách playlists và gộp chung name_artist cho các playlist cùng tên
     playlists.forEach(playlist => {
-      const { playlist_id, playlist_name, playlist_image, name_artist } = playlist;
+      const { playlist_id, playlist_name, playlist_image, name_artist, playlist_user_love_id } = playlist;
       if (playlistMap.has(playlist_name)) {
         // Nếu playlist_name đã tồn tại trong Map, cập nhật name_artist
         const existingPlaylist = playlistMap.get(playlist_name);
@@ -86,7 +146,7 @@ const getListPlaylistByUserIdController = async (req, res) => {
       } else {
         // Nếu playlist_name chưa tồn tại trong Map, thêm mới
 
-        playlistMap.set(playlist_name, { playlist_id, playlist_name, playlist_image, name_artist });
+        playlistMap.set(playlist_name, { playlist_id, playlist_name, playlist_image, name_artist, playlist_user_love_id });
       }
     });
 
@@ -104,6 +164,10 @@ const getListPlaylistByUserIdController = async (req, res) => {
 module.exports = {
   getListPlaylistController,
   getListPlaylistMoodTodayController,
-  createPlaylistLoveController,
-  getListPlaylistByUserIdController
+  getListPlaylistByUserIdController,
+  createPlaylistUserController,
+  deletePlaylistUserByIdController,
+  createSongIntoPlaylistByUserIdController,
+  getListPlaylistLoveByUserIdController,
+  deletePlaylistLoveByIdController
 }

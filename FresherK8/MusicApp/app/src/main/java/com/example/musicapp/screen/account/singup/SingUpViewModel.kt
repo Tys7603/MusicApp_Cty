@@ -1,5 +1,6 @@
     package com.example.musicapp.screen.account.singup
 
+    import android.content.Context
     import android.net.Uri
     import android.util.Log
     import androidx.lifecycle.LiveData
@@ -10,12 +11,13 @@
     import com.google.firebase.auth.FirebaseAuth
     import com.google.firebase.auth.userProfileChangeRequest
 
-
-    class SingUpViewModel(private val userRepository: UserRepository) : BaseViewModel() {
+    class SingUpViewModel(private val userRepository: UserRepository, context: Context) : BaseViewModel() {
 
         private val _isSingUp = MutableLiveData<Boolean>()
         private val _isValidateEqual = MutableLiveData<Boolean>()
         private val _isValidate = MutableLiveData<Boolean>()
+        private val _loading = MutableLiveData<Boolean>()
+        val loading : LiveData<Boolean> = _loading
 
         var email: String = ""
         var password: String = ""
@@ -46,6 +48,7 @@
         }
 
         fun singUp() {
+            _loading.value = true
             if (validate()) {
                 FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
@@ -75,6 +78,7 @@
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         _isSingUp.value = true
+                        _loading.value = false
                     }
                 }
         }

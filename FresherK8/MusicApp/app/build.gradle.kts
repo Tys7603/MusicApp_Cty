@@ -77,5 +77,12 @@ dependencies {
 //    kapt ("com.android.databinding:compiler:3.1.4")
     //noinspection UseTomlInstead
     implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
+    //noinspection UseTomlInstead
+    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:custom-ui:12.1.0")
+    //noinspection UseTomlInstead
+    implementation ("com.makeramen:roundedimageview:2.3.0")
+
+    //noinspection UseTomlInstead
+    implementation ("com.google.code.gson:gson:2.10.1")
 
 }

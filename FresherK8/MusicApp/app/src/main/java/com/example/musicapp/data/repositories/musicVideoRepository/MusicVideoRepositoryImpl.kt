@@ -21,6 +21,19 @@ class MusicVideoRepositoryImpl(private val dataSource: MusicVideoDataSource) : M
         }
     }
 
+    override suspend fun getListMusicVideoDetail(musicVideoId: String): DataResult<ArrayList<MusicVideo>> {
+        return try {
+            val response = dataSource.getListMusicVideoDetail(musicVideoId)
+            if (response.body() != null && response.body()!!.status == Constant.STATUS) {
+                DataResult.Success(response.body()!!.musicVideos)
+            } else {
+                DataResult.Failure(Constant.CALL_API_ERROR + response.code())
+            }
+        }catch (e : Exception){
+            DataResult.Error(e)
+        }
+    }
+
     override suspend fun getListTopic(): DataResult<ArrayList<Topic>> {
         return try {
             val response = dataSource.getListTopic()

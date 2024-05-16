@@ -22,7 +22,7 @@ class MusicVideoFragment : Fragment() {
     private val viewModel: MusicVideoViewModel by viewModel()
     private val musicVideoAdapter = MusicVideoAdapter(::onClickItem)
     private val categoryMVAdapter = TopicMVAdapter(::onClickItem)
-    private var mMusicVideos: ArrayList<MusicVideo>? = null
+    private var mMusicVideos: MutableList<MusicVideo> = mutableListOf()
     private val binding by lazy {
         FragmentMusicVideoBinding.inflate(layoutInflater)
     }
@@ -71,15 +71,33 @@ class MusicVideoFragment : Fragment() {
             is Topic -> {
                 when (item.id) {
                     0 -> {
-                        musicVideoAdapter.submitList(mMusicVideos!!.shuffled())
+//                        if (mMusicVideos.isNullOrEmpty()){
+//                            binding.tvShow.visibility = View.VISIBLE
+//                        }else{
+//                            binding.tvShow.visibility = View.GONE
+//                            musicVideoAdapter.submitList(mMusicVideos!!.shuffled())
+//                        }
+                        musicVideoAdapter.submitList(mMusicVideos.shuffled())
                     }
 
                     1 -> {
-                        musicVideoAdapter.submitList(itemEqualListMusicVideoProposalNew(mMusicVideos!!))
+//                        if (itemEqualListMusicVideoProposalNew(mMusicVideos!!).isEmpty()){
+//                            binding.tvShow.visibility = View.VISIBLE
+//                        }else{
+//                            binding.tvShow.visibility = View.GONE
+//                            musicVideoAdapter.submitList(itemEqualListMusicVideoProposalNew(mMusicVideos!!))
+//                        }
+                        musicVideoAdapter.submitList(itemEqualListMusicVideoProposalNew(mMusicVideos))
                     }
 
                     else -> {
-                        musicVideoAdapter.submitList(itemEqualListMusicVideo(item, mMusicVideos!!))
+//                       if (itemEqualListMusicVideo(item, mMusicVideos!!).isEmpty()){
+//                           binding.tvShow.visibility = View.VISIBLE
+//                       }else{
+//                           binding.tvShow.visibility = View.GONE
+//                           musicVideoAdapter.submitList(itemEqualListMusicVideo(item, mMusicVideos!!))
+//                       }
+                        musicVideoAdapter.submitList(itemEqualListMusicVideo(item, mMusicVideos))
                     }
                 }
                 scrollToTop()
@@ -87,10 +105,7 @@ class MusicVideoFragment : Fragment() {
 
             is MusicVideo -> {
                 val intent = Intent(requireContext(), MusicVideoDetailActivity::class.java)
-                val bundle = Bundle().apply {
-                    putParcelable(Constant.KEY_INTENT_ITEM, item)
-                }
-                intent.putExtra(Constant.KEY_BUNDLE_ITEM, bundle)
+                intent.putExtra(Constant.KEY_INTENT_ITEM, item)
                 startActivity(intent)
             }
         }

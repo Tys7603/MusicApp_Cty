@@ -36,8 +36,8 @@ class BottomSheetLogin : BottomSheetDialogFragment() {
     }
 
     private fun initViewModel() {
-        binding!!.viewModel = viewModel
-        binding!!.lifecycleOwner = requireActivity()
+        binding?.viewModel = viewModel
+        binding?.lifecycleOwner = requireActivity()
     }
 
     private fun handlerEventViewModel() {

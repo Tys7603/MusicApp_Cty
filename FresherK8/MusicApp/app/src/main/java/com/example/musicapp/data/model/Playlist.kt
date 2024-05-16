@@ -13,5 +13,8 @@ data class Playlist (
     @SerializedName("playlist_image")
     var image : String,
     @SerializedName("name_artist")
-    val nameArtist : String
+    var nameArtist : String,
+    @SerializedName("playlist_user_love_id")
+    var playlistUserLoveId : Int,
+    var isSelected : Boolean
 ) : Parcelable

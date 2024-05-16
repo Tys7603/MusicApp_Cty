@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.example.musicapp.screen.user.playlistUser.PlaylistUserViewModel" />
@@ -12,7 +10,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:minHeight="500dp"
+        >
+
+        <!-- Your views here -->
 
         <View
             android:id="@+id/view4"
@@ -36,7 +38,7 @@
             app:layout_constraintTop_toBottomOf="@+id/view4" />
 
         <ImageView
-            android:id="@+id/imageView12"
+            android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -59,7 +61,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/nh_p_t_n_playlist" />
+                android:hint="@string/nh_p_t_n_playlist"
+                android:text="@={viewModel.playlistName}"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -68,9 +71,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="@string/t_o_playlist"
-            android:backgroundTint="@color/gray1"
+            android:backgroundTint="@color/gray"
             android:textColor="@color/black"
             android:textSize="16sp"
+            android:onClick="@{() -> viewModel.createPlaylistUser()}"
             app:layout_constraintEnd_toEndOf="@+id/textInputLayout3"
             app:layout_constraintStart_toStartOf="@+id/textInputLayout3"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout3" />

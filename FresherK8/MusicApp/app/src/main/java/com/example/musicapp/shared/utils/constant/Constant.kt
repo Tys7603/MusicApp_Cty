@@ -2,6 +2,7 @@ package com.example.musicapp.shared.utils.constant
 
 object Constant {
     const val STATUS = 200
+    const val STATUS_DUPLICATE = 409
     const val TAG_ERROR = "Error"
     const val SONG_COMPLETED = "song_completed"
     const val URL_IMAGE = "https://cdn-icons-png.flaticon.com/512/1053/1053244.png"
@@ -33,5 +34,9 @@ object Constant {
     const val SEN_EMAIL_FAILURE = "Gửi email thất bại"
     const val SEN_EMAIL_SUCCESS = "Gửi email thành công"
     // bỏ enum ở đây
-
+    enum class ClickControllerPlayerUi(){
+        ON_BACK,
+        ON_NEXT_VIDEO,
+        ON_BACK_VIDEO,
+    }
 }
