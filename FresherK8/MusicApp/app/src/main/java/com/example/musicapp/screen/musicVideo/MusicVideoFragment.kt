@@ -2,7 +2,6 @@ package com.example.musicapp.screen.musicVideo
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +22,7 @@ class MusicVideoFragment : Fragment() {
     private val viewModel: MusicVideoViewModel by viewModel()
     private val musicVideoAdapter = MusicVideoAdapter(::onClickItem)
     private val categoryMVAdapter = TopicMVAdapter(::onClickItem)
-    private var mMusicVideos: ArrayList<MusicVideo>? = null
+    private var mMusicVideos: ArrayList<MusicVideo> = arrayListOf()
     private val binding by lazy {
         FragmentMusicVideoBinding.inflate(layoutInflater)
     }
@@ -78,7 +77,7 @@ class MusicVideoFragment : Fragment() {
 //                            binding.tvShow.visibility = View.GONE
 //                            musicVideoAdapter.submitList(mMusicVideos!!.shuffled())
 //                        }
-                        musicVideoAdapter.submitList(mMusicVideos!!.shuffled())
+                        musicVideoAdapter.submitList(mMusicVideos.shuffled())
                     }
 
                     1 -> {
@@ -88,7 +87,7 @@ class MusicVideoFragment : Fragment() {
 //                            binding.tvShow.visibility = View.GONE
 //                            musicVideoAdapter.submitList(itemEqualListMusicVideoProposalNew(mMusicVideos!!))
 //                        }
-                        musicVideoAdapter.submitList(itemEqualListMusicVideoProposalNew(mMusicVideos!!))
+                        musicVideoAdapter.submitList(itemEqualListMusicVideoProposalNew(mMusicVideos))
                     }
 
                     else -> {
@@ -98,7 +97,7 @@ class MusicVideoFragment : Fragment() {
 //                           binding.tvShow.visibility = View.GONE
 //                           musicVideoAdapter.submitList(itemEqualListMusicVideo(item, mMusicVideos!!))
 //                       }
-                        musicVideoAdapter.submitList(itemEqualListMusicVideo(item, mMusicVideos!!))
+                        musicVideoAdapter.submitList(itemEqualListMusicVideo(item, mMusicVideos))
                     }
                 }
                 scrollToTop()

@@ -49,9 +49,9 @@ class MusicFragment : Fragment(), BaseService {
     }
 
     private var musicService: MusicService? = null
-    private var mSongs: ArrayList<Song>? = null
-    private var mSongsLove: ArrayList<Song>? = null
-    private var mSongsDefault: ArrayList<Song>? = null
+    private var mSongs: ArrayList<Song> = arrayListOf()
+    private var mSongsLove: ArrayList<Song> = arrayListOf()
+    private var mSongsDefault: ArrayList<Song> = arrayListOf()
     private var position = 0
     private var isServiceBound = false // kiểm tra kết nối service
 
@@ -142,7 +142,7 @@ class MusicFragment : Fragment(), BaseService {
 
     private fun openBottomSheet() {
         position = sharedPreferences.getInt(KEY_POSITION, 0)
-        val song = mSongs?.get(position)
+        val song = mSongs.getOrNull(position)
         song?.let {
             val bottomSheet = BottomSheetAddSongPlaylist(it , binding.btnPlay)
             bottomSheet.show(parentFragmentManager, bottomSheet.tag)
@@ -154,16 +154,17 @@ class MusicFragment : Fragment(), BaseService {
         val user = FirebaseAuth.getInstance().currentUser
         position = sharedPreferences.getInt(KEY_POSITION, 0)
         if (user != null) {
-            mSongsLove?.let { songsLoveList ->
-                val songToCheck = mSongs?.get(position)
+            mSongsLove.let { songsLoveList ->
+                val songToCheck = mSongs.getOrNull(position)
                 val isSongInLoveList = songToCheck?.let { isSongInList(it, songsLoveList) }
+
                 if (isSongInLoveList == true) {
                     val songLove = songsLoveList.find { it.id == songToCheck.id }
                     songLove?.let {
                         viewModel.deleteSongLove(it.songLoveId)
                     }
                 } else {
-                    mSongs?.get(position)?.id?.let { viewModel.addSongLove(user.uid, it) }
+                    mSongs.getOrNull(position)?.id?.let { viewModel.addSongLove(user.uid, it) }
                 }
             }
         } else {
@@ -174,15 +175,15 @@ class MusicFragment : Fragment(), BaseService {
     // hiển thị tên, ảnh bài hát, tên ca sĩ, bg
     private fun initValueSong() {
         position = sharedPreferences.getInt(KEY_POSITION, 0)
-        mSongs?.get(position)?.let { binding.imgSong.loadImageUrl(it.image) }
-        binding.tvNameArtistSong.text = mSongs?.get(position)?.nameArtis
-        binding.tvNameSong.text = mSongs?.get(position)?.name
+        mSongs.getOrNull(position)?.let { binding.imgSong.loadImageUrl(it.image) }
+        binding.tvNameArtistSong.text = mSongs.getOrNull(position)?.nameArtis
+        binding.tvNameSong.text = mSongs.getOrNull(position)?.name
         binding.tvTotalTimeSong.text = VALUE_DEFAULT
-        mSongs?.get(position)?.let { binding.imgBg.loadImageUrl(it.image) }
+        mSongs.getOrNull(position)?.let { binding.imgBg.loadImageUrl(it.image) }
 
         if (isServiceBound) {
             if (!musicService?.isMediaPrepared()!!) {
-                mSongs?.get(position)?.let { musicService?.playFromUrl(it.url) }
+                mSongs.getOrNull(position)?.let { musicService?.playFromUrl(it.url) }
                 musicService?.setOnCompletionListener {
                     // Xử lý khi bài hát kết thúc, chuyển sang bài hát tiếp theo
                     nextMusic()
@@ -199,8 +200,8 @@ class MusicFragment : Fragment(), BaseService {
     }
 
     private fun checkSongLove() {
-        if (!mSongsLove.isNullOrEmpty() && !mSongs.isNullOrEmpty()) {
-            if (mSongs?.get(position)?.let { isSongInList(it, mSongsLove!!) } == true) {
+        if (mSongsLove.isNotEmpty() && mSongs.isNotEmpty()) {
+            if (mSongs.getOrNull(position)?.let { isSongInList(it, mSongsLove) } == true) {
                 binding.btnAddLove.setImageResource(R.drawable.ic_love_red)
             } else {
                 binding.btnAddLove.setImageResource(R.drawable.ic_heart_black)
@@ -251,7 +252,7 @@ class MusicFragment : Fragment(), BaseService {
     private fun nextMusic() {
         position = sharedPreferences.getInt(KEY_POSITION, 0)
         position++
-        if (position > mSongs?.size!! - 1) {
+        if (position > mSongs.size - 1) {
             position = 0
         }
         sharedPreferences.edit().putInt(KEY_POSITION, position).apply()
@@ -263,7 +264,7 @@ class MusicFragment : Fragment(), BaseService {
     private fun backMusic() {
         position--
         if (position < 0) {
-            position = mSongs?.size!! - 1
+            position = mSongs.size - 1
         }
         sharedPreferences.edit().putInt(KEY_POSITION, position).apply()
         setFuncMusic()
@@ -306,15 +307,15 @@ class MusicFragment : Fragment(), BaseService {
     private fun shuffleMusic() {
         if (musicService?.isShuffleMusic() == true) {
             // shuffle tắt
-            mSongs = mSongsDefault?.toList() as ArrayList<Song>
-            mSongs?.clear()
-            mSongs?.addAll(mSongsDefault!!)
+            mSongs = mSongsDefault.toList() as ArrayList<Song>
+            mSongs.clear()
+            mSongs.addAll(mSongsDefault)
             musicService?.setShuffleMusic(false)
             binding.btnShuffle.setImageResource(R.drawable.ic_shuffle)
         } else {
             // shuffle bật
-            mSongs = mSongsDefault?.toList() as ArrayList<Song>
-            mSongs?.shuffle()
+            mSongs = mSongsDefault.toList() as ArrayList<Song>
+            mSongs.shuffle()
             musicService?.setShuffleMusic(true)
             binding.btnShuffle.setImageResource(R.drawable.ic_shuffle_color)
 //            // kiểm tra để dùng 1 chức năng
@@ -359,12 +360,12 @@ class MusicFragment : Fragment(), BaseService {
     }
 
     private fun downloadMusic() {
-        mSongs?.get(position)?.let { DownloadMusic.downloadMusic(requireContext(), it) }
+        mSongs.getOrNull(position)?.let { DownloadMusic.downloadMusic(requireContext(), it) }
         Toast.makeText(requireContext(), KEY_DOWN, Toast.LENGTH_SHORT).show()
     }
 
     private fun saveSong() {
-        val jsonSong = Gson().toJson(mSongs?.get(position))
+        val jsonSong = Gson().toJson(mSongs.getOrNull(position))
         sharedPreferences.edit().putString(KEY_SONG, jsonSong).apply()
     }
 
@@ -410,9 +411,6 @@ class MusicFragment : Fragment(), BaseService {
             requireContext().unbindService(serviceConnection)
             isServiceBound = false
         }
-
-        mSongs = null
-        mSongsDefault = null
         musicService = null
     }
 
