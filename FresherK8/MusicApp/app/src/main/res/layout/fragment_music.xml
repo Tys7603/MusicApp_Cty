@@ -6,6 +6,10 @@
         <variable
             name="musicViewModel"
             type="com.example.musicapp.screen.music.MusicViewModel" />
+
+        <variable
+            name="song"
+            type="com.example.musicapp.data.model.Song" />
     </data>
 
 
@@ -67,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:gravity="center"
-            android:text="@string/loading"
+            android:text="@{song.name, default = @string/loading}"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -81,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:gravity="center"
-            android:text="@string/loading"
+            android:text="@{song.nameArtis, default = @string/loading}"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/seekBar"
             app:layout_constraintEnd_toEndOf="parent"

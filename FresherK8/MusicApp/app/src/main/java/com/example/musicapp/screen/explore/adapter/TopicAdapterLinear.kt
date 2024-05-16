@@ -19,7 +19,7 @@ class TopicAdapterLinear(
     }
 
     override fun getItemCount(): Int {
-        return min(currentList.size, 6)
+        return currentList.size.coerceAtMost(6)
     }
 
     override fun onBindViewHolder(holder: TopicViewHolder, position: Int) {

@@ -1,24 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
             name="viewModel"
             type="com.example.musicapp.screen.user.playlistUser.PlaylistUserViewModel" />
-        <variable
-            name="loveViewModel"
-            type="com.example.musicapp.screen.user.playlistLove.PlaylistLoveViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:minHeight="500dp"
-        >
-
-        <!-- Your views here -->
+        android:minHeight="500dp">
 
         <View
             android:id="@+id/view4"
@@ -36,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/ch_n_playlist"
+            android:text="@string/th_m_v_o_playlist"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view4" />
@@ -51,53 +44,65 @@
             app:layout_constraintTop_toTopOf="@+id/textView12"
             app:srcCompat="@drawable/baseline_close_24" />
 
-        <CheckBox
-            android:id="@+id/cb_select_all"
+        <TextView
+            android:id="@+id/textView31"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="@string/ch_n_t_t_c"
-            style="@style/TextTile"
+            android:layout_marginTop="16dp"
+            android:text="@string/ch_n_playlist_th_m_b_i_h_t_v_o"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcv_playlist_select"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_delete_playlist_user"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cb_select_all"
-            app:layout_constraintVertical_bias="0.0"
-            tools:itemCount="4"
-            tools:listitem="@layout/item_select_playlist">
-
-        </androidx.recyclerview.widget.RecyclerView>
-
         <LinearLayout
-            android:id="@+id/btn_delete_playlist_user"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:id="@+id/btn_add_playlist_user"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_heart_user"
+            android:gravity="center"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:background="@color/gray"
-            >
-            <TextView
-                android:id="@+id/textView30"
+            app:layout_constraintStart_toStartOf="@+id/textView31"
+            app:layout_constraintTop_toBottomOf="@+id/textView31">
+
+            <ImageView
+                android:id="@+id/imageView9"
                 android:layout_width="0dp"
-                android:gravity="center"
-                style="@style/TextTile"
-                android:layout_height="match_parent"
+                android:layout_height="30dp"
                 android:layout_weight="1"
-                android:text="@string/x_a" />
+                app:srcCompat="@drawable/ic_add_circle" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/textView32"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/t_o_playlist"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:fontFamily="@font/product_sans_regular"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_add_playlist_user"
+            app:layout_constraintStart_toEndOf="@+id/btn_add_playlist_user"
+            app:layout_constraintTop_toTopOf="@+id/btn_add_playlist_user" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv_add_playlist_user"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_add_playlist_user"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_playlist_list_user" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </layout>

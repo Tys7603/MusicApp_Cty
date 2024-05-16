@@ -15,9 +15,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistUserFragment : Fragment() {
 
-    private val viewModel : PlaylistUserViewModel by viewModel()
+    private val viewModel: PlaylistUserViewModel by viewModel()
     private val playlistUserAdapter = PlaylistUserAdapter(::onItemClick, 2)
-
     private val binding by lazy {
         FragmentPlaylistUserBinding.inflate(layoutInflater)
     }
@@ -38,7 +37,7 @@ class PlaylistUserFragment : Fragment() {
     }
 
     private fun handleEvent() {
-        binding.btnOpenBottomSheet.setOnClickListener {openBottomSheetCreatePlaylist()}
+        binding.btnOpenBottomSheet.setOnClickListener { openBottomSheetCreatePlaylist() }
         binding.btnOpenBottomSheetSelect.setOnClickListener { openBottomSheetSelectPlaylist() }
     }
 
@@ -52,7 +51,7 @@ class PlaylistUserFragment : Fragment() {
     }
 
     private fun handleEventViewModel() {
-        viewModel.playlistUser.observe(viewLifecycleOwner){
+        viewModel.playlistUser.observe(viewLifecycleOwner) {
             playlistUserAdapter.submitList(it)
         }
     }
@@ -60,19 +59,20 @@ class PlaylistUserFragment : Fragment() {
     private fun openBottomSheetCreatePlaylist() {
         val bottomSheet = BottomSheetPlaylist(::onItemClickBottomSheet)
         bottomSheet.show(parentFragmentManager, bottomSheet.tag)
+        bottomSheet.isCancelable = false
     }
 
     private fun openBottomSheetSelectPlaylist() {
-        val bottomSheet = BottomSheetSelect(::onItemClickBottomSheet, "playlistSelect")
+        val bottomSheet = BottomSheetSelect(::onItemClickBottomSheet, "playlist_user")
         bottomSheet.show(parentFragmentManager, bottomSheet.tag)
+        bottomSheet.isCancelable = false
     }
 
-    private fun onItemClickBottomSheet(){
+    private fun onItemClickBottomSheet() {
         viewModel.fetchPlaylistsUser()
     }
 
-    private fun onItemClick(playlistUser: PlaylistUser){
+    private fun onItemClick(boolean: Boolean, any: Any) {
 
     }
-
 }

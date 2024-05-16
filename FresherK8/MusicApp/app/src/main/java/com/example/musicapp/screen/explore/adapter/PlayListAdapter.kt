@@ -20,7 +20,7 @@ class PlayListAdapter(
     }
 
     override fun getItemCount(): Int {
-        return min(currentList.size, 5)
+        return currentList.size.coerceAtMost(5)
     }
 
     override fun onBindViewHolder(holder: PlayListViewHolder, position: Int) {

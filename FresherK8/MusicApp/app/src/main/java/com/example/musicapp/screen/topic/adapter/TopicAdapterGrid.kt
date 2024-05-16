@@ -16,7 +16,6 @@ class TopicAdapterGrid : ListAdapter<Topic, TopicAdapterGrid.TopicViewHolder>(Ge
         return TopicViewHolder(binding)
     }
 
-
     override fun onBindViewHolder(holder: TopicViewHolder, position: Int) {
         holder.bind(currentList[position])
     }

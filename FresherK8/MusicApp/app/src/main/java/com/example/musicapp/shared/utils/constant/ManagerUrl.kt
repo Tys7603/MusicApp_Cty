@@ -2,13 +2,18 @@ package com.example.musicapp.shared.utils.constant
 
 object ManagerUrl {
     private const val IP = "10.20.23.239"
-    const val BASE_URL = "http://$IP:3000/api/"
+//    const val BASE_URL = "http://$IP:3000/api/"
+    const val BASE_URL = "https://6ztfh0rs-3000.asse.devtunnels.ms/api/"
 
     // playlist
     const val GET_PLAYLIST = "playlists"
     const val GET_PLAYLIST_MODE_TODAY = "playlists/mood/today"
     const val GET_PLAYLIST_USER = "playlists/{userId}"
+    const val GET_PLAYLIST_LOVE = "playlists/love/{userId}"
     const val CREATE_PLAYLIST_USER = "playlist/user"
+    const val DELETE_PLAYLIST_USER = "playlistsUser"
+    const val DELETE_PLAYLIST_LOVE = "playlistsLove"
+    const val INSERT_SONG_PLAYLIST_USER = "playlist/user/song"
 
     // category and topic
     const val GET_TOPICS = "topics"

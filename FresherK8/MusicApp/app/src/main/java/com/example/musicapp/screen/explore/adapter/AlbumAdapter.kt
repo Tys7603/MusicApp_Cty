@@ -20,7 +20,7 @@ class AlbumAdapter(
     }
 
     override fun getItemCount(): Int {
-        return min(currentList.size, 8)
+        return currentList.size.coerceAtMost(8)
     }
 
     override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
