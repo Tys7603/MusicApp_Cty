@@ -149,17 +149,29 @@ class LyricActivity : AppCompatActivity() {
             override fun run() {
                 val currentPosition = musicService?.getCurrentPosition()?.toLong()
                 if (currentPosition != null) {
-                    // Kiểm tra và cập nhật vị trí lyric nếu cần thiết
-                    while (currentLyricIndex < lyricsAdapter.itemCount && currentPosition >= lyricsAdapter.currentList[currentLyricIndex].startTimeMs) {
+                    // Tìm vị trí lời bài hát tương ứng với thời gian hiện tại
+                    val newLyricIndex = findLyricIndex(currentPosition)
+
+                    if (newLyricIndex != currentLyricIndex) {
+                        currentLyricIndex = newLyricIndex
                         highlightText()
-                        currentLyricIndex++
+                        scrollToPositionHighlightText()
                     }
-                    scrollToPositionHighlightText()
                 }
                 handler.postDelayed(this, 100)
             }
+
         }
         handler.post(updateRunnable)
+    }
+
+    private fun findLyricIndex(currentPosition: Long): Int {
+        for (i in lyricsAdapter.currentList.indices) {
+            if (currentPosition < lyricsAdapter.currentList[i].startTimeMs) {
+                return i - 1
+            }
+        }
+        return lyricsAdapter.currentList.size - 1
     }
 
     private fun highlightText() {
