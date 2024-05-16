@@ -2,25 +2,21 @@ package com.example.musicapp.screen.songDetail
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Build
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.preference.PreferenceManager
 import com.example.musicapp.R
 import com.example.musicapp.shared.utils.constant.Constant
-import com.example.musicapp.shared.utils.constant.Constant.KEY_BUNDLE_ITEM
 import com.example.musicapp.data.model.Album
-import com.example.musicapp.data.model.MusicVideo
 import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.ActivitySongDetailBinding
-import com.example.musicapp.screen.musicVideo.MusicVideoViewModel
 import com.example.musicapp.screen.song.SongActivity
 import com.example.musicapp.screen.songDetail.adapter.SongDetailAdapter
 import com.example.musicapp.shared.extension.loadImageUrl
@@ -36,7 +32,10 @@ class SongDetailActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivitySongDetailBinding.inflate(layoutInflater)
     }
-    private var mSong : ArrayList<Song>? = null
+    private val sharedPreferences: SharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(this)
+    }
+    private var mSongs : ArrayList<Song>? = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,17 +58,17 @@ class SongDetailActivity : AppCompatActivity() {
     private fun handleEventViewModel() {
         viewModel.songTopic.observe(this){
             songAdapter.submitList(it)
-            mSong = it
+            mSongs = it
             initQuantitySong(it)
         }
         viewModel.songPlaylist.observe(this){
             songAdapter.submitList(it)
-            mSong = it
+            mSongs = it
             initQuantitySong(it)
         }
         viewModel.songAlbum.observe(this){
             songAdapter.submitList(it)
-            mSong = it
+            mSongs = it
             initQuantitySong(it)
         }
     }
@@ -98,6 +97,7 @@ class SongDetailActivity : AppCompatActivity() {
                 binding.tvNamePlaylistActivity.text = item.name
                 binding.tvNameArtistPlaylistActivity.text = item.nameArtist
                 viewModel.fetchSongPlaylist(item.id)
+                sharedPreferences.edit().putString(Constant.KEY_NAME_TAB, item.name).apply()
             }
 
             is Album -> {
@@ -106,6 +106,7 @@ class SongDetailActivity : AppCompatActivity() {
                 binding.tvNamePlaylistActivity.text = item.albumName
                 binding.tvNameArtistPlaylistActivity.text = item.nameArtist
                 viewModel.fetchSongAlbum(item.albumId)
+                sharedPreferences.edit().putString(Constant.KEY_NAME_TAB, item.albumImage).apply()
             }
 
             is Topic -> {
@@ -114,6 +115,7 @@ class SongDetailActivity : AppCompatActivity() {
                 binding.tvNamePlaylistActivity.text = item.name
                 binding.tvNameArtistPlaylistActivity.text = ""
                 viewModel.fetchSongTopic(item.id)
+                sharedPreferences.edit().putString(Constant.KEY_NAME_TAB, item.name).apply()
             }
         }
     }
@@ -135,7 +137,7 @@ class SongDetailActivity : AppCompatActivity() {
     private fun onItemClick(song: Song, position : Int) {
         val intent = Intent(this, SongActivity::class.java)
         intent.putExtra(KEY_POSITION_SONG, position)
-        intent.putParcelableArrayListExtra(KEY_INTENT_ITEM, mSong)
+        intent.putParcelableArrayListExtra(KEY_INTENT_ITEM, mSongs)
         startActivity(intent)
     }
 

@@ -153,5 +153,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         sharedPreferences.edit().putBoolean(Constant.KEY_PLAY_CLICK, false).apply()
+        sharedPreferences.edit().putBoolean(Constant.KEY_TAB_MUSIC, false).apply()
     }
 }

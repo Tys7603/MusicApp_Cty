@@ -35,6 +35,7 @@ class MusicService : Service() {
 
     private var mShared: SharedPreferences? = null
     private var onCompletionListener: (() -> Unit)? = null // kết thúc bài hát
+    private var onStartMusic: (() -> Unit)? = null
     private var isAutoRestart = false //  lập lại bài hát
     private var isNext = false //  qua bài mới
     private var isShuffle = false //  đảo bài hài
@@ -184,6 +185,22 @@ class MusicService : Service() {
         }
     }
 
+    fun songPlayFromUrl(url: String) {
+        mediaPlayer?.apply {
+            reset()
+            setDataSource(url)
+            prepareAsync()
+            setOnPreparedListener {
+                isMediaPrepared = true // Đánh dấu rằng âm thanh đã được chuẩn bị
+                mBaseService?.onMediaPrepared()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    createNotification()
+                }
+                onStartMusic?.invoke()
+            }
+        }
+    }
+
     @SuppressLint("SuspiciousIndentation")
     fun playFromLocal(fileName: String) {
         val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
@@ -219,6 +236,10 @@ class MusicService : Service() {
 
     fun setOnCompletionListener(listener: () -> Unit) {
         onCompletionListener = listener
+    }
+
+    fun setOnStartMusicListener(listener: () -> Unit) {
+        onStartMusic = listener
     }
 
     fun isAutoRestart() = isAutoRestart

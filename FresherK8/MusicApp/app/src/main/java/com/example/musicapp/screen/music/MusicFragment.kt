@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.preference.PreferenceManager
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -32,14 +33,20 @@ import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.utils.constant.Constant.KEY_AUTO_RESTART
 import com.example.musicapp.shared.utils.constant.Constant.KEY_DOWN
 import com.example.musicapp.shared.utils.constant.Constant.KEY_INTENT_ITEM
+import com.example.musicapp.shared.utils.constant.Constant.KEY_LIST_SONG
 import com.example.musicapp.shared.utils.constant.Constant.KEY_LYRIC_NEW
+import com.example.musicapp.shared.utils.constant.Constant.KEY_NAME_TAB
 import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION
+import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_SONG
+import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_TAB
 import com.example.musicapp.shared.utils.constant.Constant.KEY_SHUFFLE
+import com.example.musicapp.shared.utils.constant.Constant.KEY_TAB_MUSIC
 import com.example.musicapp.shared.utils.constant.Constant.VALUE_DEFAULT
 import com.example.musicapp.shared.utils.format.FormatUtils
 import com.example.musicapp.shared.widget.SnackBarManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MusicFragment : Fragment(), BaseService {
@@ -76,6 +83,8 @@ class MusicFragment : Fragment(), BaseService {
             isServiceBound = true
             musicService?.musicService(this@MusicFragment)
             musicService?.musicShared(sharedPreferences)
+            Log.d("TAG", "onServiceConnected: ")
+            checkTab()
         }
 
         // ngắt kết nối music service
@@ -91,21 +100,47 @@ class MusicFragment : Fragment(), BaseService {
         initViewModel()
     }
 
+    private fun checkTab() {
+        /**
+         * 0 - vị trí của dành cho bạn
+         * 1 - vị trí của playlist
+         */
+        val isCheck = sharedPreferences.getInt(KEY_POSITION_TAB, 0)
+
+        when(isCheck){
+            0 -> {
+                viewModel.songs.observe(viewLifecycleOwner) {
+                    mSongs = it
+                    mSongsDefault = it
+                    initValueSong()
+                    if (isServiceBound) {
+                        initFunc()
+                    }
+                    binding.btnMusicPlaylist.setTextColor(resources.getColor(R.color.black_mix) )
+                    binding.btnMusicMe.setTextColor(resources.getColor(R.color.black) )
+                    sharedPreferences.edit().putInt(KEY_POSITION_TAB, 0).apply()
+                }
+            }
+            1 -> {
+                    binding.btnMusicPlaylist.setTextColor(resources.getColor(R.color.black) )
+                    binding.btnMusicMe.setTextColor(resources.getColor(R.color.black_mix) )
+                    getListSongIntent()
+                    sharedPreferences.edit().putInt(KEY_POSITION_TAB, 1).apply()
+            }
+        }
+
+        if (isCheckMusicTab()){
+            binding.btnMusicPlaylist.visibility = View.VISIBLE
+            binding.btnMusicPlaylist.text = sharedPreferences.getString(KEY_NAME_TAB, "")
+        }
+    }
+
     private fun setUpViewModel() {
         binding.musicViewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
     }
 
     private fun initViewModel() {
-        viewModel.songs.observe(viewLifecycleOwner) {
-            mSongs = it
-            mSongsDefault = it
-            initValueSong()
-            if (isServiceBound) {
-                initFunc()
-            }
-        }
-
         viewModel.songsLove.observe(viewLifecycleOwner) {
             mSongsLove = it
             checkSongLove()
@@ -119,6 +154,49 @@ class MusicFragment : Fragment(), BaseService {
                 SnackBarManager.showMessage(binding.btnPlay, DELETE_SONG_LOVE)
                 binding.btnAddLove.setImageResource(R.drawable.ic_heart_black)
             }
+        }
+    }
+
+    private fun isCheckMusicTab(): Boolean = sharedPreferences.getBoolean(KEY_TAB_MUSIC, false)
+
+    private fun getListSongIntent() {
+        sharedPreferences.edit().putInt(KEY_POSITION_TAB, 1).apply()
+        val jsonSongs = sharedPreferences.getString(KEY_LIST_SONG, "")
+        if (!jsonSongs.isNullOrEmpty()) {
+            val myListType = object : TypeToken<ArrayList<Song>>() {}.type
+            val songs : ArrayList<Song> = Gson().fromJson(jsonSongs, myListType)
+                mSongs = songs
+                mSongsDefault = songs
+                initValueSong()
+                if (isServiceBound) {
+                    initFunc()
+                }
+        }
+    }
+
+    private fun getPosition () : Int {
+        /**
+         * 0 - vị trí của dành cho bạn
+         * 1 - vị trí của playlist
+         */
+        val isCheck = sharedPreferences.getInt(KEY_POSITION_TAB, 0)
+        return if (isCheck == 0){
+            sharedPreferences.getInt(KEY_POSITION, 0)
+        }else {
+            sharedPreferences.getInt(KEY_POSITION_SONG, 0)
+        }
+    }
+
+    private fun putPosition (position : Int) {
+        /**
+         * 0 - vị trí của dành cho bạn
+         * 1 - vị trí của playlist
+         */
+        val isCheck = sharedPreferences.getInt(KEY_POSITION_TAB, 0)
+         if (isCheck == 0){
+            sharedPreferences.edit().putInt(KEY_POSITION, position).apply()
+        }else {
+            sharedPreferences.edit().putInt(KEY_POSITION_SONG, position).apply()
         }
     }
 
@@ -141,17 +219,37 @@ class MusicFragment : Fragment(), BaseService {
         binding.btnAddLove.setOnClickListener { checkUserLogin() }
         binding.btnAddPlaylist.setOnClickListener { openBottomSheet() }
         binding.btnLyrics.setOnClickListener { putLyrics() }
+        binding.btnMusicPlaylist.setOnClickListener {
+            binding.btnMusicPlaylist.setTextColor(resources.getColor(R.color.black) )
+            binding.btnMusicMe.setTextColor(resources.getColor(R.color.black_mix) )
+            getListSongIntent()
+            setFuncTabMusic()
+        }
+        binding.btnMusicMe.setOnClickListener {
+            viewModel.songs.observe(viewLifecycleOwner) {
+                mSongs = it
+                mSongsDefault = it
+                initValueSong()
+                if (isServiceBound) {
+                    initFunc()
+                }
+                binding.btnMusicPlaylist.setTextColor(resources.getColor(R.color.black_mix) )
+                binding.btnMusicMe.setTextColor(resources.getColor(R.color.black) )
+                sharedPreferences.edit().putInt(KEY_POSITION_TAB, 0).apply()
+                setFuncTabMusic()
+            }
+        }
     }
 
     private fun putLyrics() {
-        position = sharedPreferences.getInt(KEY_POSITION, 0)
+        position = getPosition()
         val intent = Intent(requireContext(), LyricActivity::class.java)
         intent.putExtra(KEY_INTENT_ITEM, mSongs?.get(position))
         startActivity(intent)
     }
 
     private fun openBottomSheet() {
-        position = sharedPreferences.getInt(KEY_POSITION, 0)
+        position = getPosition()
         val song = mSongs?.get(position)
         song?.let {
             val bottomSheet = BottomSheetAddSongPlaylist(it, binding.btnPlay)
@@ -162,7 +260,7 @@ class MusicFragment : Fragment(), BaseService {
 
     private fun checkUserLogin() {
         val user = FirebaseAuth.getInstance().currentUser
-        position = sharedPreferences.getInt(KEY_POSITION, 0)
+        position = getPosition()
         if (user != null) {
             mSongsLove?.let { songsLoveList ->
                 val songToCheck = mSongs?.get(position)
@@ -183,15 +281,17 @@ class MusicFragment : Fragment(), BaseService {
 
     // hiển thị tên, ảnh bài hát, tên ca sĩ, bg
     private fun initValueSong() {
-        position = sharedPreferences.getInt(KEY_POSITION, 0)
+        position = getPosition()
         mSongs?.get(position)?.let { binding.imgSong.loadImageUrl(it.image) }
         binding.tvNameArtistSong.text = mSongs?.get(position)?.nameArtis
         binding.tvNameSong.text = mSongs?.get(position)?.name
         binding.tvTotalTimeSong.text = VALUE_DEFAULT
         mSongs?.get(position)?.let { binding.imgBg.loadImageUrl(it.image) }
-
+        Log.d("TAG", "initValueSong: " + isServiceBound.toString())
         if (isServiceBound) {
+
             if (!musicService?.isMediaPrepared()!!) {
+                Log.d("TAG", "initValueSong: chuan bi ")
                 mSongs?.get(position)?.let { musicService?.playFromUrl(it.url) }
                 musicService?.setOnCompletionListener {
                     // Xử lý khi bài hát kết thúc, chuyển sang bài hát tiếp theo
@@ -199,6 +299,7 @@ class MusicFragment : Fragment(), BaseService {
                 }
             } else {
                 // khi bài hát đã được chuẩn bị -> khi bấm qua fragment khác
+                Log.d("TAG", "initValueSong: chuan bi roi ")
                 setTimeTotal()
                 updateTimeSong()
             }
@@ -259,32 +360,41 @@ class MusicFragment : Fragment(), BaseService {
 
     // next sang bài nhạc tiếp
     private fun nextMusic() {
-        position = sharedPreferences.getInt(KEY_POSITION, 0)
+        position = getPosition()
         position++
         if (position > mSongs?.size!! - 1) {
             position = 0
         }
-        sharedPreferences.edit().putInt(KEY_POSITION, position).apply()
+        putPosition(position)
         setFuncMusic()
         musicService?.setNextMusic(true)
     }
 
     //    // quay lại bài nhạc
     private fun backMusic() {
-        position = sharedPreferences.getInt(KEY_POSITION, 0)
+        position = getPosition()
         position--
         if (position < 0) {
             position = mSongs?.size!! - 1
         }
-        sharedPreferences.edit().putInt(KEY_POSITION, position).apply()
+        putPosition(position)
         setFuncMusic()
     }
 
     private fun setFuncMusic() {
         musicService?.stop()
         musicService?.setMediaPrepared(false)
-        var isPlaySelected: Boolean by BooleanProperty(sharedPreferences, KEY_PLAY_CLICK, false)
-        isPlaySelected = true
+        sharedPreferences.edit().putBoolean(KEY_PLAY_CLICK, true).apply()
+        initValueSong()
+        checkSongLove()
+        sharedPreferences.edit().putBoolean(KEY_LYRIC_NEW, true).apply()
+        senBroadcastInitValue()
+    }
+
+    private fun setFuncTabMusic() {
+        musicService?.stop()
+        musicService?.setMediaPrepared(false)
+        sharedPreferences.edit().putBoolean(KEY_PLAY_CLICK, false).apply()
         initValueSong()
         checkSongLove()
         sharedPreferences.edit().putBoolean(KEY_LYRIC_NEW, true).apply()
@@ -292,7 +402,7 @@ class MusicFragment : Fragment(), BaseService {
     }
 
     private fun senBroadcastInitValue() {
-        position = sharedPreferences.getInt(KEY_POSITION, 0)
+        position = getPosition()
         val intent = Intent(Constant.UPDATE_LYRIC)
         intent.putExtra(KEY_INTENT_ITEM, mSongs?.getOrNull(position))
         requireContext().sendBroadcast(intent)
@@ -350,6 +460,7 @@ class MusicFragment : Fragment(), BaseService {
 
     // set thời gian tổng cho tv và gán max của skbar = time của bài hát
     private fun setTimeTotal() {
+        Log.d("TAG", "setTimeTotal: ")
         if (isServiceBound) {
             binding.tvTotalTimeSong.text =
                 musicService?.let { FormatUtils.formatTime(it.getDuration()) }

@@ -3,7 +3,7 @@ package com.example.musicapp.shared.utils.constant
 object ManagerUrl {
     private const val IP = "192.168.1.7"
     private const val IP_CTY = "10.20.23.239"
-    const val BASE_URL = "http://$IP_CTY:3000/api/"
+    const val BASE_URL = "http://$IP:3000/api/"
 
     // playlist
     const val GET_PLAYLIST = "playlists"
