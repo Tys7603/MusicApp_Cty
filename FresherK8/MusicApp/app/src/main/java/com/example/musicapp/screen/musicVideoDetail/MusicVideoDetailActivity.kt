@@ -26,7 +26,7 @@ class MusicVideoDetailActivity : AppCompatActivity() {
     private val viewModel: MusicVideoDetailViewModel by viewModel()
     private val musicVideoAdapter = MusicVideoDetailAdapter(::onClickItem)
     private var mMusicVideo: MusicVideo? = null
-    private var mMusicVideos: ArrayList<MusicVideo> = arrayListOf()
+    private var mMusicVideos: MutableList<MusicVideo> = mutableListOf()
     private var positionMusicVideo = 0
     private var customPlayerUiController : CustomPlayerUiController? = null
     private val binding by lazy {

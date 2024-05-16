@@ -24,7 +24,6 @@ import com.example.musicapp.data.model.Song
 import com.example.musicapp.shared.utils.constant.Constant.KEY_PLAY_CLICK
 import com.example.musicapp.screen.base.BaseService
 import com.example.musicapp.screen.music.adapter.BottomSheetAddSongPlaylist
-import com.example.musicapp.screen.user.adapter.BottomSheetPlaylist
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.utils.BooleanProperty
@@ -49,9 +48,9 @@ class MusicFragment : Fragment(), BaseService {
     }
 
     private var musicService: MusicService? = null
-    private var mSongs: ArrayList<Song> = arrayListOf()
-    private var mSongsLove: ArrayList<Song> = arrayListOf()
-    private var mSongsDefault: ArrayList<Song> = arrayListOf()
+    private var mSongs: MutableList<Song> = mutableListOf()
+    private var mSongsLove: MutableList<Song> = mutableListOf()
+    private var mSongsDefault: MutableList<Song> = mutableListOf()
     private var position = 0
     private var isServiceBound = false // kiểm tra kết nối service
 
@@ -143,8 +142,9 @@ class MusicFragment : Fragment(), BaseService {
     private fun openBottomSheet() {
         position = sharedPreferences.getInt(KEY_POSITION, 0)
         val song = mSongs.getOrNull(position)
+
         song?.let {
-            val bottomSheet = BottomSheetAddSongPlaylist(it , binding.btnPlay)
+            val bottomSheet = BottomSheetAddSongPlaylist(it, binding.btnPlay)
             bottomSheet.show(parentFragmentManager, bottomSheet.tag)
             bottomSheet.isCancelable = false
         }
@@ -153,55 +153,81 @@ class MusicFragment : Fragment(), BaseService {
     private fun checkUserLogin() {
         val user = FirebaseAuth.getInstance().currentUser
         position = sharedPreferences.getInt(KEY_POSITION, 0)
-        if (user != null) {
-            mSongsLove.let { songsLoveList ->
-                val songToCheck = mSongs.getOrNull(position)
-                val isSongInLoveList = songToCheck?.let { isSongInList(it, songsLoveList) }
 
-                if (isSongInLoveList == true) {
-                    val songLove = songsLoveList.find { it.id == songToCheck.id }
-                    songLove?.let {
-                        viewModel.deleteSongLove(it.songLoveId)
-                    }
-                } else {
-                    mSongs.getOrNull(position)?.id?.let { viewModel.addSongLove(user.uid, it) }
-                }
+        if (user != null) {
+            val songToCheck = getSongToCheckCurrent()
+            if (songToCheck != null) {
+                processSong(user.uid, songToCheck)
             }
         } else {
             SnackBarManager.showMessage(binding.btnPlay, NOT_LOGIN)
         }
     }
 
+    private fun getSongToCheckCurrent(): Song? {
+        return if (position in mSongs.indices) {
+            mSongs[position]
+        } else {
+            null
+        }
+    }
+
+    private fun processSong(userId: String, songToCheck: Song) {
+        val isSongInLoveList = isSongInList(songToCheck, mSongsLove)
+
+        if (isSongInLoveList) {
+            val songLove = mSongsLove.find { it.id == songToCheck.id }
+            songLove?.let {
+                viewModel.deleteSongLove(it.songLoveId)
+            }
+        } else {
+            viewModel.addSongLove(userId, songToCheck.id)
+        }
+    }
+
     // hiển thị tên, ảnh bài hát, tên ca sĩ, bg
     private fun initValueSong() {
         position = sharedPreferences.getInt(KEY_POSITION, 0)
-        mSongs.getOrNull(position)?.let { binding.imgSong.loadImageUrl(it.image) }
-        binding.tvNameArtistSong.text = mSongs.getOrNull(position)?.nameArtis
-        binding.tvNameSong.text = mSongs.getOrNull(position)?.name
-        binding.tvTotalTimeSong.text = VALUE_DEFAULT
-        mSongs.getOrNull(position)?.let { binding.imgBg.loadImageUrl(it.image) }
+        val song = mSongs.getOrNull(position)
 
-        if (isServiceBound) {
-            if (!musicService?.isMediaPrepared()!!) {
-                mSongs.getOrNull(position)?.let { musicService?.playFromUrl(it.url) }
-                musicService?.setOnCompletionListener {
-                    // Xử lý khi bài hát kết thúc, chuyển sang bài hát tiếp theo
-                    nextMusic()
+        if (song != null) {
+            binding.song = song
+            binding.tvTotalTimeSong.text = VALUE_DEFAULT
+            binding.imgSong.loadImageUrl(song.image)
+            binding.imgBg.loadImageUrl(song.image)
+
+            if (isServiceBound) {
+                val musicPrepared = checkMusicServiceToPlay(song)
+                if (musicPrepared) {
+                    // khi bài hát đã được chuẩn bị -> khi bấm qua fragment khác
+                    setTimeTotal()
+                    updateTimeSong()
                 }
-            } else {
-                // khi bài hát đã được chuẩn bị -> khi bấm qua fragment khác
-                setTimeTotal()
-                updateTimeSong()
             }
+
+            saveSong()
+            initViewButton()
+            checkSongLove()
         }
-        saveSong()
-        initViewButton()
-        checkSongLove()
+    }
+
+    private fun checkMusicServiceToPlay(song: Song): Boolean {
+        return if (!musicService?.isMediaPrepared()!!) {
+            musicService?.playFromUrl(song.url)
+            musicService?.setOnCompletionListener {
+                // Xử lý khi bài hát kết thúc, chuyển sang bài hát tiếp theo
+                nextMusic()
+            }
+            false
+        } else {
+            true
+        }
     }
 
     private fun checkSongLove() {
-        if (mSongsLove.isNotEmpty() && mSongs.isNotEmpty()) {
-            if (mSongs.getOrNull(position)?.let { isSongInList(it, mSongsLove) } == true) {
+        if (position in mSongs.indices && mSongsLove.isNotEmpty()) {
+            val song = mSongs[position]
+            if (isSongInList(song, mSongsLove)) {
                 binding.btnAddLove.setImageResource(R.drawable.ic_love_red)
             } else {
                 binding.btnAddLove.setImageResource(R.drawable.ic_heart_black)
