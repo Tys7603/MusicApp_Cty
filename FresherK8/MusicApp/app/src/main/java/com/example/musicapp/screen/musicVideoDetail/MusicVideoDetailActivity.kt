@@ -26,7 +26,7 @@ class MusicVideoDetailActivity : AppCompatActivity() {
     private val viewModel: MusicVideoDetailViewModel by viewModel()
     private val musicVideoAdapter = MusicVideoDetailAdapter(::onClickItem)
     private var mMusicVideo: MusicVideo? = null
-    private var mMusicVideos: ArrayList<MusicVideo>? = null
+    private var mMusicVideos: MutableList<MusicVideo> = mutableListOf()
     private var positionMusicVideo = 0
     private var customPlayerUiController : CustomPlayerUiController? = null
     private val binding by lazy {
@@ -74,7 +74,7 @@ class MusicVideoDetailActivity : AppCompatActivity() {
             val modifiedList = it.toMutableList()
             musicVideoAdapter.submitList(modifiedList)
             mMusicVideos = it
-            mMusicVideos!!.add(0, mMusicVideo!!)
+            mMusicVideos.add(0, mMusicVideo!!)
         }
     }
 
@@ -153,19 +153,19 @@ class MusicVideoDetailActivity : AppCompatActivity() {
 
     private fun nextVideoMusic(){
         positionMusicVideo ++
-        if (positionMusicVideo >= mMusicVideos!!.size){
+        if (positionMusicVideo >= mMusicVideos.size){
            positionMusicVideo = 0
         }
-        getYouTubePlayerWhenReady(mMusicVideos!![positionMusicVideo])
+        mMusicVideos.getOrNull(positionMusicVideo)?.let { getYouTubePlayerWhenReady(it) }
         customPlayerUiController!!.updateUI()
     }
 
     private fun backVideoMusic(){
         positionMusicVideo --
         if (positionMusicVideo < 0){
-           positionMusicVideo = mMusicVideos!!.size - 1
+           positionMusicVideo = mMusicVideos.size - 1
         }
-        getYouTubePlayerWhenReady(mMusicVideos!![positionMusicVideo])
+        getYouTubePlayerWhenReady(mMusicVideos[positionMusicVideo])
         customPlayerUiController!!.updateUI()
     }
 
@@ -183,6 +183,5 @@ class MusicVideoDetailActivity : AppCompatActivity() {
         super.onDestroy()
         binding.youtubePlayerView.release()
         mMusicVideo = null
-        mMusicVideos = null
     }
 }

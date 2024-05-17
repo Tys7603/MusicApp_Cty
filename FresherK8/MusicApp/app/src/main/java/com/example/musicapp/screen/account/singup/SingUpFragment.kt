@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.musicapp.databinding.FragmentSingUpBinding
-import com.example.musicapp.shared.extension.loadDingUrl
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.widget.SnackBarManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
