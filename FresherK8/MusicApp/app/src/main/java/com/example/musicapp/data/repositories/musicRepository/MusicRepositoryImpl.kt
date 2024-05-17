@@ -54,6 +54,24 @@ class MusicRepositoryImpl(
         }
     }
 
+    override suspend fun insertPlaylistIntoPlaylistLove(
+        userId: String,
+        playlistId: Int
+    ): DataResult<Boolean> {
+        return try {
+            val response = remote.insertPlaylistIntoPlaylistLove(userId, playlistId)
+            if (response.body() != null && response.body()!!.status == Constant.STATUS) {
+                DataResult.Success(true)
+            } else if (response.body() != null && response.body()!!.status == Constant.STATUS_DUPLICATE) {
+                DataResult.Success(false)
+            } else {
+                DataResult.Failure(Constant.CALL_API_ERROR)
+            }
+        } catch (e: Exception) {
+            DataResult.Error(e)
+        }
+    }
+
     override suspend fun deleteSongLove(songLoveId: Int): DataResult<Boolean> {
         return try {
             val response = remote.deleteSongLove(songLoveId)

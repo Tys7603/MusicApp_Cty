@@ -154,5 +154,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         sharedPreferences.edit().putBoolean(Constant.KEY_PLAY_CLICK, false).apply()
         sharedPreferences.edit().putBoolean(Constant.KEY_TAB_MUSIC, false).apply()
+        sharedPreferences.edit().putBoolean(Constant.KEY_SHUFFLE, false).apply()
+        sharedPreferences.edit().putBoolean(Constant.KEY_AUTO_RESTART, false).apply()
     }
 }

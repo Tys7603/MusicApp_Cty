@@ -5,7 +5,8 @@ object Constant {
     const val STATUS_DUPLICATE = 409
     const val TAG_ERROR = "Error"
     const val SONG_COMPLETED = "song_completed"
-    const val URL_IMAGE = "https://cdn-icons-png.flaticon.com/512/1053/1053244.png"
+    const val URL_IMAGE = "https://cdn-icons-png.freepik.com/512/3607/3607444.png"
+    const val URL_IMAGE_UPDATE = "https://pngtree.com/freepng/user-icon-isolated-on-abstract-background_5192004.html"
     const val KEY_SONG = "song"
     const val KEY_USER = "start_user"
     const val KEY_INTENT_ITEM = "item"
@@ -16,6 +17,7 @@ object Constant {
     const val KEY_POSITION = "position"
     const val KEY_LYRIC_NEW = "lyric_new"
     const val KEY_POSITION_SONG = "position_song_playlist"
+    const val KEY_POSITION_SONG_LIST_NAME = "position_song_list_name"
     const val KEY_POSITION_TAB = "position_tab"
     const val KEY_AUTO_RESTART = "auto_restart"
     const val KEY_SHUFFLE = "shuffle"

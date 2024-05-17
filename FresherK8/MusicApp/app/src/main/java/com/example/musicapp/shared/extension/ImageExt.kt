@@ -25,7 +25,7 @@ fun ImageView.loadImageUrlUser(url : String){
     Glide.with(context)
         .load(url)
         .centerCrop()
-        .placeholder(R.drawable.avatar)
+        .placeholder(R.drawable.img)
         .into(this)
 }
 

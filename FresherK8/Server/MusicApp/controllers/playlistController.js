@@ -161,6 +161,18 @@ const getListPlaylistLoveByUserIdController = async (req, res) => {
 
 }
 
+const inserPlaylistIntoPlaylistLoveByUserIdController = async (req, res) => {
+  try {
+    const { userId, playlistId } = req.body;
+
+    const playlists = await model.inserPlaylistIntoPlaylistLoveByUserId(playlistId, userId);
+
+    res.json(playlists);
+  } catch (error) {
+    res.json({ status: 400, message: error.message });
+  }
+}
+
 module.exports = {
   getListPlaylistController,
   getListPlaylistMoodTodayController,
@@ -169,5 +181,6 @@ module.exports = {
   deletePlaylistUserByIdController,
   createSongIntoPlaylistByUserIdController,
   getListPlaylistLoveByUserIdController,
-  deletePlaylistLoveByIdController
+  deletePlaylistLoveByIdController,
+  inserPlaylistIntoPlaylistLoveByUserIdController
 }

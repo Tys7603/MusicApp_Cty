@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.repositories.musicRepository.MusicRepository
 import com.example.musicapp.shared.base.BaseViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class SongDetailViewModel(private val musicRepository: MusicRepository) : BaseViewModel() {
     private val _songTopic = MutableLiveData<ArrayList<Song>>()
@@ -16,6 +17,12 @@ class SongDetailViewModel(private val musicRepository: MusicRepository) : BaseVi
 
     private val _songAlbum = MutableLiveData<ArrayList<Song>>()
     val songAlbum: LiveData<ArrayList<Song>> = _songAlbum
+
+    private val _isInsertPlaylist = MutableLiveData<Boolean>()
+    val isInsertPlaylist: LiveData<Boolean> = _isInsertPlaylist
+
+    private val _isUserLogin = MutableLiveData<Boolean>()
+    val isUserLogin: LiveData<Boolean> = _isUserLogin
 
     fun fetchSongPlaylist(id : Int) {
         launchTaskSync(
@@ -42,5 +49,20 @@ class SongDetailViewModel(private val musicRepository: MusicRepository) : BaseVi
             onFailure = { Log.e("fetchSong", "Failed: $it") },
             onError = { exception.value = it }
         )
+    }
+
+    fun insertPlaylist(playlistId : Int){
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null){
+            _isUserLogin.value = true
+            launchTaskSync(
+                onRequest = { musicRepository.insertPlaylistIntoPlaylistLove(user.uid, playlistId) },
+                onSuccess = { _isInsertPlaylist.value = it },
+                onFailure = { Log.e("insertPlaylist", "Failed: $it") },
+                onError = { exception.value = it }
+            )
+        }else{
+            _isUserLogin.value = false
+        }
     }
 }

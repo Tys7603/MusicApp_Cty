@@ -28,8 +28,10 @@ import com.example.musicapp.shared.utils.DownloadMusic
 import com.example.musicapp.shared.utils.constant.Constant.KEY_AUTO_RESTART
 import com.example.musicapp.shared.utils.constant.Constant.KEY_DOWN
 import com.example.musicapp.shared.utils.constant.Constant.KEY_HAVE_DOWN
+import com.example.musicapp.shared.utils.constant.Constant.KEY_NAME_TAB
 import com.example.musicapp.shared.utils.constant.Constant.KEY_PLAY_CLICK
 import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_SONG
+import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_SONG_LIST_NAME
 import com.example.musicapp.shared.utils.constant.Constant.KEY_SHUFFLE
 import com.example.musicapp.shared.utils.constant.Constant.VALUE_DEFAULT
 import com.example.musicapp.shared.utils.format.FormatUtils
@@ -303,7 +305,7 @@ class SongActivity : AppCompatActivity(), BaseService {
     private fun getListSongIntent() {
         val songs = intent.getParcelableArrayListExtra<Song>(Constant.KEY_INTENT_ITEM)
         val mPosition = intent.getIntExtra(KEY_POSITION_SONG, 0)
-        sharedPreferences.edit().putInt(KEY_POSITION_SONG, mPosition).apply()
+
         if (songs != null){
             mSongs = songs
             mSongsDefault = songs
@@ -311,6 +313,7 @@ class SongActivity : AppCompatActivity(), BaseService {
             sharedPreferences.edit().putInt(Constant.KEY_POSITION_TAB, 1).apply()
             sharedPreferences.edit().putString(Constant.KEY_LIST_SONG, Gson().toJson(songs)).apply()
             sharedPreferences.edit().putInt(KEY_POSITION_SONG, mPosition).apply()
+            binding.tvNameListSong.text = sharedPreferences.getString(KEY_NAME_TAB, "")
         }
     }
 

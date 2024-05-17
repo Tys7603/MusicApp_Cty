@@ -14,6 +14,7 @@ import com.example.musicapp.R
 import com.example.musicapp.data.source.local.dao.SongDao
 import com.example.musicapp.databinding.FragmentUserBinding
 import com.example.musicapp.screen.account.adapter.AccountPageAdapter
+import com.example.musicapp.screen.account.information.InformationActivity
 import com.example.musicapp.screen.songDown.SongDownActivity
 import com.example.musicapp.screen.user.adapter.BottomSheetLogin
 import com.example.musicapp.screen.user.adapter.PlaylistPageAdapter
@@ -60,6 +61,7 @@ class UserFragment : Fragment() {
     }
 
     private fun handleEventViewModel() {
+        binding.btnInformation.setOnClickListener { startActivity(Intent(requireContext(), InformationActivity::class.java)) }
     }
 
     private fun handleEvent() {
@@ -93,6 +95,7 @@ class UserFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         initSongView()
+        viewModel.initValueUser()
     }
 
 }

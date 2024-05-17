@@ -83,8 +83,8 @@ class MusicFragment : Fragment(), BaseService {
             isServiceBound = true
             musicService?.musicService(this@MusicFragment)
             musicService?.musicShared(sharedPreferences)
-            Log.d("TAG", "onServiceConnected: ")
             checkTab()
+            initMusicView()
         }
 
         // ngắt kết nối music service
@@ -99,6 +99,16 @@ class MusicFragment : Fragment(), BaseService {
         setUpViewModel()
         initViewModel()
     }
+
+    private fun initMusicView(){
+        val isPlaying = sharedPreferences.getBoolean(KEY_PLAY_CLICK, false)
+        if (isPlaying){
+            binding.btnPlay.setImageResource(R.drawable.ic_pause_music)
+        }else{
+            binding.btnPlay.setImageResource(R.drawable.ic_play_button)
+        }
+    }
+
 
     private fun checkTab() {
         /**
@@ -287,11 +297,9 @@ class MusicFragment : Fragment(), BaseService {
         binding.tvNameSong.text = mSongs?.get(position)?.name
         binding.tvTotalTimeSong.text = VALUE_DEFAULT
         mSongs?.get(position)?.let { binding.imgBg.loadImageUrl(it.image) }
-        Log.d("TAG", "initValueSong: " + isServiceBound.toString())
         if (isServiceBound) {
 
             if (!musicService?.isMediaPrepared()!!) {
-                Log.d("TAG", "initValueSong: chuan bi ")
                 mSongs?.get(position)?.let { musicService?.playFromUrl(it.url) }
                 musicService?.setOnCompletionListener {
                     // Xử lý khi bài hát kết thúc, chuyển sang bài hát tiếp theo
@@ -299,7 +307,6 @@ class MusicFragment : Fragment(), BaseService {
                 }
             } else {
                 // khi bài hát đã được chuẩn bị -> khi bấm qua fragment khác
-                Log.d("TAG", "initValueSong: chuan bi roi ")
                 setTimeTotal()
                 updateTimeSong()
             }
@@ -362,6 +369,8 @@ class MusicFragment : Fragment(), BaseService {
     private fun nextMusic() {
         position = getPosition()
         position++
+        Log.d("TAG", "nextMusic: " + position)
+        Log.d("TAG", "nextMusic: " + mSongs?.size)
         if (position > mSongs?.size!! - 1) {
             position = 0
         }
@@ -460,7 +469,6 @@ class MusicFragment : Fragment(), BaseService {
 
     // set thời gian tổng cho tv và gán max của skbar = time của bài hát
     private fun setTimeTotal() {
-        Log.d("TAG", "setTimeTotal: ")
         if (isServiceBound) {
             binding.tvTotalTimeSong.text =
                 musicService?.let { FormatUtils.formatTime(it.getDuration()) }

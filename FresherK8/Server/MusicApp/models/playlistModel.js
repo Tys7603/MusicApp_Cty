@@ -108,6 +108,39 @@ const getListPlaylistLoveByIdUser = async (userId) => {
   return await queryDatabase(query, [userId])
 }
 
+// Thêm bài hát vào playlist người dùng
+const inserPlaylistIntoPlaylistLoveByUserId = async (playlistId, userId) => {
+
+  const querySelect = "SELECT * FROM playlist_user_love " +
+    "WHERE user_id = ? AND playlist_id = ?"
+
+  const queryCreate = "INSERT INTO playlist_user_love(user_id, playlist_id) VALUES(?, ?)"
+
+  try {
+    // Bắt đầu giao dịch
+    await queryDatabase("START TRANSACTION");
+
+    // Thực hiện truy vấn 
+    const results = await queryDatabase(querySelect, [userId, playlistId]);
+
+    if (results.length > 0) {
+      await queryDatabase("ROLLBACK");
+      return { status: 409 };
+    } else {
+      await queryDatabase(queryCreate, [userId, playlistId]);
+      await queryDatabase("COMMIT");
+      return { status: 200 };
+    }
+
+  } catch (error) {
+    // Rollback giao dịch nếu có lỗi
+    await queryDatabase("ROLLBACK");
+    // Trả về kết quả lỗi và thông điệp lỗi
+    return { status: 400, message: error.message };
+  }
+}
+
+
 module.exports = {
   getListPlaylist,
   getListPlaylistMoodToday,
@@ -116,5 +149,6 @@ module.exports = {
   deletePlaylistUserById,
   createSongIntoPlaylistByUserId,
   getListPlaylistLoveByIdUser,
-  deletePlaylistLoveById
+  deletePlaylistLoveById,
+  inserPlaylistIntoPlaylistLoveByUserId
 }

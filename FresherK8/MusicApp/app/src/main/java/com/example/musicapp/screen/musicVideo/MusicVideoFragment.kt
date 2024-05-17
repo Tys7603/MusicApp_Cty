@@ -79,6 +79,7 @@ class MusicVideoFragment : Fragment() {
 //                            musicVideoAdapter.submitList(mMusicVideos!!.shuffled())
 //                        }
                         musicVideoAdapter.submitList(mMusicVideos!!.shuffled())
+                        scrollToTop()
                     }
 
                     1 -> {
@@ -89,6 +90,7 @@ class MusicVideoFragment : Fragment() {
 //                            musicVideoAdapter.submitList(itemEqualListMusicVideoProposalNew(mMusicVideos!!))
 //                        }
                         musicVideoAdapter.submitList(itemEqualListMusicVideoProposalNew(mMusicVideos!!))
+                        scrollToTop()
                     }
 
                     else -> {
@@ -99,9 +101,9 @@ class MusicVideoFragment : Fragment() {
 //                           musicVideoAdapter.submitList(itemEqualListMusicVideo(item, mMusicVideos!!))
 //                       }
                         musicVideoAdapter.submitList(itemEqualListMusicVideo(item, mMusicVideos!!))
+                        scrollToTop()
                     }
                 }
-                scrollToTop()
             }
 
             is MusicVideo -> {

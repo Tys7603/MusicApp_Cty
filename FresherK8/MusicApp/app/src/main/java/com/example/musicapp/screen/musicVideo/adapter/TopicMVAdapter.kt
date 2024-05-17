@@ -58,18 +58,18 @@ class TopicMVAdapter(
             binding.root.isSelected = isSelected
 
             binding.root.setOnClickListener {
-                val position = adapterPosition
+                val position = layoutPosition
                 if (position != RecyclerView.NO_POSITION) {
                     mListener.invoke(topic)
 
                     val previouslySelectedItem = selectedItem
-                    selectedItem = adapterPosition
+                    selectedItem = layoutPosition
 
                     notifyItemChanged(previouslySelectedItem)
                     notifyItemChanged(selectedItem)
                 }
             }
-            selectItemPosition(binding, isSelected, adapterPosition)
+            selectItemPosition(binding, isSelected, layoutPosition)
         }
     }
 }

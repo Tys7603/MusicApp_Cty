@@ -71,7 +71,7 @@
 
         private fun updateProfile(){
             val profileUpdates = userProfileChangeRequest {
-                photoUri = Uri.parse(Constant.URL_IMAGE)
+                photoUri = Uri.parse(Constant.URL_IMAGE_UPDATE)
             }
 
             FirebaseAuth.getInstance().currentUser!!.updateProfile(profileUpdates)
