@@ -11,7 +11,7 @@ import com.example.musicapp.databinding.ItemTopicMvBinding
 import com.example.musicapp.shared.utils.GenericDiffCallback
 
 class TopicMVAdapter(
-    private val mListener: (Topic) -> Unit
+    private val mListener: (Topic, Int) -> Unit
 ) : ListAdapter<Topic, TopicMVAdapter.TopicMVViewHolder>(GenericDiffCallback<Topic>()) {
 
     private var selectedItem = 0
@@ -60,7 +60,7 @@ class TopicMVAdapter(
             binding.root.setOnClickListener {
                 val position = layoutPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    mListener.invoke(topic)
+                    mListener.invoke(topic, layoutPosition)
 
                     val previouslySelectedItem = selectedItem
                     selectedItem = layoutPosition

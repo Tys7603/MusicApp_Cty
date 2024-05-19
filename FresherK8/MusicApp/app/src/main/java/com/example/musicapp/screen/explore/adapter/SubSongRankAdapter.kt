@@ -10,12 +10,15 @@ import com.example.musicapp.data.model.Song
 import com.example.musicapp.shared.utils.GenericDiffCallback
 import kotlin.math.min
 
-class SubSongRankAdapter (
-    private val mListener : (ArrayList<Song>, Int) -> Unit
-): ListAdapter<Song, SubSongRankAdapter.SubSongRankViewHolder>(GenericDiffCallback<Song>()) {
+class SubSongRankAdapter(
+    private val mListener: (ArrayList<Song>, Int) -> Unit
+) : ListAdapter<Song, SubSongRankAdapter.SubSongRankViewHolder>(GenericDiffCallback<Song>()) {
+
+    private var itemsEnabled: Boolean = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubSongRankViewHolder {
-        val binding = ItemSocialRankBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemSocialRankBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return SubSongRankViewHolder(binding)
     }
 
@@ -27,6 +30,10 @@ class SubSongRankAdapter (
         holder.bind(currentList[position], position)
     }
 
+    fun setEnableItemSub(enabled: Boolean) {
+        itemsEnabled = enabled
+    }
+
     inner class SubSongRankViewHolder(private val binding: ItemSocialRankBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
@@ -34,7 +41,10 @@ class SubSongRankAdapter (
             binding.tvSttSocialRank.text = (position + 1).toString()
             binding.song = song
             val songList = ArrayList(currentList)
-            binding.root.setOnClickListener { mListener.invoke(songList,layoutPosition) }
+            binding.root.isEnabled = itemsEnabled
+            binding.root.setOnClickListener {
+                if (itemsEnabled) mListener.invoke(songList, layoutPosition)
+            }
         }
     }
 }

@@ -3,6 +3,8 @@ package com.example.musicapp.screen.user
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,21 +72,35 @@ class UserFragment : Fragment() {
     }
 
     private fun openBottomSheetLogin() {
-        val bottomSheetLogin = BottomSheetLogin()
-        bottomSheetLogin.show(parentFragmentManager, bottomSheetLogin.tag)
+        parentFragmentManager.executePendingTransactions()
+        if (!parentFragmentManager.isStateSaved) {
+            val bottomSheetLogin = BottomSheetLogin()
+            bottomSheetLogin.show(parentFragmentManager, bottomSheetLogin.tag)
+        } else {
+            Handler(Looper.getMainLooper()).post {
+                openBottomSheetLogin()
+            }
+        }
     }
 
     private fun initTabLayout() {
-        val pagerAdapter = PlaylistPageAdapter(requireActivity())
-        binding.viewPagerUser.setAdapter(pagerAdapter)
-        TabLayoutMediator(
-            binding.tabLayoutUser, binding.viewPagerUser
-        ) { tab: TabLayout.Tab, position: Int ->
-            when (position) {
-                0 -> tab.setText(Constant.PLAYLIST_USER)
-                1 -> tab.setText(Constant.PLAYLIST_LOVE)
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
+            if (isAdded && !parentFragmentManager.isStateSaved) {
+                val pagerAdapter = PlaylistPageAdapter(requireActivity())
+                binding.viewPagerUser.adapter = pagerAdapter
+                TabLayoutMediator(binding.tabLayoutUser, binding.viewPagerUser) { tab, position ->
+                    when (position) {
+                        0 -> tab.text = Constant.PLAYLIST_USER
+                        1 -> tab.text = Constant.PLAYLIST_LOVE
+                    }
+                }.attach()
+            } else {
+                handler.post {
+                    initTabLayout()
+                }
             }
-        }.attach()
+        }
     }
 
     private fun initSongView(){

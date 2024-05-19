@@ -59,7 +59,6 @@ class PlaylistUserFragment : Fragment() {
     private fun openBottomSheetCreatePlaylist() {
         val bottomSheet = BottomSheetPlaylist(::onItemClickBottomSheet)
         bottomSheet.show(parentFragmentManager, bottomSheet.tag)
-        bottomSheet.isCancelable = false
     }
 
     private fun openBottomSheetSelectPlaylist() {

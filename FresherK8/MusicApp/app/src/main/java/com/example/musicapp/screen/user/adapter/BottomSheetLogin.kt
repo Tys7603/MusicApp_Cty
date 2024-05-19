@@ -3,12 +3,14 @@ package com.example.musicapp.screen.user.adapter
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.databinding.DataBindingUtil
 import com.example.musicapp.R
 import com.example.musicapp.databinding.LayoutBottomSheetAccountBinding
 import com.example.musicapp.screen.account.AccountActivity
 import com.example.musicapp.shared.utils.constant.Constant.ACCESS_RULES
 import com.example.musicapp.shared.widget.SnackBarManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -25,8 +27,14 @@ class BottomSheetLogin : BottomSheetDialogFragment() {
             null,
             false
         )
-        binding?.root?.let { mBottomSheetDialog.setContentView(it) }
-        initHandler()
+        binding?.root?.let {
+            mBottomSheetDialog.setContentView(it)
+            initHandler()
+            it.viewTreeObserver.addOnGlobalLayoutListener {
+                val behavior = BottomSheetBehavior.from(it.parent as View)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
         return mBottomSheetDialog
     }
 

@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -25,10 +26,11 @@ import com.example.musicapp.screen.music.MusicFragment
 import com.example.musicapp.screen.musicVideo.MusicVideoFragment
 import com.example.musicapp.screen.user.UserFragment
 import com.example.musicapp.service.MusicService
+import com.example.musicapp.shared.utils.OnChangeListener
 import com.example.musicapp.shared.utils.constant.Constant
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnChangeListener {
 
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
@@ -37,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private val sharedPreferences: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(this)
     }
+    private var currentFragment: Fragment? = null
 
     companion object {
         const val MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 123
@@ -111,10 +114,13 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun fragmentManager(fragment: Fragment) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(binding.frameLayout.id, fragment)
-            .commit()
+        if (currentFragment != fragment) {
+            currentFragment = fragment
+            supportFragmentManager
+                .beginTransaction()
+                .replace(binding.frameLayout.id, fragment)
+                .commit()
+        }
     }
 
     private fun switchFragment() {
@@ -156,5 +162,11 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences.edit().putBoolean(Constant.KEY_TAB_MUSIC, false).apply()
         sharedPreferences.edit().putBoolean(Constant.KEY_SHUFFLE, false).apply()
         sharedPreferences.edit().putBoolean(Constant.KEY_AUTO_RESTART, false).apply()
+    }
+
+    override fun onSongChanged() {
+        Log.d("TAG", "onValueChange: ")
+        val fragment = supportFragmentManager.findFragmentById(R.id.frame_layout) as? ExploreFragment
+        fragment?.initSongView()
     }
 }

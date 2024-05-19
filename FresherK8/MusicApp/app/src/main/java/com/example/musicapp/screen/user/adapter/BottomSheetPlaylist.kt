@@ -41,8 +41,6 @@ class BottomSheetPlaylist(
                 behavior.state = BottomSheetBehavior.STATE_EXPANDED
             }
         }
-
-
         return mBottomSheetDialog
     }
 

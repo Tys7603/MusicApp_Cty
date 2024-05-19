@@ -14,6 +14,8 @@ class CategoriesAdapter(
     private var mListener: (Category) -> Unit
 ) : ListAdapter<Category, CategoriesAdapter.CategoriesViewHolder>(GenericDiffCallback<Category>()) {
 
+    private var itemsEnabled: Boolean = true
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesViewHolder {
         val binding =
             ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -28,12 +30,17 @@ class CategoriesAdapter(
         holder.bind(currentList[position])
     }
 
+    fun setEnableItem(enabled: Boolean) {
+        itemsEnabled = enabled
+    }
+
     inner class CategoriesViewHolder(private val binding: ItemCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(category: Category) {
             binding.category = category
+            binding.root.isEnabled = itemsEnabled
             binding.root.setOnClickListener {
-                mListener.invoke(category)
+                if (itemsEnabled) mListener.invoke(category)
             }
         }
     }

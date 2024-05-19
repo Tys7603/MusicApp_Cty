@@ -56,7 +56,6 @@ class PlaylistLoveFragment : Fragment() {
     private fun openBottomSheet() {
         val bottomSheet = BottomSheetSelect(::onItemClickBottomSheet, "playlist_love")
         bottomSheet.show(parentFragmentManager, bottomSheet.tag)
-        bottomSheet.isCancelable = false
     }
 
     private fun onItemClickBottomSheet() {

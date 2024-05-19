@@ -60,10 +60,9 @@
             android:padding="5dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/gray"
-            android:text="@string/theo_d_i" />
+            android:layout_width="65dp"
+            android:layout_height="25dp"
+            android:textColor="@color/gray" />
     </androidx.cardview.widget.CardView>
 
     <TextView

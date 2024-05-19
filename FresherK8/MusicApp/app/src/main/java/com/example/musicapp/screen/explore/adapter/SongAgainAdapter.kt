@@ -12,13 +12,11 @@ class SongAgainAdapter(
     private var mListener: (SongAgain) -> Unit
 ) : ListAdapter<SongAgain, SongAgainAdapter.SongAgainViewHolder>(GenericDiffCallback<SongAgain>()) {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongAgainViewHolder {
         val binding =
             ItemSongAgianBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return SongAgainViewHolder(binding)
     }
-
 
     override fun onBindViewHolder(holder: SongAgainViewHolder, position: Int) {
         holder.bind(currentList[position])

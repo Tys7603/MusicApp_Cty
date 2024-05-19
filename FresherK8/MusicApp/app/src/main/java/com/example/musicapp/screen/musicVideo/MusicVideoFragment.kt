@@ -2,7 +2,8 @@ package com.example.musicapp.screen.musicVideo
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,7 @@ class MusicVideoFragment : Fragment() {
     private val musicVideoAdapter = MusicVideoAdapter(::onClickItem)
     private val categoryMVAdapter = TopicMVAdapter(::onClickItem)
     private var mMusicVideos: ArrayList<MusicVideo>? = null
+
     private val binding by lazy {
         FragmentMusicVideoBinding.inflate(layoutInflater)
     }
@@ -40,6 +42,7 @@ class MusicVideoFragment : Fragment() {
         initViewModel()
         initRecyclerView()
         handlerEventViewModel()
+        checkVisibilityLayout(false)
     }
 
     private fun initViewModel() {
@@ -56,9 +59,11 @@ class MusicVideoFragment : Fragment() {
 
     private fun handlerEventViewModel() {
         viewModel.musicVideos.observe(viewLifecycleOwner) {
-            mMusicVideos = it
-            musicVideoAdapter.submitList(it.shuffled())
-
+            handlerPostDelay {
+                mMusicVideos = it
+                musicVideoAdapter.submitList(it.shuffled())
+                checkVisibilityLayout(true)
+            }
         }
         viewModel.topics.observe(viewLifecycleOwner) {
             it.add(0, Topic(0, ALL, "", 0))
@@ -67,7 +72,17 @@ class MusicVideoFragment : Fragment() {
         }
     }
 
-    private fun onClickItem(item: Any) {
+    private fun checkVisibilityLayout(boolean: Boolean) {
+        if (boolean){
+            binding.layoutMvFragment.visibility = View.VISIBLE
+            binding.includeLayoutMvFragment.visibility = View.GONE
+        }else{
+            binding.layoutMvFragment.visibility = View.INVISIBLE
+            binding.includeLayoutMvFragment.visibility = View.VISIBLE
+        }
+    }
+
+    private fun onClickItem(item: Any, position: Int) {
         when (item) {
             is Topic -> {
                 when (item.id) {
@@ -79,7 +94,6 @@ class MusicVideoFragment : Fragment() {
 //                            musicVideoAdapter.submitList(mMusicVideos!!.shuffled())
 //                        }
                         musicVideoAdapter.submitList(mMusicVideos!!.shuffled())
-                        scrollToTop()
                     }
 
                     1 -> {
@@ -90,7 +104,6 @@ class MusicVideoFragment : Fragment() {
 //                            musicVideoAdapter.submitList(itemEqualListMusicVideoProposalNew(mMusicVideos!!))
 //                        }
                         musicVideoAdapter.submitList(itemEqualListMusicVideoProposalNew(mMusicVideos!!))
-                        scrollToTop()
                     }
 
                     else -> {
@@ -101,9 +114,9 @@ class MusicVideoFragment : Fragment() {
 //                           musicVideoAdapter.submitList(itemEqualListMusicVideo(item, mMusicVideos!!))
 //                       }
                         musicVideoAdapter.submitList(itemEqualListMusicVideo(item, mMusicVideos!!))
-                        scrollToTop()
                     }
                 }
+                scrollToPositionCategories(position)
             }
 
             is MusicVideo -> {
@@ -111,6 +124,13 @@ class MusicVideoFragment : Fragment() {
                 intent.putExtra(Constant.KEY_INTENT_ITEM, item)
                 startActivity(intent)
             }
+        }
+    }
+
+    private fun scrollToPositionCategories(position: Int) {
+        val layoutManager = binding.rcvCategoryMv.layoutManager as LinearLayoutManager
+        if (position > 1) {
+            layoutManager.scrollToPositionWithOffset(position - 1, 0)
         }
     }
 
@@ -137,13 +157,10 @@ class MusicVideoFragment : Fragment() {
         return matchedMusicVideos
     }
 
-    private fun scrollToTop() {
-        val layoutManager = binding.rcvMv.layoutManager
-        if (layoutManager is LinearLayoutManager) {
-            layoutManager.run { scrollToPositionWithOffset(0, 0) }
-        } else {
-            binding.rcvMv.smoothScrollToPosition(0)
-        }
+    private fun handlerPostDelay(listener : () -> Unit){
+        Handler(Looper.getMainLooper()).postDelayed({
+            listener.invoke()
+        }, 500)
     }
 
     companion object {

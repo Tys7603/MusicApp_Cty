@@ -13,6 +13,8 @@ class PlayListAdapter(
     private var mListener: (Playlist) -> Unit
 ) : ListAdapter<Playlist, PlayListAdapter.PlayListViewHolder>(GenericDiffCallback<Playlist>()) {
 
+    private var itemsEnabled: Boolean = true
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayListViewHolder {
         val binding =
             ItemPlayListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -27,12 +29,17 @@ class PlayListAdapter(
         holder.bind(currentList[position])
     }
 
+    fun setEnableItem(enabled: Boolean) {
+        itemsEnabled = enabled
+    }
+
     inner class PlayListViewHolder(private val binding: ItemPlayListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(playlist: Playlist) {
             binding.playlist = playlist
+            binding.root.isEnabled = itemsEnabled
             binding.root.setOnClickListener {
-                mListener.invoke(playlist)
+                if (itemsEnabled) mListener.invoke(playlist)
             }
         }
     }

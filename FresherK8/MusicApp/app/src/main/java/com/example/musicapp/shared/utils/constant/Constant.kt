@@ -26,7 +26,9 @@ object Constant {
     const val KEY_LYRIC = "lyric"
     const val KEY_TAB_MUSIC = "tab_music"
     const val KEY_NAME_TAB = "name_tab"
+    const val KEY_NAME = "name"
     const val KEY_LIST_SONG = "list_song"
+    const val KEY_ACTIVITY_LYRIC = "activity_lyric"
     const val FAILURE = "Thất bại"
     const val CALL_API_ERROR = "Lỗi khi gọi API: "
     const val ACCESS_RULES = "Bạn chưa đồng ý điều khoản của chúng tôi"
@@ -42,6 +44,13 @@ object Constant {
     const val SEN_EMAIL_FAILURE = "Gửi email thất bại"
     const val SEN_EMAIL_SUCCESS = "Gửi email thành công"
     const val UPDATE_LYRIC = "UPDATE_LYRICS"
+    const val UPDATE_SONG = "UPDATE_SONG"
+    const val PLAYLIST = "playlist"
+    const val CATEGORIES = "categories"
+    const val RANK = "rank"
+    const val ALBUM_NEW = "album_new"
+    const val ALBUM_LOVE = "album_love"
+    const val MOOD_TODAY = "mood_today"
     // bỏ enum ở đây
     enum class ClickControllerPlayerUi{
         ON_BACK,

@@ -68,9 +68,9 @@ dependencies {
     //noinspection UseTomlInstead
     implementation ("com.google.code.gson:gson:2.10.1")
     //noinspection UseTomlInstead
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
     //noinspection UseTomlInstead
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
     //noinspection UseTomlInstead
     implementation ("io.insert-koin:koin-android:3.5.6")
     //noinspection UseTomlInstead
@@ -84,5 +84,4 @@ dependencies {
 
     //noinspection UseTomlInstead
     implementation ("com.google.code.gson:gson:2.10.1")
-
 }

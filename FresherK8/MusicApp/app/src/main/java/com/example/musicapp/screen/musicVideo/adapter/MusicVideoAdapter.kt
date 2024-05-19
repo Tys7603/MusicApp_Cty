@@ -9,7 +9,7 @@ import com.example.musicapp.databinding.ItemMvBinding
 import com.example.musicapp.shared.utils.GenericDiffCallback
 
 class MusicVideoAdapter(
-    private val mListener: (MusicVideo) -> Unit,
+    private val mListener: (MusicVideo, Int) -> Unit,
 ) : ListAdapter<MusicVideo, MusicVideoAdapter.MusicVideoViewHolder>(GenericDiffCallback<MusicVideo>()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicVideoViewHolder {
@@ -27,7 +27,7 @@ class MusicVideoAdapter(
 
         fun bind(musicVideo: MusicVideo) {
             binding.musicVideo = musicVideo
-            binding.root.setOnClickListener { mListener.invoke(musicVideo) }
+            binding.root.setOnClickListener { mListener.invoke(musicVideo, layoutPosition) }
         }
     }
 }
