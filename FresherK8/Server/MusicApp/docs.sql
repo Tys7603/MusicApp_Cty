@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 13, 2024 lúc 12:41 PM
+-- Thời gian đã tạo: Th5 20, 2024 lúc 12:45 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -127,6 +127,228 @@ INSERT INTO `category` (`category_id`, `category_name`, `category_image`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `lyric`
+--
+
+CREATE TABLE `lyric` (
+  `lyric_id` int(11) NOT NULL,
+  `song_id` int(11) NOT NULL,
+  `lyric_text` text NOT NULL,
+  `startMs` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `lyric`
+--
+
+INSERT INTO `lyric` (`lyric_id`, `song_id`, `lyric_text`, `startMs`) VALUES
+(1, 3, '(Maiki \'bout to flip, ey)', 5020),
+(2, 3, 'Low G có c- đẹp và tao nghĩ nó nên được trưng bày trong lồng viện bảo tàng', 13760),
+(3, 3, 'Ướp nó lạnh xong để vào bảo quản, tiền bảo đảm là cả một đảo vàng', 17470),
+(4, 3, 'Lúc đấy thì tao chết xừ òi, nhưng con cháu được uống rượu hảo hạng', 20850),
+(5, 3, 'Còn tiền thừa cho đi tán gái, party linh tinh để nó bảo bạn', 24360),
+(6, 3, 'Cụ Low G flex, cụ Low G căng', 27400),
+(7, 3, 'Low G check là cụ Low G chăn', 29570),
+(8, 3, 'Low G đua xe ô tô Civic', 31130),
+(9, 3, 'Low G nhà vô địch Olympic, về flex', 32910),
+(10, 3, 'Chúng nó vẫn cứ lại bảo là tao khệnh', 35370),
+(11, 3, 'Tao bảo là, \"Chuẩn òi!\"', 36950),
+(12, 3, 'Khệnh tự tin, khệnh cá tính', 37920),
+(13, 3, 'Xong lúc già tao sẽ kể cho con cháu là', 39500),
+(14, 3, 'Tao là thằng kì cục nhưng được cái đẹp trai', 41650),
+(15, 3, 'Có duyên, thân thiện, hài hước, cuốn hút', 43410),
+(16, 3, 'Đỉnh cao, biết lắng nghe, ga lăng, nam tính, giàu', 45070),
+(17, 3, 'Hết cả hơi', 48020),
+(18, 3, 'Nói chung là hút gái', 49960),
+(19, 3, 'Đi tán gái tao hâm hâm dở dở nhưng mà không hiểu sao các em nhắn tao hoài', 50880),
+(20, 3, 'Đưa một em lên hotel Hàng Bài, em đang cởi áo tự nhiên tao dừng lại', 54290),
+(21, 3, 'Tao bảo em, \"View Hồ Tây đẹp quá em ạ!\", xong ra cửa sổ rap freestyle', 57970),
+(22, 3, 'Người Hà Nội nên là tính tao cục và đôi khi em ấy hứng lúc tao chửi bậy (ơ, thật à?)', 61300),
+(23, 3, 'Hơi kì nhưng mà đúng đấy (mm)', 66930),
+(24, 3, 'Tao thấy cứng và nó đứng lúc tao ngủ dậy', 68210),
+(25, 3, 'Và nó dài đến mức có thể đu dây (ey)', 70110),
+(26, 3, 'Nếu tao spam \"đm, vcl\" khi nói chuyện thì cô ấy coi như thần chú á', 71680),
+(27, 3, 'Em ấy có hai thứ cong, một là mông, hai là giới tính (yeah)', 75200),
+(28, 3, 'Vòng một là filler bên trong, vừa làm về, trông mới tinh (ah)', 78550),
+(29, 3, 'Em ấy éo hiểu đang nghe rap, hay đang nghe Low G podcast (ey)', 81950),
+(30, 3, 'Low G thư giãn, Low G nói về những chủ đề suy ngẫm như là', 85450),
+(31, 3, 'Low G có c- đẹp và tao nghĩ nó nên được trưng bày trong lồng viện bảo tàng', 88350),
+(32, 3, 'Ướp nó lạnh xong để vào bảo quản, tiền bảo đảm là cả một đảo vàng', 92080),
+(33, 3, 'Lúc đấy thì tao chết xừ òi, nhưng con cháu được uống rượu hảo hạng', 95420),
+(34, 3, 'Còn tiền thừa cho đi tán gái, party linh tinh để nó bảo bạn', 98920),
+(35, 3, 'Cụ Low G flex, cụ Low G căng', 102330),
+(36, 3, 'Low G check là cụ Low G chăn', 104830),
+(37, 3, 'Low G đua xe ô tô Civic', 106470),
+(38, 3, 'Low G nhà vô địch Olympic, về flex', 108410),
+(39, 3, 'Chúng nó vẫn cứ lại bảo là tao khệnh', 111550),
+(40, 3, 'Tao bảo là, \"Chuẩn òi!\"', 113240),
+(41, 3, 'Khệnh tự tin, khệnh cá tính', 114160),
+(42, 3, 'Xong lúc già tao sẽ kể cho con cháu là', 116030),
+(43, 3, 'Tao là thằng kì cục nhưng được cái đẹp trai', 118240),
+(44, 3, 'Có duyên, thân thiện, hài hước, cuốn hút', 119930),
+(45, 3, 'Đỉnh cao, biết lắng nghe, ga lăng, nam tính, giàu', 121940),
+(46, 3, 'Hết cả hơi', 125870),
+(47, 3, 'Nói chung là hút gái', 129260),
+(48, 3, 'Fan Low Gờ nên em H \"An Thần\" cả năm vừa rồi mỗi khi em đang high', 132950),
+(49, 3, 'Một phút đầu tao thơm má em, xong năm phút sau tao chơi má em (cái gì?)', 137230),
+(50, 3, 'Em muốn cosplay AMEE, nên tao vẽ ria mèo lên má em (à) (meo mèo meo meo)', 140050),
+(51, 3, 'Ba em nhìn mặt tao thấy khá quen, hỏi tao là thằng nào', 143250),
+(52, 3, 'Tao vừa nói tên tao, chú ấy cúi đầu xuống chào (sheesh)', 146800),
+(53, 3, 'Em tao ở nhà penthouse rủ ghệ bem nhau đêm sau nhưng mà không ổn lắm', 150160),
+(54, 3, 'Suốt ngày truyền năng lượng tích cực nhưng để giấu chuyện gì đấy trong một năm (ey)', 153670),
+(55, 3, 'Turned out em làm booking bar, bảo sao cứ gặp ai là em ý quý', 157610),
+(56, 3, 'Lan tỏa tình yêu khắp mọi lúc, xong em lan tỏa luôn con mẹ STDs', 160880),
+(57, 3, 'Ơ, thế không biết STD là gì à?', 163750),
+(58, 3, 'Thôi lên mạng search Google đi, đừng bắt người ta phải giải thích', 168210),
+(59, 3, 'Không lại bảo là, \"Anh Long rap gì mà bậy thế, rap gì mà ghê thế, eo ôi!', 170630),
+(60, 3, 'Rap gì mà STDs các kiểu\"', 125870),
+(61, 3, 'Low G có c- đẹp và tao nghĩ nó nên được trưng bày trong lồng viện bảo tàng', 129260),
+(62, 4, 'Hah', 4150),
+(63, 4, 'Yo', 8180),
+(64, 4, 'Mày biết là tại sao mà tao hay đặt KPI không?', 9750),
+(65, 4, 'Bởi vì nếu mà không có KPI á', 13140),
+(66, 4, 'Tao sợ là tao sẽ không bao giờ biết được điểm dừng', 15130),
+(67, 4, 'Let\'s go!', 20980),
+(68, 4, 'Bật cái beat lớn lên Kew ơi!', 24950),
+(69, 4, 'KPI, KPI, ah', 31250),
+(70, 4, 'KPI, KPI, ah', 33570),
+(71, 4, 'KPI, KPI, ah', 35820),
+(72, 4, '(Hey, Kewtiie)', 37210),
+(73, 4, 'Năm sau có nhiều KPI', 38710),
+(74, 4, 'Mua con xe hay là thêm cái nhà?', 40940),
+(75, 4, 'Toàn hit, cho ra thêm mấy bài?', 43460),
+(76, 4, 'Everybody, yeah, we go, go, go', 45720),
+(77, 4, 'Tao siêng khi mày xay tí xoài, ha-ha', 48220),
+(78, 4, 'Ey, one, two, three', 50430),
+(79, 4, 'Như mọi năm lại làm new plan lúc mùa thu sang, nếu như mày then too bad', 52710),
+(80, 4, 'Làm việc theo cảm xúc, oh, motherfucker, I don\'t do that (nah)', 56070),
+(81, 4, 'Tiền vào new bank, số không tao đông như băng nhạc Wu-tang', 58320),
+(82, 4, 'Họ nói tao giết con beat thì mày nên biết đó không phải vu oan (you know)', 60440),
+(83, 4, 'Như bệnh nhân phẫu thuật, tao có rất nhiều chỉ tiêu', 62830),
+(84, 4, 'Luôn đội lên đầu không phải để quăng giống như là Durag', 64880),
+(85, 4, 'Hater nói ít thôi vì anh là Cantona (Cantona)', 67050),
+(86, 4, 'Anh chỉ đấu với người giỏi nhất như anh là Barbosa (Barbosa)', 69100),
+(87, 4, 'Từng trực đêm hết cả ca tối và kiếm được ba đô la (ba thôi)', 71350),
+(88, 4, 'Giờ tài khoản như đang trên sàn và nhảy điệu cha-cha-cha', 73590),
+(89, 4, 'Và mục tiêu là bán cổ phiếu rồi về báo hiếu cho mommy (oh)', 76080),
+(90, 4, 'Tất cả show có dàn đồng ca và fan hét to như Ponzi', 78380),
+(91, 4, 'Xe hai cửa chạy V12 như nó là ba của Henry', 80580),
+(92, 4, 'KPI trải đầy ra bàn so you know I\'m hungry', 83000),
+(93, 4, 'First class bay trên Boeing (Boeing)', 85340),
+(94, 4, 'Chất xám trên con Rollie (Rollie)', 87670),
+(95, 4, 'Nhắm bắn and reloading (loading)', 89960),
+(96, 4, 'Chính xác Lewandowski', 92360),
+(97, 4, 'First class bay trên Boeing (first class bay trên Boeing)', 94710),
+(98, 4, 'Chất xám trên con Rollie (chất xám trên con Rollie)', 97040),
+(99, 4, 'Nhắm bắn and reloading (nhắm bắn and reloading)', 99320),
+(100, 4, 'Chính xác Lewandowski (chính xác Lewandowski)', 101680),
+(101, 4, 'Go, go, go, go!', 103510),
+(102, 4, 'Năm sau có nhiều KPI (way)', 104150),
+(103, 4, 'Mua con xe hay là thêm cái nhà? (Haizz)', 106280),
+(104, 4, 'Toàn hit, cho ra thêm mấy bài? (Thêm đi)', 108530),
+(105, 4, 'Everybody, yeah, we go, go, go, go, go, go, go', 110890),
+(106, 4, 'Khi mày xay tí xoài (ey)', 113850),
+(107, 4, 'Anh đạt tất cả KPI (easy)', 115560),
+(108, 4, 'Trường phát như là 89', 118110),
+(109, 4, 'Cho anh thấy cánh tay mày đâu? Đâu? Đâu? Đâu? Đâu?', 120480),
+(110, 4, 'Và chưa được xi nhê (chưa, chưa)', 123070),
+(111, 4, 'Hay tương lai đóng thêm vài ba bộ xi-nê? (Cinema)', 124590),
+(112, 4, 'Kiếm người đẹp như Shakira, gọi anh là Piqué', 126710),
+(113, 4, 'Và lúc nào anh cũng băng giá bởi vì quần bò ở trong ngăn đá còn nhiều hơn fillet (ice, ice)', 129100),
+(114, 4, 'Cầm lên cây bút và như tính toán, năm sau sẽ có một album', 132430),
+(115, 4, 'Đưa chất xám, tạo ra output, thu hút thêm fan là outcome', 134890),
+(116, 4, 'Nên ăn mừng bằng mục tiêu mới, treo lên Piñata (Piñata)', 137160),
+(117, 4, 'Vung, vung một gậy mọi thứ rơi ra, Balenciaga, ay', 139220),
+(118, 4, 'Danh hão hay gái gú càng không', 142330),
+(119, 4, 'Nhắm tới một chỗ đứng, niềm tự hào đàng trong', 144350),
+(120, 4, 'Vì như Thành Long mỗi khi lên đấu và tao luôn chiến thắng', 146500),
+(121, 4, 'Bị bắt quả tang yêu sự cố gắng nhưng mà ngoại tình với thành công', 148710),
+(122, 4, 'First class bay trên Boeing (first class bay trên Boeing)', 150440),
+(123, 4, 'Chất xám trên con Rollie (chất xám trên con Rollie)', 152910),
+(124, 4, 'Nhắm bắn and reloading (nhắm bắn and reloading)', 155250),
+(125, 4, 'Chính xác Lewandowski (chính xác Lewandowski)', 157520),
+(126, 4, 'First class bay trên Boeing (first class bay trên Boeing)', 159980),
+(127, 4, 'Chất xám trên con Rollie (chất xám trên con Rollie)', 162210),
+(128, 4, 'Nhắm bắn and reloading (nhắm bắn and reloading)', 164630),
+(129, 4, 'Chính xác Lewandowski (chính xác Lewandowski)', 166820),
+(130, 4, 'Go, go, go, go!', 168430),
+(131, 4, 'Toàn là KPI', 169810),
+(132, 4, 'Mua con xe hay là thêm cái nhà? (Haizz)', 171550),
+(133, 4, 'Toàn hit, cho ra thêm mấy bài? (Thêm đi)', 173880),
+(134, 4, 'Everybody, yeah, we go, go, go, go, go, go, go', 176300),
+(135, 4, 'Khi mày xay tí xoài (ey)', 179180),
+(136, 4, 'Anh đạt tất cả KPI (easy)', 180880),
+(137, 4, 'Trường phát như là 89 (ah, yeah)', 183260),
+(138, 4, 'Cho anh thấy cánh tay mày đâu? Đâu? Đâu? Đâu? Đâu?', 185440),
+(139, 6, 'Mẹ à, lần đầu con biết cảm giác trái tim tan vỡ', 25110),
+(140, 6, 'Là khi con biết được chuyện bố và mẹ sẽ phải rời xa', 28450),
+(141, 6, 'Những âm thanh cãi vã, vẫn vang lên trong ngõ', 31340),
+(142, 6, 'Và đó cũng là lần đầu tiên con ghen tị với con nhà người ta', 33960),
+(143, 6, 'Ghen tị với thằng bàn bên, có hộp sữa mẹ nhét vào cặp', 36880),
+(144, 6, 'Ghen tị với đứa lớp kế, ngồi sau xe mẹ ôm thật chặt', 39880),
+(145, 6, 'Nhớ mãi những mâm cơm tối mẹ gắp cho con thịt xơi ngập mặt', 42750),
+(146, 6, 'Và con luôn ước giây phút đó sẽ mãi diễn ra như một vòng lặp', 45170),
+(147, 6, 'Nhưng mà ước chỉ là ước, giờ mỗi người một nơi', 48070),
+(148, 6, 'Con chẳng nói được một lời, bố quay mặt, nước mắt mẹ rơi', 51290),
+(149, 6, 'Là khi căng thẳng giữa bố với mẹ sẽ không thể nào mà nguôi', 53930),
+(150, 6, 'Rồi thằng lớn ở lại với bố, còn thằng bé thì để mẹ nuôi', 56540),
+(151, 6, 'Con nhớ nhất ngày hôm ấy, mẹ nhìn ngoái lại sau', 59790),
+(152, 6, 'Từng dòng nước mắt mặn chát, mẹ lấy tay áo mẹ lau', 62670),
+(153, 6, 'Trước khi để con một mình sau cánh cửa cùng ảnh gia đình', 65520),
+(154, 6, 'Và đó cũng là khoảnh khắc cuối cùng cả nhà mình được đứng cùng nhau (mẹ ơi)', 67980),
+(155, 6, 'Mẹ ơi, con mong, mong mẹ về đây', 71830),
+(156, 6, 'Mẹ đang đi đâu sao con không thấy?', 74860),
+(157, 6, 'Mẹ nói với con đêm nay khi trời khuya sẽ về', 77510),
+(158, 6, 'Nhưng sao mãi chưa về?', 81470),
+(159, 6, 'Chẳng muốn búp bê hay là gấu bông', 83330),
+(160, 6, 'Chẳng muốn siêu nhân hay là trái bóng', 86270),
+(161, 6, 'Vì con chỉ cần mẹ về bên con', 88970),
+(162, 6, 'Chỉ cần mẹ về bên con', 92620),
+(163, 6, 'Con rất nhớ mẹ', 96090),
+(164, 6, 'Con đang nhớ lắm', 98730),
+(165, 6, 'Mẹ đang ở đâu?', 101630),
+(166, 6, 'Mãi chưa về?', 104380),
+(167, 6, 'Bố đã có gia đình mới, và mẹ cũng vậy', 106220),
+(168, 6, 'Trái Đất thì vẫn cứ quay, còn thời gian vẫn chạy', 109140),
+(169, 6, 'Ai cũng có hạnh phúc riêng và phải lo cho nó đầu tiên', 111740),
+(170, 6, 'Nên con không trách lỗi do ai khi con phải tự đứng dậy', 114640),
+(171, 6, 'Con muốn thấy mẹ ngay để có thể hỏi', 116890),
+(172, 6, 'Con đường mẹ đi ngày qua liệu có lấp đầy toàn đá và sỏi?', 119090),
+(173, 6, 'Liệu vất vả chốn phốn hoa, đáng níu chặt hay bỏ qua?', 121900),
+(174, 6, 'Có giúp mẹ tìm được hạnh phúc hay chỉ khiến mẹ càng thêm mệt mỏi?', 124570),
+(175, 6, 'Tuy buồn vì mẹ không thể tới', 127560),
+(176, 6, 'Để nhìn thằng con trai mẹ bước từng bước trên hành trình mới', 129140),
+(177, 6, 'Con vẫn sẽ giữ mình sạch kể cả lúc cái bụng mình đói', 131840),
+(178, 6, 'Vẫn sẽ nghe lời mẹ dạy dù là những hành động giản đơn', 134740),
+(179, 6, 'Thay thế cho những lời cảm ơn mà bản thân con không thể nói', 137330),
+(180, 6, 'Con giờ đã lớn hơn, chẳng ngại làm việc khó', 140670),
+(181, 6, 'Nhưng không thể thay đổi việc mẹ đã xa theo nơi chiều gió', 143290),
+(182, 6, 'Biết mẹ sẽ cười thật tươi vì những điều mà con làm được', 146210),
+(183, 6, 'Nhưng thật tiếc, mẹ không ở đây để cho con thấy vẻ tự hào đó', 148840),
+(184, 6, 'Mẹ ơi, con mong, mong mẹ về đây', 152000),
+(185, 6, 'Mẹ đang đi đâu sao con không thấy?', 154680),
+(186, 6, 'Mẹ nói với con đêm nay khi trời khuya sẽ về', 157560),
+(187, 6, 'Nhưng sao mãi chưa về?', 161370),
+(188, 6, 'Chẳng muốn búp bê hay là gấu bông', 163170),
+(189, 6, 'Chẳng muốn siêu nhân hay là trái bóng', 166040),
+(190, 6, 'Vì con chỉ cần mẹ về bên con', 169010),
+(191, 6, 'Chỉ cần mẹ về bên con', 172530),
+(192, 6, 'Mẹ ơi, con mong, mong mẹ về đây (đây)', 174610),
+(193, 6, 'Mẹ đang đi đâu sao con không thấy? (Thấy)', 177630),
+(194, 6, 'Mẹ nói với con đêm nay khi trời khuya sẽ về', 180540),
+(195, 6, 'Nhưng sao mãi chưa về? (Về)', 184240),
+(196, 6, 'Chẳng muốn búp bê hay là gấu bông (gấu bông)', 186150),
+(197, 6, 'Chẳng muốn siêu nhân hay là trái bóng (trái bóng)', 189010),
+(198, 6, 'Vì con chỉ cần mẹ về bên con (về bên con)', 191970),
+(199, 6, 'Chỉ cần mẹ về bên con', 195480),
+(200, 6, 'Con rất nhớ mẹ', 198970),
+(201, 6, 'Con đang nhớ lắm', 201600),
+(202, 6, 'Mẹ đang ở đâu?', 204580),
+(203, 6, 'Mãi chưa về?', 207450);
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `music_video`
 --
 
@@ -199,7 +421,10 @@ CREATE TABLE `playlist_user` (
 INSERT INTO `playlist_user` (`playlist_user_id`, `playlist_user_name`, `user_id`) VALUES
 (1, 'Chil chil', 'ZCt6n9uDFjZ9lOOtPataEGxngfr2'),
 (2, 'Rap', 'ZCt6n9uDFjZ9lOOtPataEGxngfr2'),
-(3, 'Gym', 'ZCt6n9uDFjZ9lOOtPataEGxngfr2');
+(6, 'Nhạc đi tắm', 'QSZqSss49HOyRaPzQymitz8P2942'),
+(7, 'Here Where Go', 'QSZqSss49HOyRaPzQymitz8P2942'),
+(32, 'a', 'QSZqSss49HOyRaPzQymitz8P2942'),
+(33, 'Nhạc chơi game', 'QSZqSss49HOyRaPzQymitz8P2942');
 
 -- --------------------------------------------------------
 
@@ -208,10 +433,19 @@ INSERT INTO `playlist_user` (`playlist_user_id`, `playlist_user_name`, `user_id`
 --
 
 CREATE TABLE `playlist_user_love` (
-  `playlist_user_song_love_id` int(11) NOT NULL,
+  `playlist_user_love_id` int(11) NOT NULL,
   `user_id` varchar(100) NOT NULL,
   `playlist_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `playlist_user_love`
+--
+
+INSERT INTO `playlist_user_love` (`playlist_user_love_id`, `user_id`, `playlist_id`) VALUES
+(5, 'QSZqSss49HOyRaPzQymitz8P2942', 1),
+(6, 'QSZqSss49HOyRaPzQymitz8P2942', 4),
+(2, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 5);
 
 -- --------------------------------------------------------
 
@@ -233,7 +467,10 @@ INSERT INTO `playlist_user_song` (`playlist_user_song_id`, `playlist_user_id`, `
 (1, 1, 2),
 (2, 1, 5),
 (4, 2, 4),
-(3, 2, 7);
+(3, 2, 7),
+(8, 6, 4),
+(11, 32, 5),
+(12, 33, 5);
 
 -- --------------------------------------------------------
 
@@ -330,9 +567,14 @@ INSERT INTO `song_love` (`song_love_id`, `user_id`, `song_id`) VALUES
 (51, '3i0hJyaL2kNBKjLrT8t8uPhxsa32', 2),
 (11, '7oEPyI8hGqUB45vZNkMv3tsWahB2', 2),
 (48, 'Kct8HgBtVsaLhXE5J8FBfMPEFWr2', 1),
-(53, 'QSZqSss49HOyRaPzQymitz8P2942', 1),
+(59, 'QSZqSss49HOyRaPzQymitz8P2942', 1),
 (54, 'QSZqSss49HOyRaPzQymitz8P2942', 2),
-(56, 'QSZqSss49HOyRaPzQymitz8P2942', 4),
+(71, 'QSZqSss49HOyRaPzQymitz8P2942', 4),
+(69, 'QSZqSss49HOyRaPzQymitz8P2942', 5),
+(60, 'QSZqSss49HOyRaPzQymitz8P2942', 6),
+(70, 'QSZqSss49HOyRaPzQymitz8P2942', 7),
+(72, 'QSZqSss49HOyRaPzQymitz8P2942', 9),
+(73, 'QSZqSss49HOyRaPzQymitz8P2942', 9),
 (45, 'XMe0wL5W9wMYZEpdae30GwG15JD3', 1),
 (46, 'XMe0wL5W9wMYZEpdae30GwG15JD3', 2),
 (47, 'XMe0wL5W9wMYZEpdae30GwG15JD3', 3),
@@ -440,11 +682,13 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`) VALUES
+('2LKuuAWZX7W1iQk0Fy8qakkoLde2'),
 ('3i0hJyaL2kNBKjLrT8t8uPhxsa32'),
 ('7oEPyI8hGqUB45vZNkMv3tsWahB2'),
 ('aeBg8o0lO7aEeGsqyWqvaMhZvu13'),
 ('boCsxQUcmfNsvWQ7CU8SSsbSmkA3'),
 ('Fcdj4N26i8PpzzpQCFFSqw5BHLx2'),
+('ftQTNjkDsbg7EzgUtCfKUOZFm0i1'),
 ('GxUfF3C40NeUQsrJhdJeTD4xWxx1'),
 ('HU0KmfuPLUXvFKgmghtkRoiyNif1'),
 ('Jy5byXeAJ2aEbTCuF0o4EOPId3q2'),
@@ -488,6 +732,13 @@ ALTER TABLE `category`
   ADD PRIMARY KEY (`category_id`);
 
 --
+-- Chỉ mục cho bảng `lyric`
+--
+ALTER TABLE `lyric`
+  ADD PRIMARY KEY (`lyric_id`),
+  ADD KEY `song_id` (`song_id`);
+
+--
 -- Chỉ mục cho bảng `music_video`
 --
 ALTER TABLE `music_video`
@@ -511,7 +762,7 @@ ALTER TABLE `playlist_user`
 -- Chỉ mục cho bảng `playlist_user_love`
 --
 ALTER TABLE `playlist_user_love`
-  ADD PRIMARY KEY (`playlist_user_song_love_id`),
+  ADD PRIMARY KEY (`playlist_user_love_id`),
   ADD KEY `playlistUser_id` (`user_id`,`playlist_id`),
   ADD KEY `song_id` (`playlist_id`);
 
@@ -604,6 +855,12 @@ ALTER TABLE `category`
   MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT cho bảng `lyric`
+--
+ALTER TABLE `lyric`
+  MODIFY `lyric_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=204;
+
+--
 -- AUTO_INCREMENT cho bảng `playlist`
 --
 ALTER TABLE `playlist`
@@ -613,19 +870,19 @@ ALTER TABLE `playlist`
 -- AUTO_INCREMENT cho bảng `playlist_user`
 --
 ALTER TABLE `playlist_user`
-  MODIFY `playlist_user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `playlist_user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT cho bảng `playlist_user_love`
 --
 ALTER TABLE `playlist_user_love`
-  MODIFY `playlist_user_song_love_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `playlist_user_love_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT cho bảng `playlist_user_song`
 --
 ALTER TABLE `playlist_user_song`
-  MODIFY `playlist_user_song_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `playlist_user_song_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT cho bảng `rank`
@@ -649,7 +906,7 @@ ALTER TABLE `song_again`
 -- AUTO_INCREMENT cho bảng `song_love`
 --
 ALTER TABLE `song_love`
-  MODIFY `song_love_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `song_love_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT cho bảng `song_rank`
@@ -673,6 +930,12 @@ ALTER TABLE `topic`
 ALTER TABLE `album_love`
   ADD CONSTRAINT `album_love_ibfk_2` FOREIGN KEY (`song_id`) REFERENCES `song` (`song_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `album_love_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `lyric`
+--
+ALTER TABLE `lyric`
+  ADD CONSTRAINT `lyric_ibfk_1` FOREIGN KEY (`song_id`) REFERENCES `song` (`song_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `music_video`
