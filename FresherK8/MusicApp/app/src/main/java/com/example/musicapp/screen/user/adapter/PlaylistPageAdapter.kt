@@ -1,8 +1,11 @@
 package com.example.musicapp.screen.user.adapter
 
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.adapter.FragmentViewHolder
 import com.example.musicapp.screen.account.login.LoginFragment
 import com.example.musicapp.screen.account.singup.SingUpFragment
 import com.example.musicapp.screen.user.playlistLove.PlaylistLoveFragment
@@ -20,6 +23,14 @@ class PlaylistPageAdapter(fragmentActivity: FragmentActivity) :
             0 -> PlaylistUserFragment()
             1 -> PlaylistLoveFragment()
             else -> throw RuntimeException()
+        }
+    }
+
+    override fun onBindViewHolder(holder: FragmentViewHolder, position: Int, payloads: MutableList<Any>) {
+        super.onBindViewHolder(holder, position, payloads)
+        // Ensure the tag is set after the fragment's view is created
+        holder.itemView.post {
+            holder.itemView.tag = "f$position"
         }
     }
 }

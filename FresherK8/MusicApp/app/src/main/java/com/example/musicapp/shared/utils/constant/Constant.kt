@@ -47,7 +47,6 @@ object Constant {
     const val UPDATE_SONG = "UPDATE_SONG"
     const val PLAYLIST = "playlist"
     const val CATEGORIES = "categories"
-    const val RANK = "rank"
     const val ALBUM_NEW = "album_new"
     const val ALBUM_LOVE = "album_love"
     const val MOOD_TODAY = "mood_today"

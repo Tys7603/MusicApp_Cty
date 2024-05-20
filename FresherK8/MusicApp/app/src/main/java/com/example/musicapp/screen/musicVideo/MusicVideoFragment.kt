@@ -4,11 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.data.model.MusicVideo
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.FragmentMusicVideoBinding
@@ -73,10 +75,10 @@ class MusicVideoFragment : Fragment() {
     }
 
     private fun checkVisibilityLayout(boolean: Boolean) {
-        if (boolean){
+        if (boolean) {
             binding.layoutMvFragment.visibility = View.VISIBLE
             binding.includeLayoutMvFragment.visibility = View.GONE
-        }else{
+        } else {
             binding.layoutMvFragment.visibility = View.INVISIBLE
             binding.includeLayoutMvFragment.visibility = View.VISIBLE
         }
@@ -87,33 +89,13 @@ class MusicVideoFragment : Fragment() {
             is Topic -> {
                 when (item.id) {
                     0 -> {
-//                        if (mMusicVideos.isNullOrEmpty()){
-//                            binding.tvShow.visibility = View.VISIBLE
-//                        }else{
-//                            binding.tvShow.visibility = View.GONE
-//                            musicVideoAdapter.submitList(mMusicVideos!!.shuffled())
-//                        }
-                        musicVideoAdapter.submitList(mMusicVideos!!.shuffled())
+                        handleTopicClicked(0)
                     }
-
                     1 -> {
-//                        if (itemEqualListMusicVideoProposalNew(mMusicVideos!!).isEmpty()){
-//                            binding.tvShow.visibility = View.VISIBLE
-//                        }else{
-//                            binding.tvShow.visibility = View.GONE
-//                            musicVideoAdapter.submitList(itemEqualListMusicVideoProposalNew(mMusicVideos!!))
-//                        }
-                        musicVideoAdapter.submitList(itemEqualListMusicVideoProposalNew(mMusicVideos!!))
+                        handleTopicClicked(1)
                     }
-
                     else -> {
-//                       if (itemEqualListMusicVideo(item, mMusicVideos!!).isEmpty()){
-//                           binding.tvShow.visibility = View.VISIBLE
-//                       }else{
-//                           binding.tvShow.visibility = View.GONE
-//                           musicVideoAdapter.submitList(itemEqualListMusicVideo(item, mMusicVideos!!))
-//                       }
-                        musicVideoAdapter.submitList(itemEqualListMusicVideo(item, mMusicVideos!!))
+                        handleTopicClicked(item.id)
                     }
                 }
                 scrollToPositionCategories(position)
@@ -127,9 +109,32 @@ class MusicVideoFragment : Fragment() {
         }
     }
 
+    private fun handleTopicClicked(topicId: Int) {
+        val filteredList = when (topicId) {
+            0 -> mMusicVideos?.shuffled()
+            1 -> mMusicVideos?.let { itemEqualListMusicVideoProposalNew(it).shuffled() }
+            else -> mMusicVideos?.let { itemEqualListMusicVideo(topicId, it).shuffled() }
+        }
+        filteredList?.let {
+            if (it.isEmpty()) {
+                binding.tvShow.visibility = View.VISIBLE
+            } else {
+                binding.tvShow.visibility = View.GONE
+            }
+            musicVideoAdapter.submitList(it) {
+                scrollToFirstItem()
+            }
+        }
+    }
+
+    private fun scrollToFirstItem() {
+        val layoutManager = binding.rcvMv.layoutManager as LinearLayoutManager
+        layoutManager.scrollToPosition(0)
+    }
+
     private fun scrollToPositionCategories(position: Int) {
         val layoutManager = binding.rcvCategoryMv.layoutManager as LinearLayoutManager
-        if (position > 1) {
+        if (position > 0) {
             layoutManager.scrollToPositionWithOffset(position - 1, 0)
         }
     }
@@ -145,19 +150,19 @@ class MusicVideoFragment : Fragment() {
     }
 
     private fun itemEqualListMusicVideo(
-        topic: Topic,
+        topicId: Int,
         musicVideos: List<MusicVideo>
     ): ArrayList<MusicVideo> {
         val matchedMusicVideos = ArrayList<MusicVideo>()
         for (musicVideo in musicVideos) {
-            if (musicVideo.topicId == topic.id) {
+            if (musicVideo.topicId == topicId) {
                 matchedMusicVideos.add(musicVideo)
             }
         }
         return matchedMusicVideos
     }
 
-    private fun handlerPostDelay(listener : () -> Unit){
+    private fun handlerPostDelay(listener: () -> Unit) {
         Handler(Looper.getMainLooper()).postDelayed({
             listener.invoke()
         }, 500)

@@ -1,6 +1,7 @@
 package com.example.musicapp.screen.explore.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -13,8 +14,6 @@ import kotlin.math.min
 class SubSongRankAdapter(
     private val mListener: (ArrayList<Song>, Int) -> Unit
 ) : ListAdapter<Song, SubSongRankAdapter.SubSongRankViewHolder>(GenericDiffCallback<Song>()) {
-
-    private var itemsEnabled: Boolean = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubSongRankViewHolder {
         val binding =
@@ -30,10 +29,6 @@ class SubSongRankAdapter(
         holder.bind(currentList[position], position)
     }
 
-    fun setEnableItemSub(enabled: Boolean) {
-        itemsEnabled = enabled
-    }
-
     inner class SubSongRankViewHolder(private val binding: ItemSocialRankBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
@@ -41,9 +36,8 @@ class SubSongRankAdapter(
             binding.tvSttSocialRank.text = (position + 1).toString()
             binding.song = song
             val songList = ArrayList(currentList)
-            binding.root.isEnabled = itemsEnabled
             binding.root.setOnClickListener {
-                if (itemsEnabled) mListener.invoke(songList, layoutPosition)
+                mListener.invoke(songList, layoutPosition)
             }
         }
     }

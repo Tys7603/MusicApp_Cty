@@ -37,6 +37,7 @@ import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.FragmentExploreBinding
+import com.example.musicapp.screen.exploreDetail.ExploreDetailActivity
 import com.example.musicapp.screen.song.SongActivity
 import com.example.musicapp.screen.songDetail.SongDetailActivity
 import com.example.musicapp.screen.topic.TopicActivity
@@ -47,6 +48,7 @@ import com.example.musicapp.shared.utils.BooleanProperty
 import com.example.musicapp.shared.utils.GetValue
 import com.example.musicapp.shared.utils.ListDefault
 import com.example.musicapp.shared.utils.constant.Constant.KEY_INTENT_ITEM
+import com.example.musicapp.shared.utils.constant.Constant.KEY_NAME
 import com.example.musicapp.shared.utils.constant.Constant.KEY_NAME_TAB
 import java.util.Random
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -55,13 +57,13 @@ class ExploreFragment : Fragment() {
     private val viewModel: ExploreViewModel by viewModel()
     private var musicService: MusicService? = null
     private var isServiceBound = false
-    private val playListAdapter = PlayListAdapter(::onItemClick)
-    private val playListMoodAdapter = PlayListAdapter(::onItemClick)
+    private val playListAdapter = PlayListAdapter(::onItemClick, 1)
+    private val playListMoodAdapter = PlayListAdapter(::onItemClick, 1)
     private val topicAdapter = TopicAdapterLinear(::onItemClick)
-    private val categoriesAdapter = CategoriesAdapter(::onItemClick)
+    private val categoriesAdapter = CategoriesAdapter(::onItemClick, 1)
     private val songAgainAdapter = SongAgainAdapter(::onItemClick)
-    private val albumNewAdapter = AlbumAdapter(::onItemClick)
-    private val albumLoveAdapter = AlbumAdapter(::onItemClick)
+    private val albumNewAdapter = AlbumAdapter(::onItemClick, 1)
+    private val albumLoveAdapter = AlbumAdapter(::onItemClick, 1)
     private val songRankAdapter = SongRankAdapter(::onItemClickSongRank)
     private var isSnapHelperAttached = false
 
@@ -116,8 +118,6 @@ class ExploreFragment : Fragment() {
         albumNewAdapter.setEnableItem(false)
         albumLoveAdapter.submitList(ListDefault.initListAlbum())
         albumLoveAdapter.setEnableItem(false)
-        songRankAdapter.submitList(ListDefault.initListSongRank())
-        songRankAdapter.setEnableItem(false)
     }
 
     private fun initViewModel() {
@@ -182,10 +182,7 @@ class ExploreFragment : Fragment() {
         }
 
         viewModel.songRank.observe(viewLifecycleOwner) {
-            handlerPostDelay {
-                songRankAdapter.submitList(it)
-                songRankAdapter.setEnableItem(true)
-            }
+            songRankAdapter.submitList(it)
         }
     }
 
@@ -214,6 +211,38 @@ class ExploreFragment : Fragment() {
 
     private fun handlerEvent() {
         binding.includeLayout.btnLayoutBottomPause.setOnClickListener { onCheckPlayMusic() }
+        binding.tvAddListenAgain.setOnClickListener { onStartActivity(Constant.PLAYLIST) }
+        binding.tvAddAlbum.setOnClickListener { onStartActivity(Constant.ALBUM_NEW) }
+        binding.tvAddTopic.setOnClickListener { onStartActivity(Constant.CATEGORIES) }
+        binding.tvAddLoving.setOnClickListener { onStartActivity(Constant.ALBUM_LOVE) }
+        binding.tvAddMood.setOnClickListener { onStartActivity(Constant.MOOD_TODAY) }
+    }
+
+    private fun onStartActivity(nameData: String) {
+        val intent = Intent(requireContext(), ExploreDetailActivity::class.java)
+        when(nameData){
+            Constant.PLAYLIST -> {
+                intent.putExtra(KEY_INTENT_ITEM, Constant.PLAYLIST)
+                intent.putExtra(KEY_NAME, binding.tvTitlePlaylist.text)
+            }
+            Constant.CATEGORIES -> {
+                intent.putExtra(KEY_INTENT_ITEM, Constant.CATEGORIES)
+                intent.putExtra(KEY_NAME, binding.tvTitleCategory.text)
+            }
+            Constant.MOOD_TODAY -> {
+                intent.putExtra(KEY_INTENT_ITEM, Constant.MOOD_TODAY)
+                intent.putExtra(KEY_NAME, binding.tvTitleMood.text)
+            }
+            Constant.ALBUM_NEW -> {
+                intent.putExtra(KEY_INTENT_ITEM, Constant.ALBUM_NEW)
+                intent.putExtra(KEY_NAME, binding.tvTitleNew.text)
+            }
+            Constant.ALBUM_LOVE -> {
+                intent.putExtra(KEY_INTENT_ITEM, Constant.ALBUM_LOVE)
+                intent.putExtra(KEY_NAME, binding.tvTitleLoved.text)
+            }
+        }
+        startActivity(intent)
     }
 
     private fun onCheckPlayMusic() {

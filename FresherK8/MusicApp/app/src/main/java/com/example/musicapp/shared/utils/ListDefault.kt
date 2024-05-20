@@ -14,7 +14,8 @@ object ListDefault {
             Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, false),
             Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, false),
             Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, false),
-            Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, false)
+            Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, false),
+            Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, false),
         )
     }
 
@@ -38,7 +39,7 @@ object ListDefault {
             Topic(0, "Loading...", "https://iili.io/HlHy9Yx.png", 0),
             Topic(0, "Loading...", "https://iili.io/HlHy9Yx.png", 0),
             Topic(0, "Loading...", "https://iili.io/HlHy9Yx.png", 0),
-            Topic(0, "Loading...", "https://iili.io/HlHy9Yx.png", 0)
+            Topic(0, "Loading...", "https://iili.io/HlHy9Yx.png", 0),
         )
     }
 
@@ -50,24 +51,6 @@ object ListDefault {
             Album(0,"Loading","https://iili.io/HlHy9Yx.png","Loading"),
             Album(0,"Loading","https://iili.io/HlHy9Yx.png","Loading"),
             Album(0,"Loading","https://iili.io/HlHy9Yx.png","Loading"),
-        )
-    }
-
-
-    fun initListSongRank(): MutableList<SongRank> {
-        val songs = arrayListOf(
-            Song(0,0,"Loading","https://iili.io/HlHy9Yx.png","","Loading",0),
-            Song(0,0,"Loading","https://iili.io/HlHy9Yx.png","","Loading",0),
-            Song(0,0,"Loading","https://iili.io/HlHy9Yx.png","","Loading",0),
-            Song(0,0,"Loading","https://iili.io/HlHy9Yx.png","","Loading",0),
-            Song(0,0,"Loading","https://iili.io/HlHy9Yx.png","","Loading",0),
-        )
-        return mutableListOf(
-            SongRank("Loading", songs),
-            SongRank("Loading", songs),
-            SongRank("Loading", songs),
-            SongRank("Loading", songs),
-            SongRank("Loading", songs),
         )
     }
 }

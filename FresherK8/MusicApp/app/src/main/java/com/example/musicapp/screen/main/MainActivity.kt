@@ -31,6 +31,10 @@ import com.example.musicapp.shared.utils.constant.Constant
 
 
 class MainActivity : AppCompatActivity(), OnChangeListener {
+    private val musicFragment = MusicFragment()
+    private val musicVideoFragment = MusicVideoFragment()
+    private val exploreFragment = ExploreFragment()
+    private val userFragment = UserFragment()
 
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
@@ -165,7 +169,6 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
     }
 
     override fun onSongChanged() {
-        Log.d("TAG", "onValueChange: ")
         val fragment = supportFragmentManager.findFragmentById(R.id.frame_layout) as? ExploreFragment
         fragment?.initSongView()
     }
