@@ -16,7 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.musicapp.R
 import com.example.musicapp.shared.utils.constant.Constant.KEY_SONG
 import com.example.musicapp.databinding.FragmentMusicBinding
@@ -295,7 +294,7 @@ class MusicFragment : Fragment(), BaseService {
     private fun putLyrics() {
         position = getPosition()
         val intent = Intent(requireContext(), LyricActivity::class.java)
-        intent.putExtra(KEY_INTENT_ITEM, mSongs?.get(position))
+        intent.putExtra(KEY_INTENT_ITEM, mSongs.getOrNull(position))
         startActivity(intent)
     }
 
@@ -303,7 +302,7 @@ class MusicFragment : Fragment(), BaseService {
         position = getPosition()
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
-            val song = mSongs?.get(position)
+            val song = mSongs.getOrNull(position)
             song?.let {
                 val bottomSheet = BottomSheetAddSongPlaylist(it, binding.btnPlay)
                 bottomSheet.show(parentFragmentManager, bottomSheet.tag)
@@ -371,10 +370,10 @@ class MusicFragment : Fragment(), BaseService {
                     updateTimeSong()
                 }
             }
-
             saveSong()
             initViewButton()
             checkSongLove()
+            enableButton(true)
         }
     }
 
@@ -389,10 +388,6 @@ class MusicFragment : Fragment(), BaseService {
         } else {
             true
         }
-        saveSong()
-        initViewButton()
-        checkSongLove()
-        enableButton(true)
     }
 
     private fun checkSongLove() {
@@ -626,11 +621,6 @@ class MusicFragment : Fragment(), BaseService {
         val intent = Intent(activity, MusicService::class.java)
         activity?.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         // khởi tạo view
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mSongsDefault = null
     }
 
     companion object {
