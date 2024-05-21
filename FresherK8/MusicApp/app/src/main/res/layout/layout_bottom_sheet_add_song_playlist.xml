@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.musicapp.screen.user.playlistUser.PlaylistUserViewModel" />
+            type="com.example.musicapp.screen.user.PlaylistUserViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

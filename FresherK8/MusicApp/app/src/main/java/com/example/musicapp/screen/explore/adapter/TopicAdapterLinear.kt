@@ -13,6 +13,8 @@ class TopicAdapterLinear(
     private var mListener: (Topic) -> Unit
 ) : ListAdapter<Topic, TopicAdapterLinear.TopicViewHolder>(GenericDiffCallback<Topic>()) {
 
+    private var itemsEnabled: Boolean = true
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopicViewHolder {
         val binding = ItemTopicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return TopicViewHolder(binding)
@@ -26,11 +28,18 @@ class TopicAdapterLinear(
         holder.bind(currentList[position])
     }
 
+    fun setEnableItem(enabled: Boolean) {
+        itemsEnabled = enabled
+    }
+
     inner class TopicViewHolder(private val binding: ItemTopicBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(topic: Topic) {
             binding.topic = topic
-            binding.root.setOnClickListener { mListener.invoke(topic) }
+            binding.root.isEnabled = itemsEnabled
+            binding.root.setOnClickListener {
+                if (itemsEnabled) mListener.invoke(topic)
+            }
         }
     }
 }

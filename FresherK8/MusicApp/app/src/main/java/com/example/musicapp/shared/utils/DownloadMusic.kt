@@ -33,46 +33,46 @@ object DownloadMusic {
         val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val downloadId = downloadManager.enqueue(request)
 
-        SongDao(context).insertSong(song)
-//        Log.d("TAG", "onReceive: " + SongDao(context).readSongs().toString())
+//      Lưu thông tin bài hát vào SQLite khi tải xuống hoàn thành
+        val onCompleteListener = object : BroadcastReceiver() {
+            @SuppressLint("Range")
+            override fun onReceive(context: Context, intent: Intent) {
+                if (DownloadManager.ACTION_DOWNLOAD_COMPLETE == intent.action) {
+                    val query = DownloadManager.Query()
+                    query.setFilterById(downloadId)
+                    val cursor = downloadManager.query(query)
 
-        // Lưu thông tin bài hát vào SQLite khi tải xuống hoàn thành
-//        val onCompleteListener = object : BroadcastReceiver() {
-//            @SuppressLint("Range")
-//            override fun onReceive(context: Context, intent: Intent) {
-//                if (DownloadManager.ACTION_DOWNLOAD_COMPLETE == intent.action) {
-//                    val query = DownloadManager.Query()
-//                    query.setFilterById(downloadId)
-//                    val cursor = downloadManager.query(query)
-//
-//                    if (cursor.moveToFirst()) {
-//                        val status =
-//                            cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-//                        if (status == DownloadManager.STATUS_SUCCESSFUL) {
-//                            // Lấy thông tin về bài hát đã tải xuống
-//                            val uri =
-//                                cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
-//                            val downloadedSong = Song(song.id, song.name, song.image, uri , song.nameArtis)
-//                            // Thêm thông tin bài hát vào SQLite
-//                            SongDao(context).insertSong(downloadedSong)
-//                            Log.d("TAG", "onReceive: " + SongDao(context).readSongs().toString())
-//                        }
-//                    }
-//                    cursor.close()
-//                    // Hủy đăng ký BroadcastReceiver sau khi hoàn thành
-//                    context.unregisterReceiver(this)
-//                }
-//            }
-//        }
-//
-//        // Đăng ký BroadcastReceiver để xử lý khi tải xuống hoàn thành
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//                context.registerReceiver(
-//                    onCompleteListener,
-//                    IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), Context.RECEIVER_NOT_EXPORTED
-//                )
-//            }
-//        }
+                    if (cursor.moveToFirst()) {
+                        val status =
+                            cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                        if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                            // Lấy thông tin về bài hát đã tải xuống
+                            val uri =
+                                cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
+                            val downloadedSong = Song(0,song.id, song.name, song.image, uri , song.nameArtis, 1)
+                            // Thêm thông tin bài hát vào SQLite
+                            SongDao(context).insertSong(downloadedSong)
+                        }
+                    }
+                    cursor.close()
+                    // Hủy đăng ký BroadcastReceiver sau khi hoàn thành
+                    context.unregisterReceiver(this)
+                }
+            }
+        }
+
+        // Đăng ký BroadcastReceiver để xử lý khi tải xuống hoàn thành
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.registerReceiver(
+                onCompleteListener,
+                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), Context.RECEIVER_NOT_EXPORTED
+            )
+        }else{
+            context.registerReceiver(
+                onCompleteListener,
+                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        }
+
+
     }
 }

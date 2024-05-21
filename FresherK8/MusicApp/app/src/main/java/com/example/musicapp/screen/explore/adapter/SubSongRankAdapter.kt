@@ -1,6 +1,7 @@
 package com.example.musicapp.screen.explore.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -10,10 +11,13 @@ import com.example.musicapp.data.model.Song
 import com.example.musicapp.shared.utils.GenericDiffCallback
 import kotlin.math.min
 
-class SubSongRankAdapter : ListAdapter<Song, SubSongRankAdapter.SubSongRankViewHolder>(GenericDiffCallback<Song>()) {
+class SubSongRankAdapter(
+    private val mListener: (ArrayList<Song>, Int) -> Unit
+) : ListAdapter<Song, SubSongRankAdapter.SubSongRankViewHolder>(GenericDiffCallback<Song>()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubSongRankViewHolder {
-        val binding = ItemSocialRankBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemSocialRankBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return SubSongRankViewHolder(binding)
     }
 
@@ -25,13 +29,16 @@ class SubSongRankAdapter : ListAdapter<Song, SubSongRankAdapter.SubSongRankViewH
         holder.bind(currentList[position], position)
     }
 
-    class SubSongRankViewHolder(private val binding: ItemSocialRankBinding) :
+    inner class SubSongRankViewHolder(private val binding: ItemSocialRankBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
         fun bind(song: Song, position: Int) {
             binding.tvSttSocialRank.text = (position + 1).toString()
             binding.song = song
+            val songList = ArrayList(currentList)
+            binding.root.setOnClickListener {
+                mListener.invoke(songList, layoutPosition)
+            }
         }
     }
-
 }

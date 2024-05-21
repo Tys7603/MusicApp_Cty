@@ -8,6 +8,7 @@ import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.data.repositories.musicRepository.MusicRepository
 import com.example.musicapp.shared.base.BaseViewModel
+import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.utils.scheduler.DataResult
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
@@ -39,12 +40,16 @@ class UserViewModel (private val musicRepository: MusicRepository) : BaseViewMod
         fetchSongAgain()
     }
 
-    private fun initValueUser(){
+    fun initValueUser(){
         val user = FirebaseAuth.getInstance().currentUser
-        user?.let {
+        if (user != null){
             _userName.value = user.email
             _image.value = user.photoUrl.toString()
             _isLogin.value = true
+        }else{
+            _userName.value = "Bạn chưa đăng nhập"
+            _image.value = Constant.URL_IMAGE
+            _isLogin.value = false
         }
     }
 

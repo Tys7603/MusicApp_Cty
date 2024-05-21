@@ -5,12 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -30,8 +28,10 @@ import com.example.musicapp.shared.utils.DownloadMusic
 import com.example.musicapp.shared.utils.constant.Constant.KEY_AUTO_RESTART
 import com.example.musicapp.shared.utils.constant.Constant.KEY_DOWN
 import com.example.musicapp.shared.utils.constant.Constant.KEY_HAVE_DOWN
+import com.example.musicapp.shared.utils.constant.Constant.KEY_NAME_TAB
 import com.example.musicapp.shared.utils.constant.Constant.KEY_PLAY_CLICK
 import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_SONG
+import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_SONG_LIST_NAME
 import com.example.musicapp.shared.utils.constant.Constant.KEY_SHUFFLE
 import com.example.musicapp.shared.utils.constant.Constant.VALUE_DEFAULT
 import com.example.musicapp.shared.utils.format.FormatUtils
@@ -93,14 +93,8 @@ class SongActivity : AppCompatActivity(), BaseService {
         binding.btnDownloadAt.setOnClickListener { downloadMusic() }
         binding.imgBackSongAt.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
         binding.seekBarAt.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-
-            }
-
-            override fun onStartTrackingTouch(p0: SeekBar?) {
-
-            }
-
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) = Unit
+            override fun onStartTrackingTouch(p0: SeekBar?) = Unit
             override fun onStopTrackingTouch(p0: SeekBar?) {
                 if (isServiceBound) {
                     musicService?.seekTo(binding.seekBarAt.progress)
@@ -119,7 +113,9 @@ class SongActivity : AppCompatActivity(), BaseService {
         mSongs?.get(position)?.let { binding.imgBgSongAt.loadImageUrl(it.image) }
         if (isServiceBound) {
             if (!musicService?.isMediaPrepared()!!) {
-                mSongs?.get(position)?.let { musicService?.playFromUrl(it.url) }
+                mSongs?.get(position)?.let {
+                    musicService?.songPlayFromUrl(it.url)
+                }
                 musicService?.setOnCompletionListener {
                     // Xử lý khi bài hát kết thúc, chuyển sang bài hát tiếp theo
                    nextMusic()
@@ -133,6 +129,7 @@ class SongActivity : AppCompatActivity(), BaseService {
         saveSong()
         initViewButton()
         initFunc()
+        musicService?.setOnStartMusicListener { playMusic() }
     }
 
     // kiểm tra xem nhạc có đang phát không -> hiển thị nút play, pause
@@ -192,6 +189,7 @@ class SongActivity : AppCompatActivity(), BaseService {
 
     //    // quay lại bài nhạc
     private fun backMusic() {
+        position = sharedPreferences.getInt(KEY_POSITION_SONG, 0)
         position--
         if (position < 0) {
             position = mSongs!!.size - 1
@@ -203,12 +201,7 @@ class SongActivity : AppCompatActivity(), BaseService {
     private fun setFuncMusic() {
         musicService?.stop()
         musicService?.setMediaPrepared(false)
-        var isPlaySelected: Boolean by BooleanProperty(
-            sharedPreferences,
-            KEY_PLAY_CLICK,
-            false
-        )
-        isPlaySelected = true
+        sharedPreferences.edit().putBoolean(KEY_PLAY_CLICK, true).apply()
         initValueSong()
     }
 
@@ -312,9 +305,16 @@ class SongActivity : AppCompatActivity(), BaseService {
     private fun getListSongIntent() {
         val songs = intent.getParcelableArrayListExtra<Song>(Constant.KEY_INTENT_ITEM)
         val mPosition = intent.getIntExtra(KEY_POSITION_SONG, 0)
-        sharedPreferences.edit().putInt(KEY_POSITION_SONG, mPosition).apply()
-        mSongs = songs
-        mSongsDefault = songs
+
+        if (songs != null){
+            mSongs = songs
+            mSongsDefault = songs
+            sharedPreferences.edit().putBoolean(Constant.KEY_TAB_MUSIC, true).apply()
+            sharedPreferences.edit().putInt(Constant.KEY_POSITION_TAB, 1).apply()
+            sharedPreferences.edit().putString(Constant.KEY_LIST_SONG, Gson().toJson(songs)).apply()
+            sharedPreferences.edit().putInt(KEY_POSITION_SONG, mPosition).apply()
+            binding.tvNameListSong.text = sharedPreferences.getString(KEY_NAME_TAB, "")
+        }
     }
 
     override fun onMediaPrepared() {

@@ -33,7 +33,7 @@
     <string name="y_u_th_ch">Yêu thích</string>
     <string name="t_i">Đã tải</string>
     <string name="ph_t_ng_u_nhi_n">Phát ngẫu nhiên</string>
-    <string name="url">https://cdn-icons-png.flaticon.com/512/1053/1053244.png</string>
+    <string name="url">https://cdn-icons-png.freepik.com/512/3607/3607444.png</string>
     <string name="t_o_playlist_m_i">Tạo playlist mới</string>
     <string name="nh_p_t_n_playlist">Nhập tên playlist</string>
     <string name="t_o_playlist">Tạo playlist</string>
@@ -59,4 +59,12 @@
     <string name="ch_y_ngay_i">Chạy ngay đi</string>
     <string name="s_n_t_ng_m_tp">Sơn Tùng M-TP</string>
     <string name="kh_ng_c_l_i_b_i_h_t">Không có lời bài hát</string>
+    <string name="danh_s_ch_ph_t">Danh sách phát</string>
+    <string name="ng_xu_t">Đăng xuất</string>
+    <string name="_1">1</string>
+    <string name="xem_t_t_c"><![CDATA[Xem tất cả >]]></string>
+    <string name="ph_t_t_t_c">Phát tất cả</string>
+    <string name="h_y_kh_m_ph_v_t_i_b_i_h_t_hay">Hãy khám phá và tải bài hát hay</string>
+    <string name="kh_ng_c_d_li_u">Không có dữ liệu</string>
+    <string name="nh_c_t_i">Nhạc đã tải</string>
 </resources>

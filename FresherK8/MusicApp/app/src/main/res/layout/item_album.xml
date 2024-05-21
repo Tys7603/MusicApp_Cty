@@ -27,7 +27,7 @@
                 android:layout_height="150dp"
                 android:layout_weight="1"
                 imageUrl="@{albumLove.albumImage}"
-                app:srcCompat="@drawable/img_placeholder" />
+                />
         </androidx.cardview.widget.CardView>
 
         <TextView

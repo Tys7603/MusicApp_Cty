@@ -1,4 +1,4 @@
-package com.example.musicapp.screen.user.playlistLove
+package com.example.musicapp.screen.user
 
 import android.util.Log
 import androidx.lifecycle.LiveData

@@ -10,12 +10,12 @@ import com.example.musicapp.R
 @BindingAdapter("imageUrl")
 fun ImageView.loadImageUrl(url : String){
     if (url.isEmpty()) {
-        this.setImageResource(R.drawable.img_placeholder)
+        this.setImageResource(R.drawable.img_2)
     } else {
         Glide.with(context)
             .load(url)
             .centerCrop()
-            .placeholder(R.drawable.img_placeholder)
+            .placeholder(R.drawable.img_2)
             .into(this)
     }
 }
@@ -25,6 +25,6 @@ fun ImageView.loadImageUrlUser(url : String){
     Glide.with(context)
         .load(url)
         .centerCrop()
-        .placeholder(R.drawable.avatar)
+        .placeholder(R.drawable.img)
         .into(this)
 }

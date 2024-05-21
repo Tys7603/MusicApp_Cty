@@ -9,16 +9,14 @@ import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.shared.utils.GenericDiffCallback
 
 class SongAgainAdapter(
-    private var mListener: (SongAgain) -> Unit
+    private var mListener: (SongAgain, Int) -> Unit
 ) : ListAdapter<SongAgain, SongAgainAdapter.SongAgainViewHolder>(GenericDiffCallback<SongAgain>()) {
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongAgainViewHolder {
         val binding =
             ItemSongAgianBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return SongAgainViewHolder(binding)
     }
-
 
     override fun onBindViewHolder(holder: SongAgainViewHolder, position: Int) {
         holder.bind(currentList[position])
@@ -29,7 +27,7 @@ class SongAgainAdapter(
         fun bind(songAgain: SongAgain) {
             binding.songAgain = songAgain
             binding.root.setOnClickListener {
-                mListener.invoke(songAgain)
+                mListener.invoke(songAgain, layoutPosition)
             }
         }
     }

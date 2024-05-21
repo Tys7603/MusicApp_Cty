@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.example.musicapp.data.model.Lyric
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
+import com.example.musicapp.data.model.Status
 import com.example.musicapp.data.model.reponse.SongRepository
 import com.example.musicapp.data.source.local.dao.SongDao
 import com.example.musicapp.data.source.remote.api.ApiClient
@@ -22,6 +23,8 @@ interface MusicRepository {
     suspend fun getListSongLove(userId: String): DataResult<ArrayList<Song>>
 
     suspend fun createSongLove(userId: String, songId: Int): DataResult<Boolean>
+
+    suspend fun insertPlaylistIntoPlaylistLove(userId: String, playlistId: Int): DataResult<Boolean>
 
     suspend fun deleteSongLove(songLoveId: Int): DataResult<Boolean>
 

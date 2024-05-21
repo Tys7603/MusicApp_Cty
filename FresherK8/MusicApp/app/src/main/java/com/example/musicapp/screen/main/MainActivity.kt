@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -25,10 +26,15 @@ import com.example.musicapp.screen.music.MusicFragment
 import com.example.musicapp.screen.musicVideo.MusicVideoFragment
 import com.example.musicapp.screen.user.UserFragment
 import com.example.musicapp.service.MusicService
+import com.example.musicapp.shared.utils.OnChangeListener
 import com.example.musicapp.shared.utils.constant.Constant
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnChangeListener {
+    private val musicFragment = MusicFragment()
+    private val musicVideoFragment = MusicVideoFragment()
+    private val exploreFragment = ExploreFragment()
+    private val userFragment = UserFragment()
 
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
@@ -37,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     private val sharedPreferences: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(this)
     }
+    private var currentFragment: Fragment? = null
 
     companion object {
         const val MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 123
@@ -70,9 +77,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun switchUserIntent() {
         val checkUser = intent.getBooleanExtra(Constant.KEY_USER, false)
+        val checkSongUser = intent.getBooleanExtra(Constant.KEY_SONG_USER, false)
         if (checkUser){
             fragmentManager(UserFragment())
-            binding.bottomNavigationView.setSelectedItemId(R.id.user_menu);
+            binding.bottomNavigationView.selectedItemId = R.id.user_menu;
+        }
+        if (checkSongUser){
+            fragmentManager(exploreFragment)
+            binding.bottomNavigationView.selectedItemId = R.id.explore_menu;
         }
     }
 
@@ -111,10 +123,13 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun fragmentManager(fragment: Fragment) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(binding.frameLayout.id, fragment)
-            .commit()
+        if (currentFragment != fragment) {
+            currentFragment = fragment
+            supportFragmentManager
+                .beginTransaction()
+                .replace(binding.frameLayout.id, fragment)
+                .commit()
+        }
     }
 
     private fun switchFragment() {
@@ -153,5 +168,16 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         sharedPreferences.edit().putBoolean(Constant.KEY_PLAY_CLICK, false).apply()
+        sharedPreferences.edit().putBoolean(Constant.KEY_TAB_MUSIC, false).apply()
+        sharedPreferences.edit().putBoolean(Constant.KEY_SHUFFLE, false).apply()
+        sharedPreferences.edit().putBoolean(Constant.KEY_AUTO_RESTART, false).apply()
+        sharedPreferences.edit().putFloat("PlaylistUserFragment", 0F).apply()
+    }
+
+    override fun onSongChanged() {
+        val exploreFragment = supportFragmentManager.findFragmentById(R.id.frame_layout) as? ExploreFragment
+        val userFragment = supportFragmentManager.findFragmentById(R.id.frame_layout) as? UserFragment
+        exploreFragment?.initSongView()
+        userFragment?.initSongView()
     }
 }

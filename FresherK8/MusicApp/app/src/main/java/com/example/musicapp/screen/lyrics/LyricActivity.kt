@@ -14,6 +14,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.window.OnBackInvokedDispatcher
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -104,6 +105,7 @@ class LyricActivity : AppCompatActivity() {
             ProgressBarManager.showProgressBar(binding.progressBar, binding.linearLayout7)
             viewModel.fetchLyrics(it)
         }
+        sharedPreferences.edit().putBoolean(Constant.KEY_ACTIVITY_LYRIC, true).apply()
     }
 
     private fun initViewModel() {
@@ -117,6 +119,7 @@ class LyricActivity : AppCompatActivity() {
 
     private fun handlerEvent() {
         binding.btnClose.setOnClickListener {
+            sharedPreferences.edit().putBoolean(Constant.KEY_ACTIVITY_LYRIC, false).apply()
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
@@ -222,6 +225,11 @@ class LyricActivity : AppCompatActivity() {
         super.onStop()
         sharedPreferences.edit().putInt(Constant.KEY_LYRIC, currentLyricIndex)
             .apply()
+    }
+
+    override fun getOnBackInvokedDispatcher(): OnBackInvokedDispatcher {
+        sharedPreferences.edit().putBoolean(Constant.KEY_ACTIVITY_LYRIC, false).apply()
+        return super.getOnBackInvokedDispatcher()
     }
 
     override fun onDestroy() {
