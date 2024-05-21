@@ -17,6 +17,7 @@ import com.example.musicapp.data.model.reponse.SongRepository
 import com.example.musicapp.data.model.reponse.SongAgainRepository
 import com.example.musicapp.data.model.reponse.SongRankRepository
 import com.example.musicapp.data.model.Status
+import com.example.musicapp.data.model.reponse.LyricRepository
 import com.example.musicapp.data.model.reponse.MusicVideoRepository
 import com.example.musicapp.data.model.reponse.PlaylistUserRepository
 import com.example.musicapp.data.model.reponse.TopicRepository
@@ -26,10 +27,12 @@ import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_PLAYLIST_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_PLAYLIST_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_SONG_LOVE
+import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_LYRIC_SONG_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO_EXCLUDING_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_PLAYLIST_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_PLAYLIST_USER
+import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_ALBUM_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_PLAYLIST_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_TOPIC_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_LOVE
@@ -109,6 +112,9 @@ interface ApiService {
     @GET(GET_SONG_BY_TOPIC_ID)
     suspend fun getListSongTopicById(@Path("topicId") topicId: Int): Response<SongRepository>
 
+    @GET(GET_SONG_BY_ALBUM_ID)
+    suspend fun getListSongAlbumById(@Path("albumId") albumId: Int): Response<SongRepository>
+
     @FormUrlEncoded
     @POST(CREATE_SONG_LOVE)
     suspend fun createSongLove(
@@ -141,4 +147,7 @@ interface ApiService {
     @GET(GET_MUSIC_VIDEO_EXCLUDING_ID)
     suspend fun getListMusicVideoExcludingId(@Path("musicVideoId") musicVideoId: String): Response<MusicVideoRepository>
 
+    // lyrics
+    @GET(GET_LYRIC_SONG_ID)
+    suspend fun getLyricsBySongId(@Path("songId") songId: Int): Response<LyricRepository>
 }

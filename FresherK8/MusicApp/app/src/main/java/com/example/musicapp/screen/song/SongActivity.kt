@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -79,7 +80,7 @@ class SongActivity : AppCompatActivity(), BaseService {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
+        getListSongIntent()
         handlerEvent()
     }
 
@@ -309,16 +310,8 @@ class SongActivity : AppCompatActivity(), BaseService {
     }
 
     private fun getListSongIntent() {
-        val songs = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableArrayListExtra(Constant.KEY_INTENT_ITEM, Song::class.java)
-        } else {
-            null
-        }
-        val mPosition = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getIntExtra(KEY_POSITION_SONG, 0)
-        } else {
-            0
-        }
+        val songs = intent.getParcelableArrayListExtra<Song>(Constant.KEY_INTENT_ITEM)
+        val mPosition = intent.getIntExtra(KEY_POSITION_SONG, 0)
         sharedPreferences.edit().putInt(KEY_POSITION_SONG, mPosition).apply()
         mSongs = songs
         mSongsDefault = songs
@@ -351,11 +344,6 @@ class SongActivity : AppCompatActivity(), BaseService {
         // khởi tạo và liên kết tới music service
         val intent = Intent(this, MusicService::class.java)
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
-        // khởi tạo view
-//        mPresenter.run {
-//            setView(this@SongActivity)
-//            getListSongIntent()
-//        }
     }
 
     override fun onDestroy() {

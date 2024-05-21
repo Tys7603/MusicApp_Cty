@@ -57,7 +57,7 @@ class SongDownActivity : AppCompatActivity() {
         binding.rcvSongDown.setAdapterLinearVertical(adapter)
     }
 
-    private fun onItemClick(songs: Song) {
+    private fun onItemClick(songs: Song, position : Int) {
         startActivity(Intent(this, SongActivity::class.java))
     }
 }

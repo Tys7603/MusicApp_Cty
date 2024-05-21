@@ -55,4 +55,8 @@
     <string name="x_a">Xóa</string>
     <string name="th_m_v_o_playlist">Thêm vào playlist</string>
     <string name="ch_n_playlist_th_m_b_i_h_t_v_o">Chọn playlist để thêm bài hát vào</string>
+    <string name="ch_m_v_o_xem_l_i_b_i_h_t">Chạm vào để xem lời bài hát</string>
+    <string name="ch_y_ngay_i">Chạy ngay đi</string>
+    <string name="s_n_t_ng_m_tp">Sơn Tùng M-TP</string>
+    <string name="kh_ng_c_l_i_b_i_h_t">Không có lời bài hát</string>
 </resources>

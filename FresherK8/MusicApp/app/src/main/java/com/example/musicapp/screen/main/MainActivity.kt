@@ -152,6 +152,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        sharedPreferences.edit().clear().apply()
+        sharedPreferences.edit().putBoolean(Constant.KEY_PLAY_CLICK, false).apply()
     }
 }
