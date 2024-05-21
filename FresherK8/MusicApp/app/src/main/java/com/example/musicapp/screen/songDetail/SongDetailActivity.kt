@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.Parcelable
 import android.view.View
 import android.widget.Toast
@@ -17,8 +19,10 @@ import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.data.model.Album
 import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.data.model.Song
+import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.ActivitySongDetailBinding
+import com.example.musicapp.screen.main.MainActivity
 import com.example.musicapp.screen.song.SongActivity
 import com.example.musicapp.screen.songDetail.adapter.SongDetailAdapter
 import com.example.musicapp.shared.extension.loadImageUrl
@@ -27,6 +31,7 @@ import com.example.musicapp.shared.utils.DownloadMusic
 import com.example.musicapp.shared.utils.constant.Constant.KEY_INTENT_ITEM
 import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_SONG
 import com.example.musicapp.shared.widget.SnackBarManager
+import com.google.firebase.auth.FirebaseAuth
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Random
 
@@ -63,19 +68,16 @@ class SongDetailActivity : AppCompatActivity() {
 
     private fun handleEventViewModel() {
         viewModel.songTopic.observe(this) {
-            songAdapter.submitList(it)
-            mSongs = it
-            initQuantitySong(it)
+            handlerPostDelay(it)
         }
         viewModel.songPlaylist.observe(this) {
-            songAdapter.submitList(it)
-            mSongs = it
-            initQuantitySong(it)
+            handlerPostDelay(it)
         }
         viewModel.songAlbum.observe(this) {
-            songAdapter.submitList(it)
-            mSongs = it
-            initQuantitySong(it)
+            handlerPostDelay(it)
+        }
+        viewModel.songsLove.observe(this) {
+            handlerPostDelay(it)
         }
         viewModel.isUserLogin.observe(this) {
             if (it) {
@@ -107,17 +109,24 @@ class SongDetailActivity : AppCompatActivity() {
         binding.imgBackPlaylistActivity.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
-        binding.btnShuffleDetail.setOnClickListener { startShuffle() }
-        binding.btnPlayPlaylistActivity.setOnClickListener { startSongMusic() }
         binding.btnAddPlaylistDetail.setOnClickListener {
             mPlaylist?.id?.let { viewModel.insertPlaylist(it) }
         }
-        binding.btnDowPlaylistActivity.setOnClickListener {downloadListSong()}
+        binding.btnShuffleDetail.setOnClickListener { startShuffle() }
+        binding.btnPlayPlaylistActivity.setOnClickListener { startSongMusic() }
+        binding.btnDowPlaylistActivity.setOnClickListener { downloadListSong() }
+        binding.btnExplore.setOnClickListener { startExplore() }
+    }
+
+    private fun startExplore() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra(Constant.KEY_SONG_USER, true)
+        startActivity(intent)
     }
 
     private fun downloadListSong() {
         mSongs?.let {
-            for (song in mSongs!!){
+            for (song in mSongs!!) {
                 DownloadMusic.downloadMusic(this, song)
             }
         }
@@ -132,6 +141,7 @@ class SongDetailActivity : AppCompatActivity() {
         onStartPosition(0, true)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initValue() {
         when (val item = intent.getParcelableExtra<Parcelable>(KEY_INTENT_ITEM)) {
             is Playlist -> {
@@ -163,7 +173,25 @@ class SongDetailActivity : AppCompatActivity() {
                 viewModel.fetchSongTopic(item.id)
                 sharedPreferences.edit().putString(Constant.KEY_NAME_TAB, item.name).apply()
             }
+
+            is Song -> {
+                val user = FirebaseAuth.getInstance().currentUser
+                binding.btnAddPlaylistDetail.visibility = View.GONE
+                item.image.let { binding.imgSongActivity.loadImageUrl(it) }
+                item.image.let { binding.imgBgPlaylistActivity.loadImageUrl(it) }
+                binding.tvNamePlaylistActivity.text = user?.email + USER
+                binding.tvNameArtistPlaylistActivity.text = user?.email
+                user?.uid?.let { viewModel.fetchSongLove(it) }
+                sharedPreferences.edit().putString(Constant.KEY_NAME_TAB, user?.email + USER)
+                    .apply()
+            }
         }
+        showLoading()
+    }
+
+    private fun showLoading() {
+        binding.layoutSongUserLoading.visibility = View.VISIBLE
+        binding.layoutSongUserEmpty.visibility = View.GONE
     }
 
     @SuppressLint("SetTextI18n")
@@ -178,6 +206,7 @@ class SongDetailActivity : AppCompatActivity() {
 
     companion object {
         const val SONG = " bài hát"
+        const val USER = "'s Favorites"
     }
 
     private fun onItemClick(song: Song, position: Int) {
@@ -193,5 +222,18 @@ class SongDetailActivity : AppCompatActivity() {
         )
         else intent.putParcelableArrayListExtra(KEY_INTENT_ITEM, mSongs)
         startActivity(intent)
+    }
+
+    private fun handlerPostDelay(songs: ArrayList<Song>) {
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.layoutSongUserLoading.visibility = View.GONE
+            if (songs.isNotEmpty()) {
+                songAdapter.submitList(songs)
+                mSongs = songs
+                initQuantitySong(songs)
+            } else {
+                binding.layoutSongUserEmpty.visibility = View.VISIBLE
+            }
+        }, 1000)
     }
 }

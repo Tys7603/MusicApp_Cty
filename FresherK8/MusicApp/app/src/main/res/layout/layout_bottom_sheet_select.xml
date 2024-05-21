@@ -6,10 +6,10 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.musicapp.screen.user.playlistUser.PlaylistUserViewModel" />
+            type="com.example.musicapp.screen.user.PlaylistUserViewModel" />
         <variable
             name="loveViewModel"
-            type="com.example.musicapp.screen.user.playlistLove.PlaylistLoveViewModel" />
+            type="com.example.musicapp.screen.user.PlaylistLoveViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

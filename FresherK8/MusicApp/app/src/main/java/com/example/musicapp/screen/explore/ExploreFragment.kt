@@ -61,7 +61,7 @@ class ExploreFragment : Fragment() {
     private val playListMoodAdapter = PlayListAdapter(::onItemClick, 1)
     private val topicAdapter = TopicAdapterLinear(::onItemClick)
     private val categoriesAdapter = CategoriesAdapter(::onItemClick, 1)
-    private val songAgainAdapter = SongAgainAdapter(::onItemClick)
+    private val songAgainAdapter = SongAgainAdapter(::onItemClickAgain)
     private val albumNewAdapter = AlbumAdapter(::onItemClick, 1)
     private val albumLoveAdapter = AlbumAdapter(::onItemClick, 1)
     private val songRankAdapter = SongRankAdapter(::onItemClickSongRank)
@@ -216,6 +216,7 @@ class ExploreFragment : Fragment() {
         binding.tvAddTopic.setOnClickListener { onStartActivity(Constant.CATEGORIES) }
         binding.tvAddLoving.setOnClickListener { onStartActivity(Constant.ALBUM_LOVE) }
         binding.tvAddMood.setOnClickListener { onStartActivity(Constant.MOOD_TODAY) }
+        binding.btnShareMusic.setOnClickListener {  }
     }
 
     private fun onStartActivity(nameData: String) {
@@ -294,6 +295,11 @@ class ExploreFragment : Fragment() {
                 startActivity(intent)
             }
         }
+    }
+
+    private fun onItemClickAgain(any: Any, position: Int) {
+        val intent = Intent(requireContext(), SongActivity::class.java)
+        startActivity(intent)
     }
 
     private fun onItemClickSongRank(song: ArrayList<Song>, position: Int, name: String) {

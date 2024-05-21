@@ -77,9 +77,14 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
 
     private fun switchUserIntent() {
         val checkUser = intent.getBooleanExtra(Constant.KEY_USER, false)
+        val checkSongUser = intent.getBooleanExtra(Constant.KEY_SONG_USER, false)
         if (checkUser){
             fragmentManager(UserFragment())
-            binding.bottomNavigationView.setSelectedItemId(R.id.user_menu);
+            binding.bottomNavigationView.selectedItemId = R.id.user_menu;
+        }
+        if (checkSongUser){
+            fragmentManager(exploreFragment)
+            binding.bottomNavigationView.selectedItemId = R.id.explore_menu;
         }
     }
 
@@ -166,10 +171,13 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
         sharedPreferences.edit().putBoolean(Constant.KEY_TAB_MUSIC, false).apply()
         sharedPreferences.edit().putBoolean(Constant.KEY_SHUFFLE, false).apply()
         sharedPreferences.edit().putBoolean(Constant.KEY_AUTO_RESTART, false).apply()
+        sharedPreferences.edit().putFloat("PlaylistUserFragment", 0F).apply()
     }
 
     override fun onSongChanged() {
-        val fragment = supportFragmentManager.findFragmentById(R.id.frame_layout) as? ExploreFragment
-        fragment?.initSongView()
+        val exploreFragment = supportFragmentManager.findFragmentById(R.id.frame_layout) as? ExploreFragment
+        val userFragment = supportFragmentManager.findFragmentById(R.id.frame_layout) as? UserFragment
+        exploreFragment?.initSongView()
+        userFragment?.initSongView()
     }
 }

@@ -1,18 +1,13 @@
 package com.example.musicapp.screen.user.adapter
 
 import android.app.Dialog
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import com.example.musicapp.R
-import com.example.musicapp.databinding.LayoutBottomSheetAccountBinding
 import com.example.musicapp.databinding.LayoutBottomSheetPlaylistBinding
-import com.example.musicapp.screen.account.AccountActivity
-import com.example.musicapp.screen.user.playlistUser.PlaylistUserViewModel
+import com.example.musicapp.screen.user.PlaylistUserViewModel
 import com.example.musicapp.shared.utils.constant.Constant
-import com.example.musicapp.shared.utils.constant.Constant.ACCESS_RULES
 import com.example.musicapp.shared.widget.SnackBarManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog

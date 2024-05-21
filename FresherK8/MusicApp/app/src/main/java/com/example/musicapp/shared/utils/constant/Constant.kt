@@ -9,6 +9,7 @@ object Constant {
     const val URL_IMAGE_UPDATE = "https://pngtree.com/freepng/user-icon-isolated-on-abstract-background_5192004.html"
     const val KEY_SONG = "song"
     const val KEY_USER = "start_user"
+    const val KEY_SONG_USER = "start_song_user"
     const val KEY_INTENT_ITEM = "item"
     const val KEY_BUNDLE_ITEM = "bundle"
     const val EMPTY_SONG_MESSAGE = "Chưa nghe bài hát nào"
@@ -50,6 +51,8 @@ object Constant {
     const val ALBUM_NEW = "album_new"
     const val ALBUM_LOVE = "album_love"
     const val MOOD_TODAY = "mood_today"
+    const val AGAIN = "again"
+    const val DOWN = "down"
     // bỏ enum ở đây
     enum class ClickControllerPlayerUi{
         ON_BACK,

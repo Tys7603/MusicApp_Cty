@@ -21,6 +21,9 @@ class SongDetailViewModel(private val musicRepository: MusicRepository) : BaseVi
     private val _isInsertPlaylist = MutableLiveData<Boolean>()
     val isInsertPlaylist: LiveData<Boolean> = _isInsertPlaylist
 
+    private val _songsLove = MutableLiveData<ArrayList<Song>>()
+    val songsLove: LiveData<ArrayList<Song>> = _songsLove
+
     private val _isUserLogin = MutableLiveData<Boolean>()
     val isUserLogin: LiveData<Boolean> = _isUserLogin
 
@@ -49,6 +52,15 @@ class SongDetailViewModel(private val musicRepository: MusicRepository) : BaseVi
             onFailure = { Log.e("fetchSong", "Failed: $it") },
             onError = { exception.value = it }
         )
+    }
+
+    fun fetchSongLove(userId : String) {
+            launchTaskSync(
+                onRequest = { musicRepository.getListSongLove(userId) },
+                onSuccess = { _songsLove.value = it },
+                onFailure = { Log.e("fetchSong", "Failed: $it") },
+                onError = { exception.value = it }
+            )
     }
 
     fun insertPlaylist(playlistId : Int){

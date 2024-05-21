@@ -8,8 +8,8 @@ import com.example.musicapp.R
 import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.data.model.PlaylistUser
 import com.example.musicapp.databinding.LayoutBottomSheetSelectBinding
-import com.example.musicapp.screen.user.playlistLove.PlaylistLoveViewModel
-import com.example.musicapp.screen.user.playlistUser.PlaylistUserViewModel
+import com.example.musicapp.screen.user.PlaylistLoveViewModel
+import com.example.musicapp.screen.user.PlaylistUserViewModel
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog

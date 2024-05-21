@@ -1,38 +1,36 @@
 package com.example.musicapp.screen.user
 
-import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
-import android.os.Handler
 import android.os.IBinder
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.preference.PreferenceManager
-import androidx.viewpager2.widget.ViewPager2
-import com.bumptech.glide.Glide
 import com.example.musicapp.R
-import com.example.musicapp.data.source.local.dao.SongDao
+import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.FragmentUserBinding
-import com.example.musicapp.screen.account.adapter.AccountPageAdapter
 import com.example.musicapp.screen.account.information.InformationActivity
-import com.example.musicapp.screen.songDown.SongDownActivity
+import com.example.musicapp.screen.music.MusicFragment
+import com.example.musicapp.screen.songDetail.SongDetailActivity
+import com.example.musicapp.screen.songUser.SongUserActivity
 import com.example.musicapp.screen.user.adapter.BottomSheetLogin
-import com.example.musicapp.screen.user.adapter.PlaylistPageAdapter
+import com.example.musicapp.screen.user.adapter.BottomSheetPlaylist
+import com.example.musicapp.screen.user.adapter.BottomSheetSelect
+import com.example.musicapp.screen.user.adapter.PlaylistLoveAdapter
+import com.example.musicapp.screen.user.adapter.PlaylistUserAdapter
 import com.example.musicapp.service.MusicService
+import com.example.musicapp.shared.extension.loadImageUrl
+import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.BooleanProperty
 import com.example.musicapp.shared.utils.GetValue
 import com.example.musicapp.shared.utils.constant.Constant
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
+import com.example.musicapp.shared.widget.SnackBarManager
+import com.google.firebase.auth.FirebaseAuth
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -40,7 +38,13 @@ class UserFragment : Fragment() {
 
     private var musicService: MusicService? = null
     private var isServiceBound = false
-    private val viewModel : UserViewModel by viewModel()
+    private val viewModel: UserViewModel by viewModel()
+    private val viewModelUser: PlaylistUserViewModel by viewModel()
+    private val viewModelLove: PlaylistLoveViewModel by viewModel()
+    private var songsLove: MutableList<Song> = mutableListOf()
+    private val user = FirebaseAuth.getInstance().currentUser
+    private val playlistLoveAdapter = PlaylistLoveAdapter(::onItemClick, 2)
+    private val playlistUserAdapter = PlaylistUserAdapter(::onItemClick, 2)
 
     private val binding by lazy {
         FragmentUserBinding.inflate(layoutInflater)
@@ -75,10 +79,27 @@ class UserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         handleEvent()
-        handleEventViewModel()
         initViewModel()
-        initTabLayout()
         initMusicView()
+        handleEventViewModel()
+        initRecyclerView()
+    }
+
+    private fun handleEventViewModel() {
+        viewModel.songsLove.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                binding.imgLove.loadImageUrl(it[0].image)
+                songsLove = it
+            }
+        }
+
+        viewModelLove.playlists.observe(viewLifecycleOwner) {
+            playlistLoveAdapter.submitList(it)
+        }
+
+        viewModelUser.playlistUser.observe(viewLifecycleOwner) {
+            playlistUserAdapter.submitList(it)
+        }
     }
 
     private fun initViewModel() {
@@ -86,14 +107,85 @@ class UserFragment : Fragment() {
         binding.lifecycleOwner = this
     }
 
-    private fun handleEventViewModel() {
-        binding.btnInformation.setOnClickListener { startActivity(Intent(requireContext(), InformationActivity::class.java)) }
+    private fun initRecyclerView() {
+        binding.rcvPlaylistUser.setAdapterLinearVertical(playlistUserAdapter)
+        binding.rcvPlaylistLove.setAdapterLinearVertical(playlistLoveAdapter)
     }
 
     private fun handleEvent() {
-        binding.btnTrackDown.setOnClickListener {startActivity(Intent(requireContext(), SongDownActivity::class.java))}
+        binding.tabPlaylistUser.setOnClickListener {
+            binding.scroll.post {
+                binding.scroll.smoothScrollTo(0, binding.layoutPlaylistUser.top)
+                binding.tvUnderlinedUser.visibility = View.VISIBLE
+                binding.tvUnderlinedLove.visibility = View.INVISIBLE
+            }
+        }
+        binding.tabPlaylistLove.setOnClickListener {
+            binding.scroll.post {
+                binding.scroll.smoothScrollTo(0, binding.layoutPlaylistLove.top)
+                binding.tvUnderlinedUser.visibility = View.INVISIBLE
+                binding.tvUnderlinedLove.visibility = View.VISIBLE
+            }
+        }
+        binding.btnInformation.setOnClickListener {
+            startActivity(
+                Intent(
+                    requireContext(),
+                    InformationActivity::class.java
+                )
+            )
+        }
+        binding.btnTrackDown.setOnClickListener {
+            startSongUser(
+                Constant.DOWN,
+                binding.tvDown.text.toString()
+            )
+        }
+        binding.btnListenAgain.setOnClickListener {
+            if (user != null) {
+                startSongUser(
+                    Constant.AGAIN,
+                    binding.tvAgain.text.toString()
+                )
+            } else {
+                SnackBarManager.showMessage(binding.imageView19, MusicFragment.NOT_LOGIN)
+            }
+        }
+        binding.btnOpenBottomSheet.setOnClickListener { checkUserLogin(0) }
+        binding.btnOpenBottomSheetSelect.setOnClickListener { checkUserLogin(1) }
+        binding.btnOpenBottomSheetLove.setOnClickListener { openBottomSheet() }
+        binding.btnLove.setOnClickListener { startSongDetail() }
         binding.btnLogin.setOnClickListener { openBottomSheetLogin() }
         binding.includeLayout1.btnLayoutBottomPause.setOnClickListener { onCheckPlayMusic() }
+    }
+
+    private fun checkUserLogin(id: Int) {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            when (id) {
+                0 -> openBottomSheetCreatePlaylist()
+                1 -> openBottomSheetSelectPlaylist()
+            }
+        } else {
+            openBottomSheetLogin()
+        }
+    }
+
+    private fun startSongDetail() {
+        if (user != null) {
+            val intent = Intent(requireContext(), SongDetailActivity::class.java)
+            intent.putExtra(Constant.KEY_INTENT_ITEM, songsLove.getOrNull(0))
+            startActivity(intent)
+        } else {
+            openBottomSheetLogin()
+        }
+    }
+
+    private fun startSongUser(s: String, name: String) {
+        val intent = Intent(requireContext(), SongUserActivity::class.java)
+        intent.putExtra(Constant.KEY_INTENT_ITEM, s)
+        intent.putExtra(Constant.KEY_NAME, name)
+        startActivity(intent)
     }
 
     private fun openBottomSheetLogin() {
@@ -101,43 +193,22 @@ class UserFragment : Fragment() {
         bottomSheetLogin.show(parentFragmentManager, bottomSheetLogin.tag)
     }
 
-    private fun initTabLayout() {
-        val pagerAdapter = PlaylistPageAdapter(requireActivity())
-        binding.viewPagerUser.adapter = pagerAdapter
-        TabLayoutMediator(binding.tabLayoutUser, binding.viewPagerUser) { tab, position ->
-            when (position) {
-                0 -> tab.text = Constant.PLAYLIST_USER
-                1 -> tab.text = Constant.PLAYLIST_LOVE
-            }
-        }.attach()
-
-        binding.viewPagerUser.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                updateViewPagerHeightForCurrentPage(position)
-            }
-        })
+    private fun openBottomSheet() {
+        val bottomSheet = BottomSheetSelect(::onItemClickBottomSheetLove, "playlist_love")
+        bottomSheet.show(parentFragmentManager, bottomSheet.tag)
     }
 
-    private fun updateViewPagerHeightForCurrentPage(position: Int) {
-        val handler = Handler(Looper.getMainLooper())
-        handler.post {
-            val view = binding.viewPagerUser.findViewWithTag<View>("f$position") ?: return@post
-            view.post {
-                val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
-                val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                view.measure(wMeasureSpec, hMeasureSpec)
-                if (binding.viewPagerUser.layoutParams.height != view.measuredHeight) {
-                    binding.viewPagerUser.layoutParams = binding.viewPagerUser.layoutParams.also { lp ->
-                        lp.height = view.measuredHeight
-                    }
-                }
-            }
-        }
+    private fun openBottomSheetCreatePlaylist() {
+        val bottomSheet = BottomSheetPlaylist(::onItemClickBottomSheetUser)
+        bottomSheet.show(parentFragmentManager, bottomSheet.tag)
     }
 
+    private fun openBottomSheetSelectPlaylist() {
+        val bottomSheet = BottomSheetSelect(::onItemClickBottomSheetUser, "playlist_user")
+        bottomSheet.show(parentFragmentManager, bottomSheet.tag)
+    }
 
-    private fun initSongView(){
+    fun initSongView() {
         val song = GetValue.getSong(sharedPreferences)
         binding.includeLayout1.song = song
     }
@@ -166,6 +237,18 @@ class UserFragment : Fragment() {
             binding.includeLayout1.btnLayoutBottomPause.setImageResource(R.drawable.ic_pause_)
             true
         }
+    }
+
+    private fun onItemClickBottomSheetLove() {
+        viewModelLove.fetchPlaylists()
+    }
+
+    private fun onItemClickBottomSheetUser() {
+        viewModelUser.fetchPlaylistsUser()
+    }
+
+    private fun onItemClick(boolean: Boolean, any: Any) {
+
     }
 
     override fun onStart() {

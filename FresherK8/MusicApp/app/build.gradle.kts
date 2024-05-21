@@ -81,7 +81,6 @@ dependencies {
     implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:custom-ui:12.1.0")
     //noinspection UseTomlInstead
     implementation ("com.makeramen:roundedimageview:2.3.0")
-
     //noinspection UseTomlInstead
     implementation ("com.google.code.gson:gson:2.10.1")
 }
