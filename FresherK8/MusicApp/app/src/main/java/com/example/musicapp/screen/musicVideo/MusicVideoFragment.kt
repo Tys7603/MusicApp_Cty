@@ -26,8 +26,7 @@ class MusicVideoFragment : Fragment() {
     private val viewModel: MusicVideoViewModel by viewModel()
     private val musicVideoAdapter = MusicVideoAdapter(::onClickItem)
     private val categoryMVAdapter = TopicMVAdapter(::onClickItem)
-    private var mMusicVideos: ArrayList<MusicVideo>? = null
-
+    private var mMusicVideos: MutableList<MusicVideo> = mutableListOf()
     private val binding by lazy {
         FragmentMusicVideoBinding.inflate(layoutInflater)
     }
