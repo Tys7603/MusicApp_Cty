@@ -12,26 +12,20 @@ class PlaylistLoveViewModel(private val userRepository: UserRepository) : BaseVi
     private val _playlists = MutableLiveData<ArrayList<Playlist>>()
     val playlists: LiveData<ArrayList<Playlist>> = _playlists
 
-    init {
-        fetchPlaylists()
-    }
 
-    fun fetchPlaylists() {
-        val user = FirebaseAuth.getInstance().currentUser
-        user?.let {
-            launchTaskSync(
-                onRequest = { userRepository.getListPlaylistLove(user.uid) },
-                onSuccess = { _playlists.value = it },
-                onFailure = { Log.e("fetchPlaylists", "Failed: $it") },
-                onError = { exception.value = it }
-            )
-        }
+    fun fetchPlaylists(userId : String) {
+        launchTaskSync(
+            onRequest = { userRepository.getListPlaylistLove(userId) },
+            onSuccess = { _playlists.value = it },
+            onFailure = { Log.e("fetchPlaylists", "Failed: $it") },
+            onError = { exception.value = it }
+        )
     }
 
     fun deletePlaylistLove(playlistsLoveId: String) {
         launchTaskSync(
             onRequest = { userRepository.deletePlaylistLove(playlistsLoveId) },
-            onSuccess = { fetchPlaylists() },
+            onSuccess = { fetchPlaylists(FirebaseAuth.getInstance().currentUser!!.uid) },
             onFailure = { Log.e("TAG", "onFailure: $it") },
             onError = { Log.e("TAG", "onError: $it") }
         )

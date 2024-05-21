@@ -113,7 +113,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="@string/h_y_kh_m_ph_v_t_i_b_i_h_t_hay"
+                            android:text="@string/h_y_kh_m_ph_nh_ng_phaylist_kh_c_nh"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView10" />

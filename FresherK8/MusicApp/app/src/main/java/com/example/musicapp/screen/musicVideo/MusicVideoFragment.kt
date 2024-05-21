@@ -110,23 +110,21 @@ class MusicVideoFragment : Fragment() {
 
     private fun handleTopicClicked(topicId: Int) {
         val filteredList = when (topicId) {
-            0 -> mMusicVideos?.shuffled()
-            1 -> mMusicVideos?.let { itemEqualListMusicVideoProposalNew(it).shuffled() }
-            else -> mMusicVideos?.let { itemEqualListMusicVideo(topicId, it).shuffled() }
+            0 -> mMusicVideos.shuffled()
+            1 -> mMusicVideos.let { itemEqualListMusicVideoProposalNew(it).shuffled() }
+            else -> mMusicVideos.let { itemEqualListMusicVideo(topicId, it).shuffled() }
         }
-        filteredList?.let {
-            if (it.isEmpty()) {
-                binding.tvShow.visibility = View.VISIBLE
-            } else {
-                binding.tvShow.visibility = View.GONE
-            }
-            musicVideoAdapter.submitList(it) {
-                scrollToFirstItem()
-            }
+        if (filteredList.isEmpty()) {
+            binding.tvShow.visibility = View.VISIBLE
+        } else {
+            binding.tvShow.visibility = View.GONE
+        }
+        musicVideoAdapter.submitList(filteredList) {
+            scrollToFirstItem()
         }
     }
 
-    private fun scrollToFirstItem() {
+    fun scrollToFirstItem() {
         val layoutManager = binding.rcvMv.layoutManager as LinearLayoutManager
         layoutManager.scrollToPosition(0)
     }

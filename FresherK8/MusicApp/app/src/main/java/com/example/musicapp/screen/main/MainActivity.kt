@@ -60,16 +60,16 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
         }
 
         switchFragment()
-        fragmentManager(MusicFragment())
+        fragmentManager(musicFragment)
         createService()
         switchUserIntent()
 
         if (!checkPermission(this)) {
             requestPermission(this)
         }
-        if (!checkNotificationPermission(this)) {
+        if (!checkNotificationPermission()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                requestNotificationPermission(this)
+                requestNotificationPermission()
             }
         }
 
@@ -88,39 +88,34 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
         }
     }
 
-
-    // Kiểm tra xem quyền đã được cấp hay chưa
     private fun checkPermission(activity: Activity?): Boolean {
         val result =
             ContextCompat.checkSelfPermission(activity!!, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         return result == PackageManager.PERMISSION_GRANTED
     }
 
-    // Hiển thị hộp thoại yêu cầu cấp quyền
     private fun requestPermission(activity: Activity?) {
         ActivityCompat.requestPermissions(
-            activity!!, arrayOf<String>(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            activity!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
             MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
         )
     }
 
-    private fun checkNotificationPermission(activity: Activity?): Boolean {
+    private fun checkNotificationPermission(): Boolean {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationManager.notificationChannels.any { it.importance != NotificationManager.IMPORTANCE_NONE }
         } else {
-            // For older Android versions, simply return true as they don't have notification channels
             true
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun requestNotificationPermission(activity: Activity?) {
+    private fun requestNotificationPermission() {
         val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
         intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
         startActivity(intent)
     }
-
 
     private fun fragmentManager(fragment: Fragment) {
         if (currentFragment != fragment) {
@@ -129,6 +124,22 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
                 .beginTransaction()
                 .replace(binding.frameLayout.id, fragment)
                 .commit()
+        }else{
+            scrollTop()
+        }
+    }
+
+    private fun scrollTop() {
+        when(currentFragment){
+            is ExploreFragment -> {
+                (currentFragment as ExploreFragment).scrollTop()
+            }
+            is MusicVideoFragment -> {
+                (currentFragment as MusicVideoFragment).scrollToFirstItem()
+            }
+            is UserFragment -> {
+                (currentFragment as UserFragment).scrollTop()
+            }
         }
     }
 
@@ -136,22 +147,22 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.music_menu -> {
-                    fragmentManager(MusicFragment())
+                    fragmentManager(musicFragment)
                     true
                 }
 
                 R.id.explore_menu -> {
-                    fragmentManager(ExploreFragment())
+                    fragmentManager(exploreFragment)
                     true
                 }
 
                 R.id.mv_menu -> {
-                    fragmentManager(MusicVideoFragment())
+                    fragmentManager(musicVideoFragment)
                     true
                 }
 
                 R.id.user_menu -> {
-                    fragmentManager(UserFragment())
+                    fragmentManager(userFragment)
                     true
                 }
 
@@ -171,7 +182,6 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
         sharedPreferences.edit().putBoolean(Constant.KEY_TAB_MUSIC, false).apply()
         sharedPreferences.edit().putBoolean(Constant.KEY_SHUFFLE, false).apply()
         sharedPreferences.edit().putBoolean(Constant.KEY_AUTO_RESTART, false).apply()
-        sharedPreferences.edit().putFloat("PlaylistUserFragment", 0F).apply()
     }
 
     override fun onSongChanged() {

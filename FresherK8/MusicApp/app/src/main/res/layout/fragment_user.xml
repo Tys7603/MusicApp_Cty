@@ -150,7 +150,7 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <ImageView
-                        android:id="@+id/imageView19"
+                        android:id="@+id/img_avatar"
                         imageUrlUser="@{userViewModel.isLogin() ? userViewModel.image : @string/url}"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
@@ -169,9 +169,9 @@
                         android:text="@{userViewModel.isLogin() ? userViewModel.userName : @string/are_you_dont_login , default = @string/are_you_dont_login}"
                         android:textColor="@color/black"
                         android:textSize="15sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView19"
-                        app:layout_constraintStart_toEndOf="@+id/imageView19"
-                        app:layout_constraintTop_toTopOf="@+id/imageView19" />
+                        app:layout_constraintBottom_toBottomOf="@+id/img_avatar"
+                        app:layout_constraintStart_toEndOf="@+id/img_avatar"
+                        app:layout_constraintTop_toTopOf="@+id/img_avatar" />
 
                     <Button
                         android:id="@+id/btn_login"
@@ -181,9 +181,9 @@
                         android:backgroundTint="@color/teal"
                         android:text="@string/ng_nh_p"
                         android:visibility="@{userViewModel.isLogin() ? View.GONE : View.VISIBLE}"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView19"
+                        app:layout_constraintBottom_toBottomOf="@+id/img_avatar"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/imageView19" />
+                        app:layout_constraintTop_toTopOf="@+id/img_avatar" />
 
                     <ImageView
                         android:id="@+id/btn_information"
@@ -191,9 +191,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:visibility="@{userViewModel.isLogin() ? View.VISIBLE : View.GONE}"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView19"
+                        app:layout_constraintBottom_toBottomOf="@+id/img_avatar"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/imageView19"
+                        app:layout_constraintTop_toTopOf="@+id/img_avatar"
                         app:srcCompat="@drawable/baseline_manage_accounts_24" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -206,6 +206,171 @@
                         app:layout_constraintStart_toStartOf="@+id/layout_playlist_user"
                         app:layout_constraintTop_toBottomOf="@+id/layout_playlist_user">
 
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/layout_song_user_empty"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="16dp"
+                            android:visibility="invisible"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView9">
+
+                            <View
+                                android:id="@+id/view53"
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:background="@drawable/bg_cir"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="0.3" />
+
+                            <ImageView
+                                android:id="@+id/imageView6"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintBottom_toBottomOf="@+id/view53"
+                                app:layout_constraintEnd_toEndOf="@+id/view53"
+                                app:layout_constraintStart_toStartOf="@+id/view53"
+                                app:layout_constraintTop_toTopOf="@+id/view53"
+                                app:srcCompat="@drawable/ic_danger" />
+
+                            <TextView
+                                android:id="@+id/textView10"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="@string/kh_ng_c_d_li_u"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/view53" />
+
+                            <TextView
+                                android:id="@+id/textView11"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="@string/h_y_kh_m_ph_v_t_i_b_i_h_t_hay"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+                            <LinearLayout
+                                android:id="@+id/btn_explore"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:orientation="horizontal"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/textView11">
+
+                                <TextView
+                                    android:id="@+id/textView13"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/bg_heart_user"
+                                    android:paddingHorizontal="30dp"
+                                    android:paddingVertical="5dp"
+                                    android:text="@string/kh_m_ph" />
+                            </LinearLayout>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/layout_playlist_love_loading"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:visibility="invisible"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView9">
+
+                            <ProgressBar
+                                android:id="@+id/progressBar2"
+                                style="?android:attr/progressBarStyle"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginStart="156dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="0.39" />
+
+                            <TextView
+                                android:id="@+id/textView14"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="Đang tải"
+                                app:layout_constraintBottom_toBottomOf="@+id/progressBar2"
+                                app:layout_constraintStart_toEndOf="@+id/progressBar2"
+                                app:layout_constraintTop_toTopOf="@+id/progressBar2" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/layout_playlist_love_empty"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:visibility="invisible"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView9">
+
+                            <View
+                                android:id="@+id/view5"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:background="@drawable/bg_cir"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="0.3" />
+
+                            <ImageView
+                                android:id="@+id/imageView62"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                app:layout_constraintBottom_toBottomOf="@+id/view5"
+                                app:layout_constraintEnd_toEndOf="@+id/view5"
+                                app:layout_constraintStart_toStartOf="@+id/view5"
+                                app:layout_constraintTop_toTopOf="@+id/view5"
+                                app:srcCompat="@drawable/ic_user_no" />
+
+                            <TextView
+                                android:id="@+id/textView102"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Bạn chưa đăng nhập"
+                                android:textColor="@color/black"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/view5" />
+
+                            <TextView
+                                android:id="@+id/textView112"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Đăng nhập để tạo hoặc lưu playlist bạn thích"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/textView102" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <ImageView
                             android:id="@+id/btn_open_bottom_sheet_love"
@@ -252,7 +417,7 @@
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/imageView19">
+                        app:layout_constraintTop_toBottomOf="@+id/img_avatar">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/btn_track_down"
@@ -413,6 +578,38 @@
                         app:layout_constraintTop_toBottomOf="@+id/tab_layout_user">
 
 
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/layout_playlist_user_loading"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:visibility="invisible"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView931">
+
+                            <ProgressBar
+                                android:id="@+id/progressBar23"
+                                style="?android:attr/progressBarStyle"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_marginStart="148dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="0.469" />
+
+                            <TextView
+                                android:id="@+id/textView141"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="Đang tải"
+                                app:layout_constraintBottom_toBottomOf="@+id/progressBar23"
+                                app:layout_constraintStart_toEndOf="@+id/progressBar23"
+                                app:layout_constraintTop_toTopOf="@+id/progressBar23" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
                         <TextView
                             android:id="@+id/textView931"
                             style="@style/TextTile"
@@ -432,9 +629,7 @@
                             android:nestedScrollingEnabled="false"
                             app:layout_constraintEnd_toEndOf="@+id/btn_open_bottom_sheet_select"
                             app:layout_constraintStart_toStartOf="@+id/textView931"
-                            app:layout_constraintTop_toBottomOf="@+id/textView931"
-                            tools:itemCount="3"
-                            tools:listitem="@layout/item_playlist_list_user" />
+                            app:layout_constraintTop_toBottomOf="@+id/textView931" />
 
                         <ImageView
                             android:id="@+id/btn_open_bottom_sheet"
@@ -455,6 +650,70 @@
                             app:layout_constraintBottom_toBottomOf="@+id/textView931"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/textView931" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/layout_playlist_user_empty"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:visibility="invisible"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@+id/rcv_playlist_user"
+                            app:layout_constraintStart_toStartOf="@+id/rcv_playlist_user"
+                            app:layout_constraintTop_toTopOf="@+id/rcv_playlist_user">
+
+
+                            <LinearLayout
+                                android:id="@+id/btn_add_playlist_user_fragment"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:background="@drawable/bg_heart_user"
+                                android:gravity="center"
+                                app:cardCornerRadius="10dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <ImageView
+                                    android:id="@+id/img_song_item"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    app:srcCompat="@drawable/ic_add_circle" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tv_name_song_item"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/product_sans_bold"
+                                android:lines="1"
+                                android:text="Tạo Playlist"
+                                android:textColor="@color/black"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/btn_add_playlist_user_fragment"
+                                app:layout_constraintTop_toTopOf="@+id/btn_add_playlist_user_fragment" />
+
+                            <TextView
+                                android:id="@+id/tv_name_artist_song_item"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginBottom="8dp"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/product_sans_regular"
+                                android:lines="1"
+                                android:text="Tạo playlist riêng của bạn"
+                                android:textColor="@color/black"
+                                app:layout_constraintBottom_toBottomOf="@+id/btn_add_playlist_user_fragment"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="@+id/tv_name_song_item"
+                                app:layout_constraintTop_toBottomOf="@+id/tv_name_song_item" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

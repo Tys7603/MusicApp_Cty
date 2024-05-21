@@ -17,6 +17,7 @@ import com.example.musicapp.shared.widget.SnackBarManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.firebase.auth.FirebaseAuth
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BottomSheetAddSongPlaylist(private val song: Song, private val imageView: ImageView) : BottomSheetDialogFragment() {
@@ -86,7 +87,7 @@ class BottomSheetAddSongPlaylist(private val song: Song, private val imageView: 
     }
 
     private fun onItemClickBottomSheet() {
-        viewModel.fetchPlaylistsUser()
+        viewModel.fetchPlaylistsUser(FirebaseAuth.getInstance().currentUser!!.uid)
     }
 
     private fun onItemClick(b: Boolean, any: Any) {

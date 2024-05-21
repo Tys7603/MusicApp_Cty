@@ -28,9 +28,6 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".screen.user.favourite.FavouriteActivity"
-            android:exported="false" />
-        <activity
             android:name=".screen.exploreDetail.ExploreDetailActivity"
             android:exported="false" />
         <activity

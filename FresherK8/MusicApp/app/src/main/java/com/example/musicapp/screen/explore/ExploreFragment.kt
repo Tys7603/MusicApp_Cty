@@ -316,6 +316,12 @@ class ExploreFragment : Fragment() {
         }, 500)
     }
 
+    fun scrollTop(){
+        binding.nestedScrollView.post {
+            binding.nestedScrollView.smoothScrollTo(0, binding.tvTitlePlaylist.top)
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         val intent = Intent(activity, MusicService::class.java)

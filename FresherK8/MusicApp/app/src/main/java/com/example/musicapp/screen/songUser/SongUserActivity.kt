@@ -131,6 +131,6 @@ class SongUserActivity : AppCompatActivity() {
     private fun handlerPostDelay(listener: () -> Unit) {
         Handler(Looper.getMainLooper()).postDelayed({
             listener.invoke()
-        }, 1000)
+        }, 500)
     }
 }

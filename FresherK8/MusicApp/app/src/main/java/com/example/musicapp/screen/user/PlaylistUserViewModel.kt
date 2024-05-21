@@ -20,20 +20,13 @@ class PlaylistUserViewModel(private val userRepository: UserRepository) : BaseVi
 
     var playlistName = ""
 
-    init {
-        fetchPlaylistsUser()
-    }
-
-    fun fetchPlaylistsUser() {
-        val user = FirebaseAuth.getInstance().currentUser
-        user?.let {
-            launchTaskSync(
-                onRequest = { userRepository.getListPlaylistUser(user.uid) },
-                onSuccess = { _playlistsUser.value = it },
-                onFailure = { Log.e("fetchMusicVideo", "Failed: $it") },
-                onError = { exception.value = it }
-            )
-        }
+    fun fetchPlaylistsUser(userId : String) {
+        launchTaskSync(
+            onRequest = { userRepository.getListPlaylistUser(userId) },
+            onSuccess = { _playlistsUser.value = it },
+            onFailure = { Log.e("fetchMusicVideo", "Failed: $it") },
+            onError = { exception.value = it }
+        )
     }
 
     fun createPlaylistUser() {
@@ -63,7 +56,7 @@ class PlaylistUserViewModel(private val userRepository: UserRepository) : BaseVi
     fun deletePlaylistUser(playlistsUserId: String) {
         launchTaskSync(
             onRequest = { userRepository.deletePlaylistUser(playlistsUserId) },
-            onSuccess = { fetchPlaylistsUser() },
+            onSuccess = { fetchPlaylistsUser(FirebaseAuth.getInstance().currentUser!!.uid) },
             onFailure = { Log.e("TAG", "onFailure: $it") },
             onError = { Log.e("TAG", "onError: $it") }
         )

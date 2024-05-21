@@ -5,7 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +18,7 @@ import com.example.musicapp.R
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.FragmentUserBinding
 import com.example.musicapp.screen.account.information.InformationActivity
+import com.example.musicapp.screen.main.MainActivity
 import com.example.musicapp.screen.music.MusicFragment
 import com.example.musicapp.screen.songDetail.SongDetailActivity
 import com.example.musicapp.screen.songUser.SongUserActivity
@@ -81,8 +85,35 @@ class UserFragment : Fragment() {
         handleEvent()
         initViewModel()
         initMusicView()
-        handleEventViewModel()
         initRecyclerView()
+        showLoading()
+    }
+
+    private fun fetchData() {
+        if (user != null){
+            viewModelUser.fetchPlaylistsUser(user.uid)
+            viewModelLove.fetchPlaylists(user.uid)
+        }else{
+            binding.layoutPlaylistUserLoading.visibility = View.INVISIBLE
+            binding.layoutPlaylistUserEmpty.visibility = View.VISIBLE
+            binding.layoutPlaylistLoveLoading.visibility = View.INVISIBLE
+            binding.layoutPlaylistLoveEmpty.visibility = View.VISIBLE
+            binding.layoutSongUserEmpty.visibility = View.INVISIBLE
+        }
+    }
+
+    fun scrollTop() {
+        binding.scroll.post {
+            binding.scroll.smoothScrollTo(0, binding.imgAvatar.top)
+        }
+    }
+
+    private fun showLoading() {
+        binding.layoutPlaylistLoveLoading.visibility = View.VISIBLE
+        binding.layoutPlaylistUserLoading.visibility = View.VISIBLE
+        binding.layoutPlaylistUserEmpty.visibility = View.INVISIBLE
+        binding.layoutPlaylistLoveEmpty.visibility = View.INVISIBLE
+        binding.layoutSongUserEmpty.visibility = View.INVISIBLE
     }
 
     private fun handleEventViewModel() {
@@ -94,11 +125,28 @@ class UserFragment : Fragment() {
         }
 
         viewModelLove.playlists.observe(viewLifecycleOwner) {
-            playlistLoveAdapter.submitList(it)
+            handlerPostDelay {
+                binding.layoutPlaylistLoveLoading.visibility = View.INVISIBLE
+                if (it.isNotEmpty()) {
+                    playlistLoveAdapter.submitList(it)
+                    binding.layoutSongUserEmpty.visibility = View.GONE
+                    binding.layoutPlaylistLoveEmpty.visibility = View.GONE
+                } else {
+                    binding.layoutSongUserEmpty.visibility = View.VISIBLE
+                }
+            }
         }
 
         viewModelUser.playlistUser.observe(viewLifecycleOwner) {
-            playlistUserAdapter.submitList(it)
+            handlerPostDelay {
+                binding.layoutPlaylistUserLoading.visibility = View.INVISIBLE
+                if (it.isNotEmpty()) {
+                    playlistUserAdapter.submitList(it)
+                    binding.layoutPlaylistUserEmpty.visibility = View.GONE
+                } else {
+                    binding.layoutPlaylistUserEmpty.visibility = View.VISIBLE
+                }
+            }
         }
     }
 
@@ -148,15 +196,24 @@ class UserFragment : Fragment() {
                     binding.tvAgain.text.toString()
                 )
             } else {
-                SnackBarManager.showMessage(binding.imageView19, MusicFragment.NOT_LOGIN)
+                SnackBarManager.showMessage(binding.imgAvatar, MusicFragment.NOT_LOGIN)
             }
         }
+        binding.btnAddPlaylistUserFragment.setOnClickListener { openBottomSheetCreatePlaylistFragment() }
+        binding.btnExplore.setOnClickListener { startExplore() }
         binding.btnOpenBottomSheet.setOnClickListener { checkUserLogin(0) }
         binding.btnOpenBottomSheetSelect.setOnClickListener { checkUserLogin(1) }
         binding.btnOpenBottomSheetLove.setOnClickListener { openBottomSheet() }
         binding.btnLove.setOnClickListener { startSongDetail() }
         binding.btnLogin.setOnClickListener { openBottomSheetLogin() }
         binding.includeLayout1.btnLayoutBottomPause.setOnClickListener { onCheckPlayMusic() }
+    }
+
+    private fun startExplore() {
+        val intent = Intent(requireContext(), MainActivity::class.java)
+        intent.putExtra(Constant.KEY_SONG_USER, true)
+        startActivity(intent)
+        requireActivity().finish()
     }
 
     private fun checkUserLogin(id: Int) {
@@ -186,6 +243,14 @@ class UserFragment : Fragment() {
         intent.putExtra(Constant.KEY_INTENT_ITEM, s)
         intent.putExtra(Constant.KEY_NAME, name)
         startActivity(intent)
+    }
+
+    private fun openBottomSheetCreatePlaylistFragment() {
+        if (user != null){
+            openBottomSheetCreatePlaylist()
+        }else{
+            openBottomSheetLogin()
+        }
     }
 
     private fun openBottomSheetLogin() {
@@ -240,15 +305,21 @@ class UserFragment : Fragment() {
     }
 
     private fun onItemClickBottomSheetLove() {
-        viewModelLove.fetchPlaylists()
+        viewModelLove.fetchPlaylists(user!!.uid)
     }
 
     private fun onItemClickBottomSheetUser() {
-        viewModelUser.fetchPlaylistsUser()
+        viewModelUser.fetchPlaylistsUser(user!!.uid)
     }
 
     private fun onItemClick(boolean: Boolean, any: Any) {
 
+    }
+
+    private fun handlerPostDelay(listener: () -> Unit) {
+        Handler(Looper.getMainLooper()).postDelayed({
+            listener.invoke()
+        }, 500)
     }
 
     override fun onStart() {
@@ -257,6 +328,13 @@ class UserFragment : Fragment() {
         val intent = Intent(activity, MusicService::class.java)
         activity?.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         viewModel.initValueUser()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchData()
+        handleEventViewModel()
     }
 
     override fun onDestroy() {
