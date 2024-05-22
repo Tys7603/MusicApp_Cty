@@ -1,6 +1,7 @@
 package com.example.musicapp.screen.user.adapter
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.databinding.DataBindingUtil
@@ -14,6 +15,7 @@ import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -26,7 +28,10 @@ class BottomSheetSelect(
     private val loveViewModel: PlaylistLoveViewModel by viewModel()
     private val playlistUserAdapter = PlaylistUserAdapter(::onItemClick, 1)
     private val playlistLoveAdapter = PlaylistLoveAdapter(::onItemClick, 1)
-    private var mPlaylistsUser: ArrayList<Int>? = null
+    private var mPlaylistsUser: MutableList<Int> = mutableListOf()
+    private var mPlaylistDefault: MutableList<Playlist> = mutableListOf()
+    private var mPlaylistsUserDefault: MutableList<PlaylistUser> = mutableListOf()
+    private val user by lazy { FirebaseAuth.getInstance().currentUser }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val mBottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
@@ -53,18 +58,36 @@ class BottomSheetSelect(
         handlerEventViewModel()
         handlerEvent()
         initRecyclerView()
+        fetchData()
+    }
+
+    private fun fetchData() {
+        if (user != null) {
+            when (keySelect) {
+                KEY_SELECT_PLAYLIST_USER -> {
+                    userViewModel.fetchPlaylistsUser(user!!.uid)
+                }
+
+                KEY_SELECT_PLAYLIST_LOVE -> {
+                    loveViewModel.fetchPlaylists(user!!.uid)
+                }
+            }
+        }
     }
 
     private fun handlerEventViewModel() {
-        when(keySelect){
+        when (keySelect) {
             KEY_SELECT_PLAYLIST_USER -> {
                 userViewModel.playlistUser.observe(this) {
                     playlistUserAdapter.submitList(it)
+                    mPlaylistsUserDefault = it
                 }
             }
-            KEY_SELECT_PLAYLIST_LOVE ->{
-                loveViewModel.playlists.observe(this){
+
+            KEY_SELECT_PLAYLIST_LOVE -> {
+                loveViewModel.playlists.observe(this) {
                     playlistLoveAdapter.submitList(it)
+                    mPlaylistDefault = it
                 }
             }
         }
@@ -73,13 +96,12 @@ class BottomSheetSelect(
     private fun handlerEvent() {
         binding?.btnCancel?.setOnClickListener {
             dismiss()
-            mListener.invoke()
         }
 
         binding?.cbSelectAll?.setOnClickListener {
             val isChecked = binding?.cbSelectAll?.isChecked
 
-            when(keySelect){
+            when (keySelect) {
                 KEY_SELECT_PLAYLIST_USER -> {
                     if (!isChecked!!) {
                         playlistUserAdapter.noSelectAllItem()
@@ -89,7 +111,8 @@ class BottomSheetSelect(
                         binding?.cbSelectAll?.text = NO_SELECT
                     }
                 }
-                KEY_SELECT_PLAYLIST_LOVE ->{
+
+                KEY_SELECT_PLAYLIST_LOVE -> {
                     if (!isChecked!!) {
                         playlistLoveAdapter.noSelectAllItem()
                         binding?.cbSelectAll?.text = SELECT_ALL
@@ -102,14 +125,22 @@ class BottomSheetSelect(
         }
         binding?.btnDeletePlaylistUser?.setOnClickListener {
             val listString = Gson().toJson(mPlaylistsUser)
-
-            when(keySelect){
+            when (keySelect) {
                 KEY_SELECT_PLAYLIST_USER -> {
+                    if (mPlaylistsUser.size == mPlaylistsUserDefault.size){
+                        binding?.cbSelectAll?.isChecked = false
+                        binding?.cbSelectAll?.text = SELECT_ALL
+                    }
                     userViewModel.deletePlaylistUser(
                         listString
                     )
                 }
-                KEY_SELECT_PLAYLIST_LOVE ->{
+
+                KEY_SELECT_PLAYLIST_LOVE -> {
+                    if (mPlaylistsUser.size == mPlaylistDefault.size){
+                        binding?.cbSelectAll?.isChecked = false
+                        binding?.cbSelectAll?.text = SELECT_ALL
+                    }
                     loveViewModel.deletePlaylistLove(
                         listString
                     )
@@ -121,11 +152,12 @@ class BottomSheetSelect(
     }
 
     private fun initViewModel() {
-        when(keySelect){
+        when (keySelect) {
             KEY_SELECT_PLAYLIST_USER -> {
                 binding?.viewModel = userViewModel
             }
-            KEY_SELECT_PLAYLIST_LOVE ->{
+
+            KEY_SELECT_PLAYLIST_LOVE -> {
                 binding?.loveViewModel = loveViewModel
             }
         }
@@ -134,11 +166,12 @@ class BottomSheetSelect(
 
     private fun initRecyclerView() {
         mPlaylistsUser = ArrayList()
-        when(keySelect){
+        when (keySelect) {
             KEY_SELECT_PLAYLIST_USER -> {
                 binding?.rcvPlaylistSelect?.setAdapterLinearVertical(playlistUserAdapter)
             }
-            KEY_SELECT_PLAYLIST_LOVE ->{
+
+            KEY_SELECT_PLAYLIST_LOVE -> {
                 binding?.rcvPlaylistSelect?.setAdapterLinearVertical(playlistLoveAdapter)
             }
         }
@@ -146,14 +179,14 @@ class BottomSheetSelect(
 
     private fun onItemClick(boolean: Boolean, any: Any) {
 
-        when(keySelect){
+        when (keySelect) {
             KEY_SELECT_PLAYLIST_USER -> {
                 when (any) {
                     is PlaylistUser -> {
                         if (boolean) {
-                            mPlaylistsUser?.add(any.playlistUserId)
+                            mPlaylistsUser.add(any.playlistUserId)
                         } else {
-                            mPlaylistsUser?.remove(any.playlistUserId)
+                            mPlaylistsUser.remove(any.playlistUserId)
                         }
                     }
 
@@ -168,13 +201,14 @@ class BottomSheetSelect(
                     }
                 }
             }
-            KEY_SELECT_PLAYLIST_LOVE ->{
+
+            KEY_SELECT_PLAYLIST_LOVE -> {
                 when (any) {
                     is Playlist -> {
                         if (boolean) {
-                            mPlaylistsUser?.add(any.playlistUserLoveId)
+                            mPlaylistsUser.add(any.playlistUserLoveId)
                         } else {
-                            mPlaylistsUser?.remove(any.playlistUserLoveId)
+                            mPlaylistsUser.remove(any.playlistUserLoveId)
                         }
                     }
 
@@ -190,6 +224,11 @@ class BottomSheetSelect(
                 }
             }
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        mListener.invoke()
     }
 
     companion object {
@@ -202,6 +241,8 @@ class BottomSheetSelect(
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
-        mPlaylistsUser = null
+        mPlaylistsUser.clear()
+        mPlaylistsUserDefault.clear()
+        mPlaylistsUser.clear()
     }
 }

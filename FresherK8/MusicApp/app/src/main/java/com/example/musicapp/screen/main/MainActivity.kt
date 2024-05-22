@@ -31,10 +31,18 @@ import com.example.musicapp.shared.utils.constant.Constant
 
 
 class MainActivity : AppCompatActivity(), OnChangeListener {
-    private val musicFragment = MusicFragment()
-    private val musicVideoFragment = MusicVideoFragment()
-    private val exploreFragment = ExploreFragment()
-    private val userFragment = UserFragment()
+    private val musicFragment by lazy {
+        MusicFragment()
+    }
+    private val musicVideoFragment by lazy {
+        MusicVideoFragment()
+    }
+    private val exploreFragment by lazy {
+        ExploreFragment()
+    }
+    private val userFragment by lazy {
+        UserFragment()
+    }
 
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
@@ -147,22 +155,22 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.music_menu -> {
-                    fragmentManager(musicFragment)
+                    fragmentManager(MusicFragment())
                     true
                 }
 
                 R.id.explore_menu -> {
-                    fragmentManager(exploreFragment)
+                    fragmentManager(ExploreFragment())
                     true
                 }
 
                 R.id.mv_menu -> {
-                    fragmentManager(musicVideoFragment)
+                    fragmentManager(MusicVideoFragment())
                     true
                 }
 
                 R.id.user_menu -> {
-                    fragmentManager(userFragment)
+                    fragmentManager(UserFragment())
                     true
                 }
 

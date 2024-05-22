@@ -3,6 +3,7 @@ package com.example.musicapp.screen.songDetail
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.musicapp.data.model.PlaylistUser
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.repositories.musicRepository.MusicRepository
 import com.example.musicapp.shared.base.BaseViewModel
@@ -24,8 +25,20 @@ class SongDetailViewModel(private val musicRepository: MusicRepository) : BaseVi
     private val _songsLove = MutableLiveData<ArrayList<Song>>()
     val songsLove: LiveData<ArrayList<Song>> = _songsLove
 
+    private val _playlistsSongUser = MutableLiveData<ArrayList<Song>>()
+    val playlistsSongUser: LiveData<ArrayList<Song>> = _playlistsSongUser
+
     private val _isUserLogin = MutableLiveData<Boolean>()
     val isUserLogin: LiveData<Boolean> = _isUserLogin
+
+    fun fetchPlaylistsSongUser(playlistUserId : Int) {
+        launchTaskSync(
+            onRequest = { musicRepository.getListSongPlaylistUser(playlistUserId) },
+            onSuccess = { _playlistsSongUser.value = it},
+            onFailure = { Log.e("fetchMusicVideo", "Failed: $it") },
+            onError = { exception.value = it }
+        )
+    }
 
     fun fetchSongPlaylist(id : Int) {
         launchTaskSync(

@@ -31,7 +31,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/song" />
+            app:srcCompat="@drawable/img_2" />
 
         <LinearLayout
             android:id="@+id/linearLayout5"
@@ -64,7 +64,7 @@
                 android:id="@+id/img_song"
                 android:layout_width="260dp"
                 android:layout_height="260dp"
-                app:srcCompat="@drawable/img_placeholder" />
+                app:srcCompat="@drawable/img_2" />
         </androidx.cardview.widget.CardView>
 
         <LinearLayout
@@ -149,6 +149,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:thumbTint="@color/black"
+            android:progressBackgroundTint="@color/red"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
             app:layout_constraintEnd_toStartOf="@+id/tv_total_time_song"
             app:layout_constraintStart_toEndOf="@+id/tv_time_song" />

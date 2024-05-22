@@ -19,6 +19,7 @@ interface MusicDataSource {
         suspend fun getListSongTopic(id: Int): Response<SongRepository>
         suspend fun getListSongPlaylist(id: Int): Response<SongRepository>
         suspend fun getListSongAlbum(id: Int): Response<SongRepository>
+        suspend fun getListSongPlaylistUser(playlistUserId: Int): Response<SongRepository>
         suspend fun getLyricsBySongId(songId: Int): Response<LyricRepository>
     }
 

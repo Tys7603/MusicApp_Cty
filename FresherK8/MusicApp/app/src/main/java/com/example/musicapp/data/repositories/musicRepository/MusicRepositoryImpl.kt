@@ -1,5 +1,6 @@
 package com.example.musicapp.data.repositories.musicRepository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.musicapp.data.model.Lyric
@@ -136,6 +137,20 @@ class MusicRepositoryImpl(
     override suspend fun getListSongAlbum(id: Int): DataResult<ArrayList<Song>> {
         return try {
             val response = remote.getListSongAlbum(id)
+            if (response.body() != null && response.body()!!.status == Constant.STATUS) {
+                DataResult.Success(response.body()!!.songs)
+            } else {
+                DataResult.Failure(Constant.CALL_API_ERROR)
+            }
+        } catch (e: Exception) {
+            DataResult.Error(e)
+        }
+    }
+
+
+    override suspend fun getListSongPlaylistUser(id: Int): DataResult<ArrayList<Song>> {
+        return try {
+            val response = remote.getListSongPlaylistUser(id)
             if (response.body() != null && response.body()!!.status == Constant.STATUS) {
                 DataResult.Success(response.body()!!.songs)
             } else {

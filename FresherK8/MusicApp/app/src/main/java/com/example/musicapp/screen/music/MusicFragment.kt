@@ -194,6 +194,7 @@ class MusicFragment : Fragment(), BaseService {
                 SnackBarManager.showMessage(binding.btnPlay, DELETE_SONG_LOVE)
                 binding.btnAddLove.setImageResource(R.drawable.ic_heart_black)
             }
+            binding.btnAddLove.isEnabled = true
         }
     }
 
@@ -260,8 +261,8 @@ class MusicFragment : Fragment(), BaseService {
         binding.btnAddPlaylist.setOnClickListener { openBottomSheet() }
         binding.btnLyrics.setOnClickListener { putLyrics() }
         binding.btnMusicPlaylist.setOnClickListener {
-            binding.btnMusicPlaylist.setTextColor(resources.getColor(R.color.black))
-            binding.btnMusicMe.setTextColor(resources.getColor(R.color.black_mix))
+            binding.btnMusicPlaylist.setTextColor(resources.getColor(R.color.yellow_mix))
+            binding.btnMusicMe.setTextColor(resources.getColor(R.color.black))
             getListSongIntent()
             setFuncTabMusic()
             ProgressBarManager.showProgressBarPlay(
@@ -278,8 +279,8 @@ class MusicFragment : Fragment(), BaseService {
                 if (isServiceBound) {
                     initFunc()
                 }
-                binding.btnMusicPlaylist.setTextColor(resources.getColor(R.color.black_mix))
-                binding.btnMusicMe.setTextColor(resources.getColor(R.color.black))
+                binding.btnMusicPlaylist.setTextColor(resources.getColor(R.color.black))
+                binding.btnMusicMe.setTextColor(resources.getColor(R.color.yellow_mix))
                 sharedPreferences.edit().putInt(KEY_POSITION_TAB, 0).apply()
                 ProgressBarManager.showProgressBarPlay(
                     binding.progressBarPlay,
@@ -349,6 +350,7 @@ class MusicFragment : Fragment(), BaseService {
         } else {
             viewModel.addSongLove(userId, songToCheck.id)
         }
+        binding.btnAddLove.isEnabled = false
     }
 
     // hiển thị tên, ảnh bài hát, tên ca sĩ, bg
@@ -458,7 +460,7 @@ class MusicFragment : Fragment(), BaseService {
         listener?.onSongChanged()
     }
 
-    //    // quay lại bài nhạc
+    // quay lại bài nhạc
     private fun backMusic() {
         position = getPosition()
         position--
@@ -491,7 +493,6 @@ class MusicFragment : Fragment(), BaseService {
         initValueSong()
         checkSongLove()
         sharedPreferences.edit().putBoolean(KEY_LYRIC_NEW, true).apply()
-        senBroadcastInitValueLyric()
     }
 
     private fun senBroadcastInitValueLyric() {
@@ -617,10 +618,8 @@ class MusicFragment : Fragment(), BaseService {
 
     override fun onStart() {
         super.onStart()
-        // khởi tạo và liên kết tới music service
         val intent = Intent(activity, MusicService::class.java)
         activity?.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
-        // khởi tạo view
     }
 
     companion object {

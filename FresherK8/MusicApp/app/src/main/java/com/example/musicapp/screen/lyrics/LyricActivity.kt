@@ -29,6 +29,7 @@ import com.example.musicapp.screen.lyrics.adapter.LyricsAdapter
 import com.example.musicapp.screen.main.MainActivity
 import com.example.musicapp.screen.music.MusicFragment
 import com.example.musicapp.service.MusicService
+import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.widget.ProgressBarManager
@@ -83,7 +84,6 @@ class LyricActivity : AppCompatActivity() {
         initViewModel()
         initRecyclerView()
         handlerViewModel()
-        handlerEvent()
         setOnCompleteListener()
     }
 
@@ -94,16 +94,17 @@ class LyricActivity : AppCompatActivity() {
             sharedPreferences.edit().putBoolean(Constant.KEY_LYRIC_NEW, false).apply()
             sharedPreferences.edit().putInt(Constant.KEY_LYRIC, 0).apply()
         }
-
         currentLyricIndex = sharedPreferences.getInt(Constant.KEY_LYRIC, 0)
     }
 
     private fun initValue() {
         val song = intent.getParcelableExtra<Song>(Constant.KEY_INTENT_ITEM)
-        binding.song = song
-        song?.id?.let {
+        if(song != null){
+            binding.song = song
+            binding.bgImgLyric.loadImageUrl(song.image)
+            binding.imgLyric.loadImageUrl(song.image)
+            viewModel.fetchLyrics(song.id)
             ProgressBarManager.showProgressBar(binding.progressBar, binding.linearLayout7)
-            viewModel.fetchLyrics(it)
         }
         sharedPreferences.edit().putBoolean(Constant.KEY_ACTIVITY_LYRIC, true).apply()
     }
@@ -120,8 +121,9 @@ class LyricActivity : AppCompatActivity() {
     private fun handlerEvent() {
         binding.btnClose.setOnClickListener {
             sharedPreferences.edit().putBoolean(Constant.KEY_ACTIVITY_LYRIC, false).apply()
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+//            startActivity(Intent(this, MainActivity::class.java))
+//            finish()
+            onBackPressedDispatcher.onBackPressed()
         }
     }
 
@@ -134,6 +136,7 @@ class LyricActivity : AppCompatActivity() {
                 lyricsAdapter.submitList(it)
                 binding.tvEmpty.visibility = View.GONE
             }
+            Log.d("TAG", "handlerViewModel: " + it.toString())
         }
     }
 
@@ -219,6 +222,7 @@ class LyricActivity : AppCompatActivity() {
         super.onStart()
         registerMusicService()
         registerBroadcastReceiver()
+        handlerEvent()
     }
 
     override fun onStop() {

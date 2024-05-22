@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Parcelable
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -18,6 +19,7 @@ import com.example.musicapp.R
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.data.model.Album
 import com.example.musicapp.data.model.Playlist
+import com.example.musicapp.data.model.PlaylistUser
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.data.model.Topic
@@ -25,6 +27,7 @@ import com.example.musicapp.databinding.ActivitySongDetailBinding
 import com.example.musicapp.screen.main.MainActivity
 import com.example.musicapp.screen.song.SongActivity
 import com.example.musicapp.screen.songDetail.adapter.SongDetailAdapter
+import com.example.musicapp.screen.user.PlaylistUserViewModel
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.DownloadMusic
@@ -77,6 +80,9 @@ class SongDetailActivity : AppCompatActivity() {
             handlerPostDelay(it)
         }
         viewModel.songsLove.observe(this) {
+            handlerPostDelay(it)
+        }
+        viewModel.playlistsSongUser.observe(this){
             handlerPostDelay(it)
         }
         viewModel.isUserLogin.observe(this) {
@@ -183,6 +189,17 @@ class SongDetailActivity : AppCompatActivity() {
                 binding.tvNameArtistPlaylistActivity.text = user?.email
                 user?.uid?.let { viewModel.fetchSongLove(it) }
                 sharedPreferences.edit().putString(Constant.KEY_NAME_TAB, user?.email + USER)
+                    .apply()
+            }
+
+            is PlaylistUser -> {
+                binding.btnAddPlaylistDetail.visibility = View.GONE
+                item.songImage.let { binding.imgSongActivity.loadImageUrl(it) }
+                item.songImage.let { binding.imgBgPlaylistActivity.loadImageUrl(it) }
+                binding.tvNamePlaylistActivity.text = item.playlistUserName
+                binding.tvNameArtistPlaylistActivity.text = item.nameArtist
+                viewModel.fetchPlaylistsSongUser(item.playlistUserId)
+                sharedPreferences.edit().putString(Constant.KEY_NAME_TAB, item.playlistUserName)
                     .apply()
             }
         }

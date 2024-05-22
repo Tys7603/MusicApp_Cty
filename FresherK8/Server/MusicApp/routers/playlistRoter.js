@@ -4,6 +4,7 @@ const router = express.Router();
 const controller = require('../controllers/playlistController.js');
 
 router.get('/playlists', controller.getListPlaylistController);
+router.get('/playlists/songs/:playlistUserId', controller.getListSongPlaylistByUserIdController);
 router.get('/playlists/mood/today', controller.getListPlaylistMoodTodayController);
 router.get('/playlists/:userId', controller.getListPlaylistByUserIdController);
 router.get('/playlists/love/:userId', controller.getListPlaylistLoveByUserIdController);

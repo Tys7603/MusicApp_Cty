@@ -49,6 +49,11 @@ class BottomSheetAddSongPlaylist(private val song: Song, private val imageView: 
         initRecyclerView()
         handlerEventViewModel()
         handlerEvent()
+        fetchData()
+    }
+
+    private fun fetchData() {
+        viewModel.fetchPlaylistsUser(FirebaseAuth.getInstance().currentUser!!.uid)
     }
 
     private fun handlerEvent() {

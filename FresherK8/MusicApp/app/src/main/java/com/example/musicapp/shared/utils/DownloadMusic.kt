@@ -16,20 +16,12 @@ import com.example.musicapp.data.source.local.dao.SongDao
 
 object DownloadMusic {
     fun downloadMusic(context: Context, song: Song) {
-        // tạo yêu cầu tại xuống url
         val request = DownloadManager.Request(Uri.parse(song.url))
-        // tải xuống wifi or dữ liệu dt
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
-        // tiêu đề tải xuống và mô tả
         request.setTitle("Downloading ${song.name}")
         request.setDescription("Downloading music file...")
-        // thông báo khi tải hoàn thành
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-        // nởi file được lưu
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC, song.name)
-        // gửi yêu cầu tải xuống
-
-        // Gửi yêu cầu tải xuống
         val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val downloadId = downloadManager.enqueue(request)
 
@@ -52,6 +44,7 @@ object DownloadMusic {
                             val downloadedSong = Song(0,song.id, song.name, song.image, uri , song.nameArtis, 1)
                             // Thêm thông tin bài hát vào SQLite
                             SongDao(context).insertSong(downloadedSong)
+                            Log.d("TAG", "onReceive: " + SongDao(context).readSongs().toString())
                         }
                     }
                     cursor.close()
@@ -72,7 +65,5 @@ object DownloadMusic {
                 onCompleteListener,
                 IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
         }
-
-
     }
 }

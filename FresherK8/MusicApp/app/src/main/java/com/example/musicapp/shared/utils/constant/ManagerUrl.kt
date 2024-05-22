@@ -4,8 +4,8 @@ object ManagerUrl {
     private const val IP = "192.168.1.7"
     private const val IP_CTY = "10.20.23.239"
     private const val IP_HOST = "https://6ztfh0rs-3000.asse.devtunnels.ms/api/"
-    const val BASE_URL = "http://$IP:3000/api/"
-//    const val BASE_URL = IP_HOST
+//    const val BASE_URL = "http://$IP:3000/api/"
+    const val BASE_URL = IP_HOST
 
     // playlist
     const val GET_PLAYLIST = "playlists"
@@ -33,6 +33,7 @@ object ManagerUrl {
     const val CREATE_SONG_LOVE = "song/love"
     const val DELETE_SONG_LOVE = "song/love/{songLoveId}"
     const val GET_SONG_LOVE = "songs/love/{userId}"
+    const val GET_SONG_PLAYLIST_USER = "playlists/songs/{playlistUserId}"
 
     //album
     const val GET_ALBUM_LOVE = "albums/love"

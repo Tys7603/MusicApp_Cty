@@ -1,14 +1,19 @@
 package com.example.musicapp.screen.musicVideo
 
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.Handler
+import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.data.model.MusicVideo
@@ -17,18 +22,40 @@ import com.example.musicapp.databinding.FragmentMusicVideoBinding
 import com.example.musicapp.screen.musicVideo.adapter.TopicMVAdapter
 import com.example.musicapp.screen.musicVideo.adapter.MusicVideoAdapter
 import com.example.musicapp.screen.musicVideoDetail.MusicVideoDetailActivity
+import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.extension.setAdapterLinearHorizontal
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.constant.Constant
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MusicVideoFragment : Fragment() {
+    private var musicService: MusicService? = null
+    private var isServiceBound = false
     private val viewModel: MusicVideoViewModel by viewModel()
     private val musicVideoAdapter = MusicVideoAdapter(::onClickItem)
     private val categoryMVAdapter = TopicMVAdapter(::onClickItem)
     private var mMusicVideos: MutableList<MusicVideo> = mutableListOf()
+
+    private val sharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(requireContext())
+    }
+
     private val binding by lazy {
         FragmentMusicVideoBinding.inflate(layoutInflater)
+    }
+
+    private val serviceConnection = object : ServiceConnection {
+        // kết nối thành công lấy được đối tượng IBinder để try cập music service
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as MusicService.LocalBinder
+            musicService = binder.getService()
+            isServiceBound = true
+        }
+
+        // ngắt kết nối music service
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            isServiceBound = false
+        }
     }
 
     override fun onCreateView(
@@ -101,6 +128,8 @@ class MusicVideoFragment : Fragment() {
             }
 
             is MusicVideo -> {
+                musicService?.pause()
+                sharedPreferences.edit().putBoolean(Constant.KEY_PLAY_CLICK, false).apply()
                 val intent = Intent(requireContext(), MusicVideoDetailActivity::class.java)
                 intent.putExtra(Constant.KEY_INTENT_ITEM, item)
                 startActivity(intent)
@@ -163,6 +192,21 @@ class MusicVideoFragment : Fragment() {
         Handler(Looper.getMainLooper()).postDelayed({
             listener.invoke()
         }, 500)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val intent = Intent(activity, MusicService::class.java)
+        activity?.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isServiceBound) {
+            requireContext().unbindService(serviceConnection)
+            isServiceBound = false
+        }
+        musicService = null
     }
 
     companion object {

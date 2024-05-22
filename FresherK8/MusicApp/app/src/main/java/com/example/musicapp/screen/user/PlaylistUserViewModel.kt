@@ -23,7 +23,7 @@ class PlaylistUserViewModel(private val userRepository: UserRepository) : BaseVi
     fun fetchPlaylistsUser(userId : String) {
         launchTaskSync(
             onRequest = { userRepository.getListPlaylistUser(userId) },
-            onSuccess = { _playlistsUser.value = it },
+            onSuccess = { _playlistsUser.value = it},
             onFailure = { Log.e("fetchMusicVideo", "Failed: $it") },
             onError = { exception.value = it }
         )

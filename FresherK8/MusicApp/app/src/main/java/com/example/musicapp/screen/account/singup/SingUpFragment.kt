@@ -58,16 +58,13 @@ class SingUpFragment : Fragment() {
         }
 
         viewModel.loading.observe(viewLifecycleOwner){
-//            val progressDialog = ProgressDialog.show(requireContext(), "", "Loading")
-//            progressDialog.show()
-//            if (it){
-//                binding.layoutLoading.visibility = View.VISIBLE
-//                binding.imgLoading.visibility = View.VISIBLE
-//                binding.imgLoading.loadDingUrl()
-//            }else{
-//                binding.layoutLoading.visibility = View.GONE
-//                binding.imgLoading.visibility = View.GONE
-//            }
+            if (it){
+                binding.layoutLoading.visibility = View.VISIBLE
+                binding.layoutContentSingUp.visibility = View.INVISIBLE
+            }else{
+                binding.layoutLoading.visibility = View.INVISIBLE
+                binding.layoutContentSingUp.visibility = View.VISIBLE
+            }
         }
     }
 }

@@ -13,24 +13,12 @@ import com.example.musicapp.shared.utils.constant.Constant
 
 class MusicBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        when (intent?.action) {
-            Constant.UPDATE_LYRIC -> {
-                val data = intent.getParcelableExtra<Song>(Constant.KEY_INTENT_ITEM)
-                val activityIntent = Intent(context, LyricActivity::class.java).apply {
-                    putExtra(Constant.KEY_INTENT_ITEM, data)
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                }
-                context?.startActivity(activityIntent)
-            }
-            Constant.UPDATE_SONG -> {
-                Log.d("TAG", "onReceive: UPDATE_SONG received")
-                (context as? AppCompatActivity)?.let { activity ->
-                    val fragmentManager = activity.supportFragmentManager
-                    val fragment = fragmentManager.findFragmentById(R.id.frame_layout) as? ExploreFragment
-                    fragment?.initSongView()
-                }
-            }
+        val data = intent?.getParcelableExtra<Song>(Constant.KEY_INTENT_ITEM)
+        val activityIntent = Intent(context, LyricActivity::class.java).apply {
+            putExtra(Constant.KEY_INTENT_ITEM, data)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
+        context?.startActivity(activityIntent)
     }
 }
 

@@ -36,6 +36,8 @@ interface MusicRepository {
 
     suspend fun getListSongAlbum(id: Int): DataResult<ArrayList<Song>>
 
+    suspend fun getListSongPlaylistUser(id: Int): DataResult<ArrayList<Song>>
+
     suspend fun getLyricsBySongId(songId: Int): DataResult<ArrayList<Lyric>>
 
     /**

@@ -33,6 +33,9 @@ class MusicRemoteImpl : MusicDataSource.Remote {
 
     override suspend fun getListSongAlbum(id: Int) = ApiClient.apiService.getListSongAlbumById(id)
 
+    override suspend fun getListSongPlaylistUser(playlistUserId: Int) =
+        ApiClient.apiService.getListSongPlaylistUserId(playlistUserId)
+
     override suspend fun getLyricsBySongId(songId: Int) =
         ApiClient.apiService.getLyricsBySongId(songId)
 

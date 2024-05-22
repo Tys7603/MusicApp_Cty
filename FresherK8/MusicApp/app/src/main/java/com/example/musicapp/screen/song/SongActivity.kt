@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -21,10 +22,16 @@ import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.ActivitySongBinding
 import com.example.musicapp.screen.base.BaseService
+import com.example.musicapp.screen.lyrics.LyricActivity
+import com.example.musicapp.screen.music.MusicFragment.Companion.ADD_SONG_LOVE
+import com.example.musicapp.screen.music.MusicViewModel
+import com.example.musicapp.screen.music.adapter.BottomSheetAddSongPlaylist
+import com.example.musicapp.screen.user.adapter.BottomSheetLogin
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.utils.BooleanProperty
 import com.example.musicapp.shared.utils.DownloadMusic
+import com.example.musicapp.shared.utils.OnChangeListener
 import com.example.musicapp.shared.utils.constant.Constant.KEY_AUTO_RESTART
 import com.example.musicapp.shared.utils.constant.Constant.KEY_DOWN
 import com.example.musicapp.shared.utils.constant.Constant.KEY_HAVE_DOWN
@@ -34,21 +41,27 @@ import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_SONG
 import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_SONG_LIST_NAME
 import com.example.musicapp.shared.utils.constant.Constant.KEY_SHUFFLE
 import com.example.musicapp.shared.utils.constant.Constant.VALUE_DEFAULT
+import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_SONG_LOVE
 import com.example.musicapp.shared.utils.format.FormatUtils
+import com.example.musicapp.shared.widget.ProgressBarManager
+import com.example.musicapp.shared.widget.SnackBarManager
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SongActivity : AppCompatActivity(), BaseService {
 
+    private val viewModel: MusicViewModel by viewModel()
     private val binding by lazy {
         ActivitySongBinding.inflate(layoutInflater)
     }
 
     private var musicService: MusicService? = null
-    private var mSongs: ArrayList<Song>? = null
-    private var mSongsDefault: ArrayList<Song>? = null
+    private var mSongs: MutableList<Song> = mutableListOf()
+    private var mSongsLove: MutableList<Song> = mutableListOf()
+    private var mSongsDefault: MutableList<Song> = mutableListOf()
     private var position = 0
     private var isServiceBound = false // kiểm tra kết nối service
-
 
     private val sharedPreferences: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(this)
@@ -62,7 +75,8 @@ class SongActivity : AppCompatActivity(), BaseService {
             isServiceBound = true
             musicService?.musicService(this@SongActivity)
             musicService!!.musicShared(sharedPreferences)
-            setFuncMusic()
+            initMusicView()
+            getListSongIntent()
         }
 
         // ngắt kết nối music service
@@ -80,64 +94,210 @@ class SongActivity : AppCompatActivity(), BaseService {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        getListSongIntent()
         handlerEvent()
+        setUpViewModel()
+        initViewModel()
+        enableButton(false)
+        ProgressBarManager.showProgressBarPlay(
+            binding.progressBarPlay,
+            binding.layoutPlay,
+            binding.btnPlay
+        )
+    }
+
+    private fun initMusicView() {
+        val isPlaying = sharedPreferences.getBoolean(KEY_PLAY_CLICK, false)
+        if (isPlaying) {
+            binding.btnPlay.setImageResource(R.drawable.ic_pause_music)
+        } else {
+            binding.btnPlay.setImageResource(R.drawable.ic_play_button)
+        }
+    }
+
+    private fun enableButton(boolean: Boolean) {
+        with(binding) {
+            btnShuffle.isEnabled = boolean
+            btnNext.isEnabled = boolean
+            btnBack.isEnabled = boolean
+            btnLoop.isEnabled = boolean
+            btnAddLove.isEnabled = boolean
+            btnDownload.isEnabled = boolean
+            btnLyrics.isEnabled = boolean
+            seekBar.isEnabled = boolean
+            btnAddPlaylist.isEnabled = boolean
+        }
+    }
+
+    private fun setUpViewModel() {
+        binding.musicViewModel = viewModel
+        binding.lifecycleOwner = this
+    }
+
+    private fun initViewModel() {
+        viewModel.songsLove.observe(this) {
+            mSongsLove = it
+            checkSongLove()
+        }
+
+        viewModel.isAddSongLove.observe(this) {
+            if (it) {
+                SnackBarManager.showMessage(binding.btnPlay, ADD_SONG_LOVE)
+                binding.btnAddLove.setImageResource(R.drawable.ic_love_red)
+            } else {
+                SnackBarManager.showMessage(binding.btnPlay, DELETE_SONG_LOVE)
+                binding.btnAddLove.setImageResource(R.drawable.ic_heart_black)
+            }
+            binding.btnAddLove.isEnabled = true
+        }
     }
 
     private fun handlerEvent() {
-        binding.btnPlayAt.setOnClickListener { playMusic() }
-        binding.btnNextAt.setOnClickListener { nextMusic() }
-        binding.btnBackAt.setOnClickListener { backMusic() }
-        binding.btnLoopAt.setOnClickListener { autoRestart() }
-        binding.btnShuffleAt.setOnClickListener { shuffleMusic() }
-        binding.btnDownloadAt.setOnClickListener { downloadMusic() }
-        binding.imgBackSongAt.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
-        binding.seekBarAt.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        binding.btnPlay.setOnClickListener { playMusic() }
+        binding.btnNext.setOnClickListener { nextMusic() }
+        binding.btnBack.setOnClickListener { backMusic() }
+        binding.btnLoop.setOnClickListener { autoRestart() }
+        binding.btnShuffle.setOnClickListener { shuffleMusic() }
+        binding.btnDownload.setOnClickListener { downloadMusic() }
+        binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) = Unit
             override fun onStartTrackingTouch(p0: SeekBar?) = Unit
             override fun onStopTrackingTouch(p0: SeekBar?) {
                 if (isServiceBound) {
-                    musicService?.seekTo(binding.seekBarAt.progress)
+                    musicService?.seekTo(binding.seekBar.progress)
                 }
             }
         })
+        binding.btnAddLove.setOnClickListener { checkUserLogin() }
+        binding.btnAddPlaylist.setOnClickListener { openBottomSheet() }
+        binding.btnLyrics.setOnClickListener { putLyrics() }
+        binding.btnBackSong.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
+    }
+
+    private fun getPosition(): Int {
+        return  sharedPreferences.getInt(KEY_POSITION_SONG, 0)
+    }
+
+    private fun putPosition(position: Int) {
+        sharedPreferences.edit().putInt(KEY_POSITION_SONG, position).apply()
+    }
+
+    private fun putLyrics() {
+        position = getPosition()
+        val intent = Intent(this, LyricActivity::class.java)
+        intent.putExtra(Constant.KEY_INTENT_ITEM, mSongs.getOrNull(position))
+        startActivity(intent)
+    }
+
+    private fun openBottomSheet() {
+        position = getPosition()
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            val song = mSongs.getOrNull(position)
+            song?.let {
+                val bottomSheet = BottomSheetAddSongPlaylist(it, binding.btnPlay)
+                bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+            }
+        } else {
+            openBottomSheetLogin()
+        }
+    }
+
+    private fun openBottomSheetLogin(){
+        val bottomSheetLogin = BottomSheetLogin()
+        bottomSheetLogin.show(supportFragmentManager, bottomSheetLogin.tag)
+    }
+
+    private fun checkUserLogin() {
+        val user = FirebaseAuth.getInstance().currentUser
+        position = getPosition()
+        if (user != null) {
+            val songToCheck = getSongToCheckCurrent()
+            if (songToCheck != null) {
+                processSong(user.uid, songToCheck)
+            }
+        } else {
+            openBottomSheetLogin()
+        }
+    }
+
+    private fun getSongToCheckCurrent(): Song? {
+        return if (position in mSongs.indices) {
+            mSongs[position]
+        } else {
+            null
+        }
+    }
+
+    private fun processSong(userId: String, songToCheck: Song) {
+        val isSongInLoveList = isSongInList(songToCheck, mSongsLove)
+
+        if (isSongInLoveList) {
+            val songLove = mSongsLove.find { it.id == songToCheck.id }
+            songLove?.let {
+                viewModel.deleteSongLove(it.songLoveId)
+            }
+        } else {
+            viewModel.addSongLove(userId, songToCheck.id)
+        }
+        binding.btnAddLove.isEnabled = false
     }
 
     // hiển thị tên, ảnh bài hát, tên ca sĩ, bg
     private fun initValueSong() {
-        position = sharedPreferences.getInt(KEY_POSITION_SONG, 0)
-        mSongs?.get(position)?.let { binding.imgSongAt.loadImageUrl(it.image) }
-        binding.tvNameArtistSongAt.text = mSongs?.get(position)?.nameArtis
-        binding.tvNameSongAt.text = mSongs?.get(position)?.name
-        binding.tvTotalTimeSongAt.text = VALUE_DEFAULT
-        mSongs?.get(position)?.let { binding.imgBgSongAt.loadImageUrl(it.image) }
-        if (isServiceBound) {
-            if (!musicService?.isMediaPrepared()!!) {
-                mSongs?.get(position)?.let {
-                    musicService?.songPlayFromUrl(it.url)
+        position = getPosition()
+        val song = mSongs.getOrNull(position)
+
+        if (song != null) {
+            binding.song = song
+            binding.tvTotalTimeSong.text = VALUE_DEFAULT
+            binding.imgSong.loadImageUrl(song.image)
+            binding.imgBg.loadImageUrl(song.image)
+
+            if (isServiceBound) {
+                val musicPrepared = checkMusicServiceToPlay(song)
+                if (musicPrepared) {
+                    // khi bài hát đã được chuẩn bị
+                    setTimeTotal()
+                    updateTimeSong()
                 }
-                musicService?.setOnCompletionListener {
-                    // Xử lý khi bài hát kết thúc, chuyển sang bài hát tiếp theo
-                   nextMusic()
-                }
+            }
+            saveSong()
+            initViewButton()
+            enableButton(true)
+            musicService?.setOnStartMusicListener { playMusic() }
+        }
+    }
+
+    private fun checkMusicServiceToPlay(song: Song): Boolean {
+        return if (!musicService?.isMediaPrepared()!!) {
+            musicService?.songPlayFromUrl(song.url)
+            musicService?.setOnCompletionListener {
+                // Xử lý khi bài hát kết thúc, chuyển sang bài hát tiếp theo
+                nextMusic()
+            }
+            false
+        } else {
+            true
+        }
+    }
+
+    private fun checkSongLove() {
+        if (position in mSongs.indices && mSongsLove.isNotEmpty()) {
+            val song = mSongs[position]
+            if (isSongInList(song, mSongsLove)) {
+                binding.btnAddLove.setImageResource(R.drawable.ic_love_red)
             } else {
-                // khi bài hát đã được chuẩn bị -> khi bấm qua fragment khác
-                setTimeTotal()
-                updateTimeSong()
+                binding.btnAddLove.setImageResource(R.drawable.ic_heart_black)
             }
         }
-        saveSong()
-        initViewButton()
-        initFunc()
-        musicService?.setOnStartMusicListener { playMusic() }
     }
 
     // kiểm tra xem nhạc có đang phát không -> hiển thị nút play, pause
     private fun initViewButton() {
         if (sharedPreferences.getBoolean(KEY_PLAY_CLICK, false)) {
-            binding.btnPlayAt.setImageResource(R.drawable.ic_pause_music)
+            binding.btnPlay.setImageResource(R.drawable.ic_pause_music)
         } else {
-            binding.btnPlayAt.setImageResource(R.drawable.ic_play_button)
+            binding.btnPlay.setImageResource(R.drawable.ic_play_button)
         }
     }
 
@@ -145,57 +305,60 @@ class SongActivity : AppCompatActivity(), BaseService {
         val shuffle = sharedPreferences.getBoolean(KEY_SHUFFLE, false)
         val autoRestart = sharedPreferences.getBoolean(KEY_AUTO_RESTART, false)
         if (shuffle) {
-            binding.btnShuffleAt.setImageResource(R.drawable.ic_shuffle_color)
+            binding.btnShuffle.setImageResource(R.drawable.ic_shuffle_color)
         }
         if (autoRestart) {
-            binding.btnLoopAt.setImageResource(R.drawable.ic_loop_color)
+            binding.btnLoop.setImageResource(R.drawable.ic_loop_color)
         }
     }
 
-    // phát nhạc
     private fun playMusic() {
-        var isPlaySelected: Boolean by BooleanProperty(
-            sharedPreferences,
-            KEY_PLAY_CLICK,
-            false
-        )
+        var isPlaySelected: Boolean by BooleanProperty(sharedPreferences, KEY_PLAY_CLICK, false)
 
         if (isServiceBound) { // kiểm tra đã kết nối chưa
             isPlaySelected = if (!musicService?.isPlaying()!!) { // kiểm tra xem đã play chưa
-                musicService!!.start()
+                musicService?.start()
                 updateTimeSong()
-                binding.btnPlayAt.setImageResource(R.drawable.ic_pause_music)
+                binding.btnPlay.setImageResource(R.drawable.ic_pause_music)
                 true
             } else {
-                musicService!!.pause()
-                binding.btnPlayAt.setImageResource(R.drawable.ic_play_button)
+                musicService?.pause()
+                binding.btnPlay.setImageResource(R.drawable.ic_play_button)
                 false
             }
-            musicService!!.updateNotificationFromActivity()
+            musicService?.updateNotificationFromActivity()
         }
     }
 
-    // next sang bài nhạc tiếp
     private fun nextMusic() {
-        position = sharedPreferences.getInt(KEY_POSITION_SONG, 0)
+        position = getPosition()
         position++
-        if (position > mSongs!!.size - 1) {
+        if (position > mSongs.size - 1) {
             position = 0
         }
-        sharedPreferences.edit().putInt(KEY_POSITION_SONG, position).apply()
+        putPosition(position)
         setFuncMusic()
         musicService?.setNextMusic(true)
+        ProgressBarManager.showProgressBarPlay(
+            binding.progressBarPlay,
+            binding.layoutPlay,
+            binding.btnPlay
+        )
     }
 
-    //    // quay lại bài nhạc
     private fun backMusic() {
-        position = sharedPreferences.getInt(KEY_POSITION_SONG, 0)
+        position = getPosition()
         position--
         if (position < 0) {
-            position = mSongs!!.size - 1
+            position = mSongs.size - 1
         }
-        sharedPreferences.edit().putInt(KEY_POSITION_SONG, position).apply()
+        putPosition(position)
         setFuncMusic()
+        ProgressBarManager.showProgressBarPlay(
+            binding.progressBarPlay,
+            binding.layoutPlay,
+            binding.btnPlay
+        )
     }
 
     private fun setFuncMusic() {
@@ -203,109 +366,105 @@ class SongActivity : AppCompatActivity(), BaseService {
         musicService?.setMediaPrepared(false)
         sharedPreferences.edit().putBoolean(KEY_PLAY_CLICK, true).apply()
         initValueSong()
+        checkSongLove()
+        sharedPreferences.edit().putBoolean(Constant.KEY_LYRIC_NEW, true).apply()
+        senBroadcastInitValueLyric()
     }
 
-    // nghe lại bài nhạc
+    private fun senBroadcastInitValueLyric() {
+        val isCheck = sharedPreferences.getBoolean(Constant.KEY_ACTIVITY_LYRIC, false)
+        if (isCheck) {
+            val intent = Intent(Constant.UPDATE_LYRIC)
+            intent.putExtra(Constant.KEY_INTENT_ITEM, sharedPreferences.getString(Constant.KEY_SONG, ""))
+            sendBroadcast(intent)
+        }
+    }
+
     private fun autoRestart() {
-        if (musicService?.isAutoRestart()!!) {
+        if (musicService?.isAutoRestart() == true) {
             // auto restart tắt
-            musicService!!.setAutoRestart(false)
-            binding.btnLoopAt.setImageResource(R.drawable.ic_loop)
+            musicService?.setAutoRestart(false)
+            binding.btnLoop.setImageResource(R.drawable.ic_loop)
         } else {
             // auto restart bật
-            musicService!!.setAutoRestart(true)
-            binding.btnLoopAt.setImageResource(R.drawable.ic_loop_color)
+            musicService?.setAutoRestart(true)
+            binding.btnLoop.setImageResource(R.drawable.ic_loop_color)
 //           // kiểm tra để dùng 1 chức năng
-            if (musicService!!.isShuffleMusic()) {
+            if (musicService?.isShuffleMusic() == true) {
                 // shuffle tắt
                 mSongs = mSongsDefault
-                musicService!!.setShuffleMusic(false)
-                binding.btnShuffleAt.setImageResource(R.drawable.ic_shuffle)
+                musicService?.setShuffleMusic(false)
+                binding.btnShuffle.setImageResource(R.drawable.ic_shuffle)
             }
         }
-        sharedPreferences.edit()
-            .putBoolean(KEY_AUTO_RESTART, musicService!!.isAutoRestart())
-            .apply()
+        musicService?.isAutoRestart()?.let {
+            sharedPreferences.edit().putBoolean(KEY_AUTO_RESTART, it)
+                .apply()
+        }
     }
 
-    // nghe ngẫu nhiên
     private fun shuffleMusic() {
         if (musicService?.isShuffleMusic() == true) {
             // shuffle tắt
-            mSongs = mSongsDefault?.toList() as ArrayList<Song>
-            mSongs!!.clear()
-            mSongs!!.addAll(mSongsDefault!!)
-            musicService!!.setShuffleMusic(false)
-            binding.btnShuffleAt.setImageResource(R.drawable.ic_shuffle)
+            mSongs = mSongsDefault.toList() as ArrayList<Song>
+            mSongs.clear()
+            mSongs.addAll(mSongsDefault)
+            musicService?.setShuffleMusic(false)
+            binding.btnShuffle.setImageResource(R.drawable.ic_shuffle)
         } else {
             // shuffle bật
-            mSongs = mSongsDefault?.toList() as ArrayList<Song>
-            mSongs!!.shuffle()
+            mSongs = mSongsDefault.toList() as ArrayList<Song>
+            mSongs.shuffle()
             musicService?.setShuffleMusic(true)
-            binding.btnShuffleAt.setImageResource(R.drawable.ic_shuffle_color)
+            binding.btnShuffle.setImageResource(R.drawable.ic_shuffle_color)
 //            // kiểm tra để dùng 1 chức năng
-            if (musicService!!.isAutoRestart()) {
+            if (musicService?.isAutoRestart() == true) {
                 // auto restart tắt
-                musicService!!.setAutoRestart(false)
-                binding.btnLoopAt.setImageResource(R.drawable.ic_loop)
+                musicService?.setAutoRestart(false)
+                binding.btnLoop.setImageResource(R.drawable.ic_loop)
             }
         }
-
-        sharedPreferences.edit()
-            .putBoolean(KEY_SHUFFLE, musicService!!.isShuffleMusic()).apply()
+        musicService?.isShuffleMusic()
+            ?.let { sharedPreferences.edit().putBoolean(KEY_SHUFFLE, it).apply() }
     }
 
-    // set thời gian tổng cho tv và gán max của skbar = time của bài hát
     private fun setTimeTotal() {
         if (isServiceBound) {
-            binding.tvTotalTimeSongAt.text =
+            binding.tvTotalTimeSong.text =
                 musicService?.let { FormatUtils.formatTime(it.getDuration()) }
             // gán max cho skbar
-            binding.seekBarAt.max = musicService!!.getDuration()
+            binding.seekBar.max = musicService?.getDuration()!!
+            ProgressBarManager.dismissProgressBarPlay(
+                binding.progressBarPlay,
+                binding.layoutPlay,
+                binding.btnPlay
+            )
         }
     }
 
     private fun updateTimeSong() {
-        // Tạo một Handler liên kết với Looper của luồng chính
         val handler = Handler(Looper.getMainLooper())
-
-        // Đặt một hành động trì hoãn để cập nhật UI sau 100 mili giây
         handler.postDelayed({
-
-            // Cập nhật UI với vị trí hiện tại của trình phát nhạc
-            binding.tvTimeSongAt.text =
+            binding.tvTimeSong.text =
                 musicService?.let { FormatUtils.formatTime(it.getCurrentPosition()) }
-
-            // set progress cho seekbar
-            binding.seekBarAt.progress = musicService?.getCurrentPosition() ?: 0
-
-            // Đặt một hành động trì hoãn khác để gọi lại updateTimeSong sau 500 mili giây
+            binding.seekBar.progress = musicService?.getCurrentPosition() ?: 0
             handler.postDelayed({ updateTimeSong() }, 500)
-
         }, 100)
     }
 
     private fun downloadMusic() {
-        if (mSongs?.get(position)?.download == 0) {
-            position = sharedPreferences.getInt(KEY_POSITION_SONG, 0)
-            mSongs!![position].download = 1
-            DownloadMusic.downloadMusic(this, mSongs!![position])
-            Toast.makeText(this, KEY_DOWN, Toast.LENGTH_SHORT).show()
-            // hàm update download
-        } else {
-            Toast.makeText(this, KEY_HAVE_DOWN, Toast.LENGTH_SHORT).show()
-        }
+        mSongs.getOrNull(position)?.let { DownloadMusic.downloadMusic(this, it) }
+        Toast.makeText(this, KEY_DOWN, Toast.LENGTH_SHORT).show()
     }
 
     private fun saveSong() {
-        val jsonSong = Gson().toJson(mSongs?.get(position))
+        val jsonSong = Gson().toJson(mSongs.getOrNull(position))
         sharedPreferences.edit().putString(Constant.KEY_SONG, jsonSong).apply()
     }
 
     private fun getListSongIntent() {
         val songs = intent.getParcelableArrayListExtra<Song>(Constant.KEY_INTENT_ITEM)
         val mPosition = intent.getIntExtra(KEY_POSITION_SONG, 0)
-
         if (songs != null){
             mSongs = songs
             mSongsDefault = songs
@@ -313,7 +472,9 @@ class SongActivity : AppCompatActivity(), BaseService {
             sharedPreferences.edit().putInt(Constant.KEY_POSITION_TAB, 1).apply()
             sharedPreferences.edit().putString(Constant.KEY_LIST_SONG, Gson().toJson(songs)).apply()
             sharedPreferences.edit().putInt(KEY_POSITION_SONG, mPosition).apply()
-            binding.tvNameListSong.text = sharedPreferences.getString(KEY_NAME_TAB, "")
+            binding.tvTitleSong.text = sharedPreferences.getString(KEY_NAME_TAB, "")
+            setFuncMusic()
+            initFunc()
         }
     }
 
@@ -325,6 +486,10 @@ class SongActivity : AppCompatActivity(), BaseService {
                 updateTimeSong()
             }
         }
+    }
+
+    private fun isSongInList(song: Song, list: List<Song>): Boolean {
+        return list.any { it.id == song.id }
     }
 
     override fun onNextMusic() {
@@ -353,9 +518,5 @@ class SongActivity : AppCompatActivity(), BaseService {
             unbindService(serviceConnection)
             isServiceBound = false
         }
-
-        mSongs = null
-        mSongsDefault = null
-        musicService = null
     }
 }

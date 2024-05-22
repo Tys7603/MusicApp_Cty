@@ -1,6 +1,7 @@
 package com.example.musicapp.screen.user.adapter
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.databinding.DataBindingUtil
@@ -12,6 +13,7 @@ import com.example.musicapp.shared.widget.SnackBarManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.firebase.auth.FirebaseAuth
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BottomSheetPlaylist(
@@ -19,6 +21,7 @@ class BottomSheetPlaylist(
 ) : BottomSheetDialogFragment() {
     private var binding: LayoutBottomSheetPlaylistBinding? = null
     private val viewModel: PlaylistUserViewModel by viewModel()
+    private val user by lazy { FirebaseAuth.getInstance().currentUser }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val mBottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
@@ -43,6 +46,13 @@ class BottomSheetPlaylist(
         initViewModel()
         handlerEventViewModel()
         handlerEvent()
+        fetchData()
+    }
+
+    private fun fetchData(){
+        if (user != null){
+            viewModel.fetchPlaylistsUser(user!!.uid)
+        }
     }
 
     private fun handlerEvent() {
@@ -58,11 +68,15 @@ class BottomSheetPlaylist(
         viewModel.isCreatePlaylist.observe(this){
             if (it){
                 dismiss()
-                mListener.invoke()
             }else{
                 SnackBarManager.showMessage(binding?.button2, Constant.FAILURE)
             }
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        mListener.invoke()
     }
 
     override fun onDestroyView() {

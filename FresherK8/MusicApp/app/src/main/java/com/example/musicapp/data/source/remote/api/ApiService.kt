@@ -36,6 +36,7 @@ import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_ALBUM_I
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_PLAYLIST_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_TOPIC_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_LOVE
+import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_PLAYLIST_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_TOPIC_BY_CATEGORY_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.INSERT_SONG_PLAYLIST_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.INSERT_SONG_PLAYLIST_USER
@@ -116,6 +117,9 @@ interface ApiService {
 
     @GET(GET_SONG_BY_PLAYLIST_ID)
     suspend fun getListSongPlaylistById(@Path("playlistId") playlistId: Int): Response<SongRepository>
+
+    @GET(GET_SONG_PLAYLIST_USER)
+    suspend fun getListSongPlaylistUserId(@Path("playlistUserId") playlistUserId: Int): Response<SongRepository>
 
     @GET(GET_SONG_BY_TOPIC_ID)
     suspend fun getListSongTopicById(@Path("topicId") topicId: Int): Response<SongRepository>

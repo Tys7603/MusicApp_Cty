@@ -48,8 +48,8 @@
         }
 
         fun singUp() {
-            _loading.value = true
             if (validate()) {
+                _loading.value = true
                 FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
@@ -66,6 +66,8 @@
                             _isSingUp.value = false
                         }
                     }
+            }else{
+                _loading.value = false
             }
         }
 
@@ -79,6 +81,7 @@
                     if (task.isSuccessful) {
                         _isSingUp.value = true
                         _loading.value = false
+                        FirebaseAuth.getInstance().signOut()
                     }
                 }
         }

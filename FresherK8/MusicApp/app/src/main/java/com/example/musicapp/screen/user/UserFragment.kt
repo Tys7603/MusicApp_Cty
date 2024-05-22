@@ -15,6 +15,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.example.musicapp.R
+import com.example.musicapp.data.model.Playlist
+import com.example.musicapp.data.model.PlaylistUser
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.FragmentUserBinding
 import com.example.musicapp.screen.account.information.InformationActivity
@@ -32,13 +34,14 @@ import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.BooleanProperty
 import com.example.musicapp.shared.utils.GetValue
+import com.example.musicapp.shared.utils.OnChangeListener
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.widget.SnackBarManager
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class UserFragment : Fragment() {
+class UserFragment : Fragment(), OnChangeListener.FragmentChangeListener {
 
     private var musicService: MusicService? = null
     private var isServiceBound = false
@@ -86,6 +89,7 @@ class UserFragment : Fragment() {
         initViewModel()
         initMusicView()
         initRecyclerView()
+        handleEventViewModel()
         showLoading()
     }
 
@@ -132,6 +136,7 @@ class UserFragment : Fragment() {
                     binding.layoutSongUserEmpty.visibility = View.GONE
                     binding.layoutPlaylistLoveEmpty.visibility = View.GONE
                 } else {
+                    binding.rcvPlaylistLove.visibility = View.INVISIBLE
                     binding.layoutSongUserEmpty.visibility = View.VISIBLE
                 }
             }
@@ -144,6 +149,7 @@ class UserFragment : Fragment() {
                     playlistUserAdapter.submitList(it)
                     binding.layoutPlaylistUserEmpty.visibility = View.GONE
                 } else {
+                    binding.rcvPlaylistUser.visibility = View.INVISIBLE
                     binding.layoutPlaylistUserEmpty.visibility = View.VISIBLE
                 }
             }
@@ -230,9 +236,13 @@ class UserFragment : Fragment() {
 
     private fun startSongDetail() {
         if (user != null) {
-            val intent = Intent(requireContext(), SongDetailActivity::class.java)
-            intent.putExtra(Constant.KEY_INTENT_ITEM, songsLove.getOrNull(0))
-            startActivity(intent)
+            if (songsLove.isNotEmpty()){
+                val intent = Intent(requireContext(), SongDetailActivity::class.java)
+                intent.putExtra(Constant.KEY_INTENT_ITEM, songsLove.getOrNull(0))
+                startActivity(intent)
+            }else{
+                SnackBarManager.showMessage(binding.imageView20, "Không có bài hát hát yêu thích")
+            }
         } else {
             openBottomSheetLogin()
         }
@@ -313,7 +323,19 @@ class UserFragment : Fragment() {
     }
 
     private fun onItemClick(boolean: Boolean, any: Any) {
+        when(any){
+            is Playlist -> {
+                val intent = Intent(requireContext(), SongDetailActivity::class.java)
+                intent.putExtra(Constant.KEY_INTENT_ITEM, any)
+                startActivity(intent)
+            }
 
+            is PlaylistUser -> {
+                val intent = Intent(requireContext(), SongDetailActivity::class.java)
+                intent.putExtra(Constant.KEY_INTENT_ITEM, any)
+                startActivity(intent)
+            }
+        }
     }
 
     private fun handlerPostDelay(listener: () -> Unit) {
@@ -328,13 +350,7 @@ class UserFragment : Fragment() {
         val intent = Intent(activity, MusicService::class.java)
         activity?.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         viewModel.initValueUser()
-
-    }
-
-    override fun onResume() {
-        super.onResume()
         fetchData()
-        handleEventViewModel()
     }
 
     override fun onDestroy() {
@@ -344,5 +360,8 @@ class UserFragment : Fragment() {
             isServiceBound = false
         }
         musicService = null
+    }
+
+    override fun onFragmentChanged() {
     }
 }
