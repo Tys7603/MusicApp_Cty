@@ -23,6 +23,7 @@ import com.example.musicapp.screen.account.information.InformationActivity
 import com.example.musicapp.screen.base.BaseService
 import com.example.musicapp.screen.main.MainActivity
 import com.example.musicapp.screen.music.MusicFragment
+import com.example.musicapp.screen.music.MusicViewModel
 import com.example.musicapp.screen.songDetail.SongDetailActivity
 import com.example.musicapp.screen.songUser.SongUserActivity
 import com.example.musicapp.screen.user.adapter.BottomSheetLogin
@@ -43,7 +44,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class UserFragment : Fragment(), BaseService {
-
+    private val viewModelMusic: MusicViewModel by viewModel()
     private var musicService: MusicService? = null
     private var isServiceBound = false
     private val viewModel: UserViewModel by viewModel()
@@ -338,6 +339,7 @@ class UserFragment : Fragment(), BaseService {
             false
         } else {
             musicService?.start()
+            insertSongAgain()
             binding.includeLayout1.btnLayoutBottomPause.setImageResource(R.drawable.ic_pause_)
             true
         }
@@ -368,6 +370,14 @@ class UserFragment : Fragment(), BaseService {
                 intent.putExtra(Constant.KEY_INTENT_ITEM, any)
                 startActivity(intent)
             }
+        }
+    }
+
+    private fun insertSongAgain(){
+        val user = FirebaseAuth.getInstance().currentUser
+        val song = GetValue.getSong(sharedPreferences)
+        user?.let {
+            viewModelMusic.addSongAgain(user.uid, song!!.id)
         }
     }
 

@@ -32,6 +32,7 @@ import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.DownloadMusic
 import com.example.musicapp.shared.utils.constant.Constant.KEY_INTENT_ITEM
+import com.example.musicapp.shared.utils.constant.Constant.KEY_NAME_TAB
 import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_SONG
 import com.example.musicapp.shared.widget.SnackBarManager
 import com.google.firebase.auth.FirebaseAuth
@@ -50,6 +51,7 @@ class SongDetailActivity : AppCompatActivity() {
     }
     private var mSongs: ArrayList<Song>? = arrayListOf()
     private var mPlaylist: Playlist? = null
+    private var title : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -156,8 +158,8 @@ class SongDetailActivity : AppCompatActivity() {
                 binding.tvNamePlaylistActivity.text = item.name
                 binding.tvNameArtistPlaylistActivity.text = item.nameArtist
                 viewModel.fetchSongPlaylist(item.id)
-                sharedPreferences.edit().putString(Constant.KEY_NAME_TAB, item.name).apply()
                 mPlaylist = item
+                title = item.name
             }
 
             is Album -> {
@@ -167,7 +169,7 @@ class SongDetailActivity : AppCompatActivity() {
                 binding.tvNamePlaylistActivity.text = item.albumName
                 binding.tvNameArtistPlaylistActivity.text = item.nameArtist
                 viewModel.fetchSongAlbum(item.albumId)
-                sharedPreferences.edit().putString(Constant.KEY_NAME_TAB, item.albumImage).apply()
+                title = item.albumName
             }
 
             is Topic -> {
@@ -177,7 +179,7 @@ class SongDetailActivity : AppCompatActivity() {
                 binding.tvNamePlaylistActivity.text = item.name
                 binding.tvNameArtistPlaylistActivity.text = ""
                 viewModel.fetchSongTopic(item.id)
-                sharedPreferences.edit().putString(Constant.KEY_NAME_TAB, item.name).apply()
+                title = item.name
             }
 
             is Song -> {
@@ -188,8 +190,7 @@ class SongDetailActivity : AppCompatActivity() {
                 binding.tvNamePlaylistActivity.text = user?.email + USER
                 binding.tvNameArtistPlaylistActivity.text = user?.email
                 user?.uid?.let { viewModel.fetchSongLove(it) }
-                sharedPreferences.edit().putString(Constant.KEY_NAME_TAB, user?.email + USER)
-                    .apply()
+                title =  user?.email + USER
             }
 
             is PlaylistUser -> {
@@ -199,8 +200,7 @@ class SongDetailActivity : AppCompatActivity() {
                 binding.tvNamePlaylistActivity.text = item.playlistUserName
                 binding.tvNameArtistPlaylistActivity.text = item.nameArtist
                 viewModel.fetchPlaylistsSongUser(item.playlistUserId)
-                sharedPreferences.edit().putString(Constant.KEY_NAME_TAB, item.playlistUserName)
-                    .apply()
+                title =  item.playlistUserName
             }
         }
         showLoading()
@@ -233,6 +233,7 @@ class SongDetailActivity : AppCompatActivity() {
     private fun onStartPosition(position: Int, isShuffle: Boolean) {
         val intent = Intent(this, SongActivity::class.java)
         intent.putExtra(KEY_POSITION_SONG, position)
+        intent.putExtra(KEY_NAME_TAB, title)
         if (isShuffle) intent.putParcelableArrayListExtra(
             KEY_INTENT_ITEM,
             mSongs?.shuffled(Random()) as ArrayList<Song>

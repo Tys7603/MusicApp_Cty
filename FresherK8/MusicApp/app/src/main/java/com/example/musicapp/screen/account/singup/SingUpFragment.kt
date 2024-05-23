@@ -46,6 +46,8 @@ class SingUpFragment : Fragment() {
                 binding.etRePass.text?.clear()
             }else{
                 SnackBarManager.showMessage(binding.button, Constant.SING_UP_FAILURE)
+                binding.layoutLoading.visibility = View.INVISIBLE
+                binding.layoutContentSingUp.visibility = View.VISIBLE
             }
         }
 

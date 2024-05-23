@@ -33,19 +33,6 @@ import com.example.musicapp.shared.utils.constant.Constant.KEY_REFRESH_LYRIC
 
 
 class MainActivity : AppCompatActivity(), OnChangeListener {
-    private val musicFragment by lazy {
-        MusicFragment()
-    }
-    private val musicVideoFragment by lazy {
-        MusicVideoFragment()
-    }
-    private val exploreFragment by lazy {
-        ExploreFragment()
-    }
-    private val userFragment by lazy {
-        UserFragment()
-    }
-
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
@@ -53,10 +40,14 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
     private val sharedPreferences: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(this)
     }
-    private var currentFragment: Fragment? = null
+    private var currentFragmentTag = ""
 
     companion object {
         const val MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 123
+        const val MUSIC = "Music"
+        const val EXPLORE = "Explore"
+        const val MV = "MV"
+        const val USER = "User"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +59,7 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        fragmentManager(musicFragment)
+        fragmentManager(MUSIC)
         switchFragment()
         createService()
         switchUserIntent()
@@ -89,11 +80,11 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
         val checkSongUser = intent.getBooleanExtra(Constant.KEY_SONG_USER, false)
 
         if (checkUser) {
-            fragmentManager(UserFragment())
+            fragmentManager(USER)
             binding.bottomNavigationView.selectedItemId = R.id.user_menu
         }
         if (checkSongUser) {
-            fragmentManager(ExploreFragment())
+            fragmentManager(EXPLORE)
             binding.bottomNavigationView.selectedItemId = R.id.explore_menu
         }
     }
@@ -130,31 +121,32 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
         startActivity(intent)
     }
 
-    private fun fragmentManager(fragment: Fragment) {
-        if (currentFragment != fragment) {
-            currentFragment = fragment
+    private fun fragmentManager(tag: String) {
+        if (currentFragmentTag != tag) {
+            currentFragmentTag = tag
+            val fragment = when (tag) {
+                MUSIC -> MusicFragment()
+                EXPLORE -> ExploreFragment()
+                MV -> MusicVideoFragment()
+                USER -> UserFragment()
+                else -> MusicFragment()
+            }
+
             supportFragmentManager
                 .beginTransaction()
-                .replace(binding.frameLayout.id, fragment)
-                .commit()
+                .replace(binding.frameLayout.id, fragment, tag)
+                .commitNow()
         } else {
-            scrollTop()
+            scrollTop(tag)
         }
     }
 
-    private fun scrollTop() {
-        when (currentFragment) {
-            is ExploreFragment -> {
-                (currentFragment as ExploreFragment).scrollTop()
-            }
-
-            is MusicVideoFragment -> {
-                (currentFragment as MusicVideoFragment).scrollToFirstItem()
-            }
-
-            is UserFragment -> {
-                (currentFragment as UserFragment).scrollTop()
-            }
+    private fun scrollTop(tag: String) {
+        when (val fragment = supportFragmentManager.findFragmentByTag(tag)) {
+            is ExploreFragment -> fragment.scrollTop()
+            is MusicVideoFragment -> fragment.scrollToFirstItem()
+            is UserFragment -> fragment.scrollTop()
+            else -> return
         }
     }
 
@@ -162,22 +154,22 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.music_menu -> {
-                    fragmentManager(MusicFragment())
+                    fragmentManager(MUSIC)
                     true
                 }
 
                 R.id.explore_menu -> {
-                    fragmentManager(ExploreFragment())
+                    fragmentManager(EXPLORE)
                     true
                 }
 
                 R.id.mv_menu -> {
-                    fragmentManager(MusicVideoFragment())
+                    fragmentManager(MV)
                     true
                 }
 
                 R.id.user_menu -> {
-                    fragmentManager(UserFragment())
+                    fragmentManager(USER)
                     true
                 }
 

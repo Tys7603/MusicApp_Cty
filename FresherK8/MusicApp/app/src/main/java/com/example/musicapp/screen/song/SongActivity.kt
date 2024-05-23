@@ -487,7 +487,7 @@ class SongActivity : AppCompatActivity(), BaseService {
     private fun getListSongIntent() {
         val songs = intent.getParcelableArrayListExtra<Song>(Constant.KEY_INTENT_ITEM)
         val mPosition = intent.getIntExtra(KEY_POSITION_SONG, 0)
-        Log.d("TAG", "initValueSong: " + songs.toString())
+        val title = intent.getStringExtra(KEY_NAME_TAB)
         if (songs != null){
             mSongs = songs
             mSongsDefault = songs
@@ -495,7 +495,8 @@ class SongActivity : AppCompatActivity(), BaseService {
             sharedPreferences.edit().putInt(Constant.KEY_POSITION_TAB, 1).apply()
             sharedPreferences.edit().putString(Constant.KEY_LIST_SONG, Gson().toJson(songs)).apply()
             sharedPreferences.edit().putInt(KEY_POSITION_SONG, mPosition).apply()
-            binding.tvTitleSong.text = sharedPreferences.getString(KEY_NAME_TAB, "")
+            binding.tvTitleSong.text = title
+            sharedPreferences.edit().putString(KEY_NAME_TAB, title).apply()
             setFuncMusicStart()
             initFunc()
         }

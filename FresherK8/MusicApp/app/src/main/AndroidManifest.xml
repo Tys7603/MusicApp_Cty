@@ -88,14 +88,6 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
-
-        <receiver
-            android:name=".broadcast.MusicBroadcastReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="UPDATE_LYRICS" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

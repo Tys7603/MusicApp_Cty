@@ -22,6 +22,7 @@ import com.example.musicapp.screen.song.SongActivity
 import com.example.musicapp.screen.songDetail.adapter.SongDetailAdapter
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.constant.Constant
+import com.example.musicapp.shared.utils.constant.Constant.KEY_NAME_TAB
 import com.example.musicapp.shared.utils.constant.Constant.KEY_SONG_LOCAL
 import com.example.musicapp.shared.utils.constant.Constant.LOCAL
 import com.google.firebase.auth.FirebaseAuth
@@ -35,6 +36,7 @@ class SongUserActivity : AppCompatActivity() {
     private var mSongs = arrayListOf<Song>()
     private var songsAgain = mutableListOf<SongAgain>()
     private var value: String? = null
+    private var title : String? = null
     private val binding by lazy {
         ActivitySongDownBinding.inflate(layoutInflater)
     }
@@ -74,13 +76,13 @@ class SongUserActivity : AppCompatActivity() {
             setViewModel(value!!)
             initRecyclerview(value!!)
         }
-        sharedPreferences.edit().putString(Constant.KEY_NAME_TAB, name)
-            .apply()
+       title = name
     }
 
     private fun showLoading() {
         binding.layoutSongUserLoading.visibility = View.VISIBLE
         binding.layoutSongUserEmpty.visibility = View.GONE
+        binding.btnPlaySongUser.isEnabled = false
     }
 
     private fun initViewModel() {
@@ -97,6 +99,7 @@ class SongUserActivity : AppCompatActivity() {
                         if (it.isNotEmpty()) {
                             adapter.submitList(it)
                             mSongs = it
+                            binding.btnPlaySongUser.isEnabled = true
                         } else {
                             binding.layoutSongUserEmpty.visibility = View.VISIBLE
                         }
@@ -110,6 +113,7 @@ class SongUserActivity : AppCompatActivity() {
                         if (it.isNotEmpty()) {
                             songAgainAdapter.submitList(it.reversed()) // đảo ngược mảng
                             songsAgain = it.reversed() as MutableList<SongAgain>
+                            binding.btnPlaySongUser.isEnabled = true
                         } else {
                             binding.layoutSongUserEmpty.visibility = View.VISIBLE
                         }
@@ -130,6 +134,7 @@ class SongUserActivity : AppCompatActivity() {
         sharedPreferences.edit().putBoolean(KEY_SONG_LOCAL, true).apply()
         intent.putExtra(Constant.KEY_POSITION_SONG, 0)
         intent.putParcelableArrayListExtra(Constant.KEY_INTENT_ITEM, mSongs)
+        intent.putExtra(KEY_NAME_TAB, title)
         startActivity(intent)
     }
 
@@ -163,6 +168,7 @@ class SongUserActivity : AppCompatActivity() {
             }
         }
 
+        intent.putExtra(KEY_NAME_TAB, title)
         intent.putExtra(Constant.KEY_POSITION_SONG, position)
         startActivity(intent)
     }

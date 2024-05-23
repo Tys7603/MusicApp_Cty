@@ -3,27 +3,18 @@ package com.example.musicapp.screen.explore
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.ServiceConnection
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.Handler.Callback
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.registerReceiver
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.example.musicapp.R
-import com.example.musicapp.broadcast.MusicBroadcastReceiver
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.data.model.Album
 import com.example.musicapp.screen.explore.adapter.AlbumAdapter
@@ -40,10 +31,12 @@ import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.FragmentExploreBinding
 import com.example.musicapp.screen.base.BaseService
 import com.example.musicapp.screen.exploreDetail.ExploreDetailActivity
+import com.example.musicapp.screen.music.MusicViewModel
 import com.example.musicapp.screen.song.SongActivity
 import com.example.musicapp.screen.songDetail.SongDetailActivity
 import com.example.musicapp.screen.topic.TopicActivity
 import com.example.musicapp.service.MusicService
+import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.extension.setAdapterGrid
 import com.example.musicapp.shared.extension.setAdapterLinearHorizontal
 import com.example.musicapp.shared.utils.BooleanProperty
@@ -52,11 +45,15 @@ import com.example.musicapp.shared.utils.ListDefault
 import com.example.musicapp.shared.utils.constant.Constant.KEY_INTENT_ITEM
 import com.example.musicapp.shared.utils.constant.Constant.KEY_NAME
 import com.example.musicapp.shared.utils.constant.Constant.KEY_NAME_TAB
+import com.example.musicapp.shared.utils.constant.Constant.KEY_SONG
+import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
 import java.util.Random
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ExploreFragment : Fragment(), BaseService {
     private val viewModel: ExploreViewModel by viewModel()
+    private val viewModelMusic: MusicViewModel by viewModel()
     private var musicService: MusicService? = null
     private var isServiceBound = false
     private val playListAdapter = PlayListAdapter(::onItemClick, 1)
@@ -188,7 +185,9 @@ class ExploreFragment : Fragment(), BaseService {
 
         viewModel.songAgain.observe(viewLifecycleOwner) {
             songAgainAdapter.submitList(it.reversed())
-            songsAgain = it.reversed() as MutableList<SongAgain>
+            if (it.isNotEmpty()){
+               songsAgain = it.reversed() as MutableList<SongAgain>
+            }
         }
 
         viewModel.albumLove.observe(viewLifecycleOwner) {
@@ -231,6 +230,7 @@ class ExploreFragment : Fragment(), BaseService {
     fun initSongView() {
         val song = GetValue.getSong(sharedPreferences)
         binding.includeLayout.song = song
+        val user = FirebaseAuth.getInstance().currentUser
     }
 
     private fun handlerEvent() {
@@ -240,7 +240,6 @@ class ExploreFragment : Fragment(), BaseService {
         binding.tvAddTopic.setOnClickListener { onStartActivity(Constant.CATEGORIES) }
         binding.tvAddLoving.setOnClickListener { onStartActivity(Constant.ALBUM_LOVE) }
         binding.tvAddMood.setOnClickListener { onStartActivity(Constant.MOOD_TODAY) }
-        binding.btnShareMusic.setOnClickListener { }
     }
 
     private fun onStartActivity(nameData: String) {
@@ -286,8 +285,17 @@ class ExploreFragment : Fragment(), BaseService {
             false
         } else {
             musicService?.start()
+            insertSongAgain()
             binding.includeLayout.btnLayoutBottomPause.setImageResource(R.drawable.ic_pause_)
             true
+        }
+    }
+
+    private fun insertSongAgain(){
+        val user = FirebaseAuth.getInstance().currentUser
+        val song = GetValue.getSong(sharedPreferences)
+        user?.let {
+            viewModelMusic.addSongAgain(user.uid, song!!.id)
         }
     }
 
