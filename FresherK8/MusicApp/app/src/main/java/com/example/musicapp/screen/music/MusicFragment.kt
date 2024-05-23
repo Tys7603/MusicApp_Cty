@@ -1,5 +1,6 @@
 package com.example.musicapp.screen.music
 
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -155,15 +156,15 @@ class MusicFragment : Fragment(), BaseService {
                     if (isServiceBound) {
                         initFunc()
                     }
-                    binding.btnMusicPlaylist.setTextColor(resources.getColor(R.color.black_mix))
-                    binding.btnMusicMe.setTextColor(resources.getColor(R.color.black))
+                    binding.btnMusicPlaylist.setTextColor(resources.getColor(R.color.black))
+                    binding.btnMusicMe.setTextColor(resources.getColor(R.color.red))
                     sharedPreferences.edit().putInt(KEY_POSITION_TAB, 0).apply()
                 }
             }
 
             1 -> {
-                binding.btnMusicPlaylist.setTextColor(resources.getColor(R.color.black))
-                binding.btnMusicMe.setTextColor(resources.getColor(R.color.black_mix))
+                binding.btnMusicPlaylist.setTextColor(resources.getColor(R.color.red))
+                binding.btnMusicMe.setTextColor(resources.getColor(R.color.black))
                 getListSongIntent()
                 sharedPreferences.edit().putInt(KEY_POSITION_TAB, 1).apply()
             }
@@ -261,7 +262,7 @@ class MusicFragment : Fragment(), BaseService {
         binding.btnAddPlaylist.setOnClickListener { openBottomSheet() }
         binding.btnLyrics.setOnClickListener { putLyrics() }
         binding.btnMusicPlaylist.setOnClickListener {
-            binding.btnMusicPlaylist.setTextColor(resources.getColor(R.color.yellow_mix))
+            binding.btnMusicPlaylist.setTextColor(resources.getColor(R.color.red))
             binding.btnMusicMe.setTextColor(resources.getColor(R.color.black))
             getListSongIntent()
             setFuncTabMusic()
@@ -280,7 +281,7 @@ class MusicFragment : Fragment(), BaseService {
                     initFunc()
                 }
                 binding.btnMusicPlaylist.setTextColor(resources.getColor(R.color.black))
-                binding.btnMusicMe.setTextColor(resources.getColor(R.color.yellow_mix))
+                binding.btnMusicMe.setTextColor(resources.getColor(R.color.red))
                 sharedPreferences.edit().putInt(KEY_POSITION_TAB, 0).apply()
                 ProgressBarManager.showProgressBarPlay(
                     binding.progressBarPlay,
@@ -295,7 +296,7 @@ class MusicFragment : Fragment(), BaseService {
     private fun putLyrics() {
         position = getPosition()
         val intent = Intent(requireContext(), LyricActivity::class.java)
-        intent.putExtra(KEY_INTENT_ITEM, mSongs.getOrNull(position))
+        intent.putExtra(KEY_INTENT_ITEM,  sharedPreferences.getString(KEY_SONG, ""))
         startActivity(intent)
     }
 
@@ -430,6 +431,7 @@ class MusicFragment : Fragment(), BaseService {
         if (isServiceBound) { // kiểm tra đã kết nối chưa
             isPlaySelected = if (!musicService?.isPlaying()!!) { // kiểm tra xem đã play chưa
                 musicService?.start()
+                insertSongAgain()
                 updateTimeSong()
                 binding.btnPlay.setImageResource(R.drawable.ic_pause_music)
                 true
@@ -439,6 +441,13 @@ class MusicFragment : Fragment(), BaseService {
                 false
             }
             musicService?.updateNotificationFromActivity()
+        }
+    }
+
+    private fun insertSongAgain(){
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.let {
+            viewModel.addSongAgain(user.uid, mSongs.getOrNull(getPosition())!!.id)
         }
     }
 
@@ -457,7 +466,16 @@ class MusicFragment : Fragment(), BaseService {
             binding.layoutPlay,
             binding.btnPlay
         )
+        insertSongAgain()
         listener?.onSongChanged()
+        isCheckPutLyric()
+    }
+
+    private fun isCheckPutLyric(){
+        val isCheck = sharedPreferences.getBoolean(Constant.KEY_ACTIVITY_LYRIC, false)
+        if (isCheck) {
+            listener?.onInitValueSong()
+        }
     }
 
     // quay lại bài nhạc
@@ -469,6 +487,8 @@ class MusicFragment : Fragment(), BaseService {
         }
         putPosition(position)
         setFuncMusic()
+        insertSongAgain()
+        musicService?.setNextMusic(true)
         ProgressBarManager.showProgressBarPlay(
             binding.progressBarPlay,
             binding.layoutPlay,
@@ -482,8 +502,8 @@ class MusicFragment : Fragment(), BaseService {
         sharedPreferences.edit().putBoolean(KEY_PLAY_CLICK, true).apply()
         initValueSong()
         checkSongLove()
+        saveSong()
         sharedPreferences.edit().putBoolean(KEY_LYRIC_NEW, true).apply()
-        senBroadcastInitValueLyric()
     }
 
     private fun setFuncTabMusic() {
@@ -495,16 +515,6 @@ class MusicFragment : Fragment(), BaseService {
         sharedPreferences.edit().putBoolean(KEY_LYRIC_NEW, true).apply()
     }
 
-    private fun senBroadcastInitValueLyric() {
-        val isCheck = sharedPreferences.getBoolean(Constant.KEY_ACTIVITY_LYRIC, false)
-        if (isCheck) {
-            val intent = Intent(Constant.UPDATE_LYRIC)
-            intent.putExtra(KEY_INTENT_ITEM, sharedPreferences.getString(KEY_SONG, ""))
-            requireContext().sendBroadcast(intent)
-        }
-    }
-
-    // nghe lại bài nhạc
     private fun autoRestart() {
         if (musicService?.isAutoRestart() == true) {
             // auto restart tắt
@@ -514,13 +524,6 @@ class MusicFragment : Fragment(), BaseService {
             // auto restart bật
             musicService?.setAutoRestart(true)
             binding.btnLoop.setImageResource(R.drawable.ic_loop_color)
-//           // kiểm tra để dùng 1 chức năng
-            if (musicService?.isShuffleMusic() == true) {
-                // shuffle tắt
-                mSongs = mSongsDefault
-                musicService?.setShuffleMusic(false)
-                binding.btnShuffle.setImageResource(R.drawable.ic_shuffle)
-            }
         }
         musicService?.isAutoRestart()?.let {
             sharedPreferences.edit().putBoolean(KEY_AUTO_RESTART, it)
@@ -528,7 +531,6 @@ class MusicFragment : Fragment(), BaseService {
         }
     }
 
-    // nghe ngẫu nhiên
     private fun shuffleMusic() {
         if (musicService?.isShuffleMusic() == true) {
             // shuffle tắt
@@ -543,12 +545,6 @@ class MusicFragment : Fragment(), BaseService {
             mSongs.shuffle()
             musicService?.setShuffleMusic(true)
             binding.btnShuffle.setImageResource(R.drawable.ic_shuffle_color)
-//            // kiểm tra để dùng 1 chức năng
-            if (musicService?.isAutoRestart() == true) {
-                // auto restart tắt
-                musicService?.setAutoRestart(false)
-                binding.btnLoop.setImageResource(R.drawable.ic_loop)
-            }
         }
         musicService?.isShuffleMusic()
             ?.let { sharedPreferences.edit().putBoolean(KEY_SHUFFLE, it).apply() }
@@ -581,7 +577,6 @@ class MusicFragment : Fragment(), BaseService {
 
     private fun downloadMusic() {
         mSongs.getOrNull(position)?.let { DownloadMusic.downloadMusic(requireContext(), it) }
-        Toast.makeText(requireContext(), KEY_DOWN, Toast.LENGTH_SHORT).show()
     }
 
     private fun saveSong() {
@@ -599,7 +594,6 @@ class MusicFragment : Fragment(), BaseService {
         }
     }
 
-    // Kiểm tra xem một bài hát có nằm trong danh sách đã cho hay không
     private fun isSongInList(song: Song, list: List<Song>): Boolean {
         return list.any { it.id == song.id }
     }

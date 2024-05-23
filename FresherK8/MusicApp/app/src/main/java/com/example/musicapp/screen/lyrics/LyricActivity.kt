@@ -4,17 +4,14 @@ import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.window.OnBackInvokedDispatcher
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -22,21 +19,21 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.musicapp.R
-import com.example.musicapp.broadcast.MusicBroadcastReceiver
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.ActivityLyricBinding
 import com.example.musicapp.screen.lyrics.adapter.LyricsAdapter
 import com.example.musicapp.screen.main.MainActivity
-import com.example.musicapp.screen.music.MusicFragment
+import com.example.musicapp.screen.song.SongActivity
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.constant.Constant
+import com.example.musicapp.shared.utils.constant.Constant.KEY_REFRESH_LYRIC
 import com.example.musicapp.shared.widget.ProgressBarManager
+import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LyricActivity : AppCompatActivity() {
-    private var musicBroadcastReceiver: MusicBroadcastReceiver? = null
     private var handler: Handler? = null
     private var updateRunnable: Runnable? = null
     private val viewModel: LyricViewModel by viewModel()
@@ -45,7 +42,6 @@ class LyricActivity : AppCompatActivity() {
     private var lyricsAdapter = LyricsAdapter()
     private var currentLyricIndex = 0
     private var isLyricNew = false
-    private var isReceiverRegistered = false
 
     private val binding by lazy {
         ActivityLyricBinding.inflate(layoutInflater)
@@ -85,6 +81,7 @@ class LyricActivity : AppCompatActivity() {
         initRecyclerView()
         handlerViewModel()
         setOnCompleteListener()
+        handlerEvent()
     }
 
     private fun initSharedPreferences() {
@@ -98,8 +95,9 @@ class LyricActivity : AppCompatActivity() {
     }
 
     private fun initValue() {
-        val song = intent.getParcelableExtra<Song>(Constant.KEY_INTENT_ITEM)
-        if(song != null){
+        val songJson = intent.getStringExtra(Constant.KEY_INTENT_ITEM)
+        val song = Gson().fromJson(songJson, Song::class.java)
+        if (song != null) {
             binding.song = song
             binding.bgImgLyric.loadImageUrl(song.image)
             binding.imgLyric.loadImageUrl(song.image)
@@ -119,24 +117,36 @@ class LyricActivity : AppCompatActivity() {
     }
 
     private fun handlerEvent() {
-        binding.btnClose.setOnClickListener {
-            sharedPreferences.edit().putBoolean(Constant.KEY_ACTIVITY_LYRIC, false).apply()
-//            startActivity(Intent(this, MainActivity::class.java))
-//            finish()
-            onBackPressedDispatcher.onBackPressed()
+        binding.btnClose.setOnClickListener { onBackStack() }
+    }
+
+    private fun onBackStack() {
+        val str = intent.getStringExtra(KEY_REFRESH_LYRIC)
+
+        val intent = when (str) {
+            "Fragment" -> Intent(this, MainActivity::class.java)
+            "Activity" -> Intent(this, SongActivity::class.java)
+            else -> {
+                onBackPressedDispatcher.onBackPressed()
+                return
+            }
         }
+
+        sharedPreferences.edit().putBoolean(Constant.KEY_ACTIVITY_LYRIC, false).apply()
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        startActivity(intent)
+        finish()
     }
 
     private fun handlerViewModel() {
         viewModel.lyrics.observe(this) {
-            ProgressBarManager.dismissProgressBar(binding.progressBar, binding.linearLayout7)
             if (it.isEmpty()) {
                 binding.tvEmpty.visibility = View.VISIBLE
             } else {
                 lyricsAdapter.submitList(it)
                 binding.tvEmpty.visibility = View.GONE
             }
-            Log.d("TAG", "handlerViewModel: " + it.toString())
+            ProgressBarManager.dismissProgressBar(binding.progressBar, binding.linearLayout7)
         }
     }
 
@@ -193,36 +203,15 @@ class LyricActivity : AppCompatActivity() {
         }
     }
 
-    private fun registerBroadcastReceiver() {
-        if (musicBroadcastReceiver == null) {
-            musicBroadcastReceiver = MusicBroadcastReceiver()
-        }
-        val filter = IntentFilter(Constant.UPDATE_LYRIC)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(musicBroadcastReceiver, filter, RECEIVER_NOT_EXPORTED)
-        } else {
-            registerReceiver(musicBroadcastReceiver, filter)
-        }
-        isReceiverRegistered = true
-    }
 
     private fun registerMusicService() {
         val intent = Intent(this, MusicService::class.java)
         this.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
-    private fun unregisterBroadcastReceiver() {
-        if (isReceiverRegistered && musicBroadcastReceiver != null) {
-            unregisterReceiver(musicBroadcastReceiver)
-            isReceiverRegistered = false
-        }
-    }
-
     override fun onStart() {
         super.onStart()
         registerMusicService()
-        registerBroadcastReceiver()
-        handlerEvent()
     }
 
     override fun onStop() {
@@ -231,9 +220,9 @@ class LyricActivity : AppCompatActivity() {
             .apply()
     }
 
-    override fun getOnBackInvokedDispatcher(): OnBackInvokedDispatcher {
-        sharedPreferences.edit().putBoolean(Constant.KEY_ACTIVITY_LYRIC, false).apply()
-        return super.getOnBackInvokedDispatcher()
+    override fun onBackPressed() {
+        onBackStack()
+        super.onBackPressed()
     }
 
     override fun onDestroy() {
@@ -244,6 +233,5 @@ class LyricActivity : AppCompatActivity() {
         }
         musicService = null
         updateRunnable?.let { handler?.removeCallbacks(it) }
-        unregisterBroadcastReceiver()
     }
 }

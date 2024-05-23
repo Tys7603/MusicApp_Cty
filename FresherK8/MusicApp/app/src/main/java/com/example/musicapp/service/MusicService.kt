@@ -212,6 +212,9 @@ class MusicService : Service() {
             setOnPreparedListener {
                 isMediaPrepared = true
                 mBaseService?.onMediaPrepared()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    createNotification()
+                }
             }
         }
     }

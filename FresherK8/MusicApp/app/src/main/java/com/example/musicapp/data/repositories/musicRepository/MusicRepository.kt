@@ -23,6 +23,7 @@ interface MusicRepository {
     suspend fun getListSongLove(userId: String): DataResult<ArrayList<Song>>
 
     suspend fun createSongLove(userId: String, songId: Int): DataResult<Boolean>
+    suspend fun createSongAgain(userId: String, songId: Int): DataResult<Boolean>
 
     suspend fun insertPlaylistIntoPlaylistLove(userId: String, playlistId: Int): DataResult<Boolean>
 

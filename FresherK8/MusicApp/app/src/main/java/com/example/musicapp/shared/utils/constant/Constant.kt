@@ -11,6 +11,7 @@ object Constant {
     const val KEY_USER = "start_user"
     const val KEY_SONG_USER = "start_song_user"
     const val KEY_INTENT_ITEM = "item"
+    const val KEY_REFRESH_LYRIC = "fill_lyric"
     const val KEY_BUNDLE_ITEM = "bundle"
     const val EMPTY_SONG_MESSAGE = "Chưa nghe bài hát nào"
     const val KEY_PLAY_CLICK = "play_music"
@@ -18,11 +19,12 @@ object Constant {
     const val KEY_POSITION = "position"
     const val KEY_LYRIC_NEW = "lyric_new"
     const val KEY_POSITION_SONG = "position_song_playlist"
+    const val KEY_SONG_LOCAL = "song_local"
     const val KEY_POSITION_SONG_LIST_NAME = "position_song_list_name"
     const val KEY_POSITION_TAB = "position_tab"
     const val KEY_AUTO_RESTART = "auto_restart"
     const val KEY_SHUFFLE = "shuffle"
-    const val KEY_DOWN = "Downloading..."
+    const val KEY_DOWN = "Đang tải..."
     const val KEY_HAVE_DOWN = "Bài hát đã được tải"
     const val KEY_LYRIC = "lyric"
     const val KEY_TAB_MUSIC = "tab_music"
@@ -53,6 +55,8 @@ object Constant {
     const val MOOD_TODAY = "mood_today"
     const val AGAIN = "again"
     const val DOWN = "down"
+    const val LOCAL = "local"
+
     // bỏ enum ở đây
     enum class ClickControllerPlayerUi{
         ON_BACK,

@@ -22,12 +22,14 @@ import androidx.preference.PreferenceManager
 import com.example.musicapp.R
 import com.example.musicapp.databinding.ActivityMainBinding
 import com.example.musicapp.screen.explore.ExploreFragment
+import com.example.musicapp.screen.lyrics.LyricActivity
 import com.example.musicapp.screen.music.MusicFragment
 import com.example.musicapp.screen.musicVideo.MusicVideoFragment
 import com.example.musicapp.screen.user.UserFragment
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.utils.OnChangeListener
 import com.example.musicapp.shared.utils.constant.Constant
+import com.example.musicapp.shared.utils.constant.Constant.KEY_REFRESH_LYRIC
 
 
 class MainActivity : AppCompatActivity(), OnChangeListener {
@@ -66,9 +68,8 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        switchFragment()
         fragmentManager(musicFragment)
+        switchFragment()
         createService()
         switchUserIntent()
 
@@ -86,19 +87,23 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
     private fun switchUserIntent() {
         val checkUser = intent.getBooleanExtra(Constant.KEY_USER, false)
         val checkSongUser = intent.getBooleanExtra(Constant.KEY_SONG_USER, false)
-        if (checkUser){
+
+        if (checkUser) {
             fragmentManager(UserFragment())
-            binding.bottomNavigationView.selectedItemId = R.id.user_menu;
+            binding.bottomNavigationView.selectedItemId = R.id.user_menu
         }
-        if (checkSongUser){
-            fragmentManager(exploreFragment)
-            binding.bottomNavigationView.selectedItemId = R.id.explore_menu;
+        if (checkSongUser) {
+            fragmentManager(ExploreFragment())
+            binding.bottomNavigationView.selectedItemId = R.id.explore_menu
         }
     }
 
     private fun checkPermission(activity: Activity?): Boolean {
         val result =
-            ContextCompat.checkSelfPermission(activity!!, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            ContextCompat.checkSelfPermission(
+                activity!!,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
         return result == PackageManager.PERMISSION_GRANTED
     }
 
@@ -132,19 +137,21 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
                 .beginTransaction()
                 .replace(binding.frameLayout.id, fragment)
                 .commit()
-        }else{
+        } else {
             scrollTop()
         }
     }
 
     private fun scrollTop() {
-        when(currentFragment){
+        when (currentFragment) {
             is ExploreFragment -> {
                 (currentFragment as ExploreFragment).scrollTop()
             }
+
             is MusicVideoFragment -> {
                 (currentFragment as MusicVideoFragment).scrollToFirstItem()
             }
+
             is UserFragment -> {
                 (currentFragment as UserFragment).scrollTop()
             }
@@ -190,12 +197,25 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
         sharedPreferences.edit().putBoolean(Constant.KEY_TAB_MUSIC, false).apply()
         sharedPreferences.edit().putBoolean(Constant.KEY_SHUFFLE, false).apply()
         sharedPreferences.edit().putBoolean(Constant.KEY_AUTO_RESTART, false).apply()
+        sharedPreferences.edit().putBoolean(Constant.KEY_SONG_LOCAL, false).apply()
     }
 
     override fun onSongChanged() {
-        val exploreFragment = supportFragmentManager.findFragmentById(R.id.frame_layout) as? ExploreFragment
-        val userFragment = supportFragmentManager.findFragmentById(R.id.frame_layout) as? UserFragment
+        val exploreFragment =
+            supportFragmentManager.findFragmentById(R.id.frame_layout) as? ExploreFragment
+        val userFragment =
+            supportFragmentManager.findFragmentById(R.id.frame_layout) as? UserFragment
         exploreFragment?.initSongView()
         userFragment?.initSongView()
+    }
+
+    override fun onInitValueSong() {
+        val intent = Intent(this, LyricActivity::class.java)
+        intent.putExtra(
+            Constant.KEY_INTENT_ITEM,
+            sharedPreferences.getString(Constant.KEY_SONG, "")
+        )
+        intent.putExtra(KEY_REFRESH_LYRIC, "Fragment")
+        startActivity(intent)
     }
 }

@@ -22,6 +22,7 @@ import com.example.musicapp.data.model.reponse.MusicVideoRepository
 import com.example.musicapp.data.model.reponse.PlaylistUserRepository
 import com.example.musicapp.data.model.reponse.TopicRepository
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_PLAYLIST_USER
+import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_SONG_AGAIN
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_PLAYLIST_LOVE
@@ -130,6 +131,13 @@ interface ApiService {
     @FormUrlEncoded
     @POST(CREATE_SONG_LOVE)
     suspend fun createSongLove(
+        @Field("userId") userId: String,
+        @Field("songId") songId: Int
+    ): Response<Status>
+
+    @FormUrlEncoded
+    @POST(CREATE_SONG_AGAIN)
+    suspend fun createSongAgain(
         @Field("userId") userId: String,
         @Field("songId") songId: Int
     ): Response<Status>

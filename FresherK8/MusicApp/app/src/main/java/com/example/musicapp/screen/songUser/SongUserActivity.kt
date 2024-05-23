@@ -1,6 +1,7 @@
 package com.example.musicapp.screen.songUser
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,8 +11,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.preference.PreferenceManager
 import com.example.musicapp.R
 import com.example.musicapp.data.model.Song
+import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.databinding.ActivitySongDownBinding
 import com.example.musicapp.screen.explore.adapter.SongAgainAdapter
 import com.example.musicapp.screen.main.MainActivity
@@ -19,16 +22,25 @@ import com.example.musicapp.screen.song.SongActivity
 import com.example.musicapp.screen.songDetail.adapter.SongDetailAdapter
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.constant.Constant
+import com.example.musicapp.shared.utils.constant.Constant.KEY_SONG_LOCAL
+import com.example.musicapp.shared.utils.constant.Constant.LOCAL
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.Random
 
 class SongUserActivity : AppCompatActivity() {
     private val viewModel: SongUserViewModel by viewModel()
     private val adapter = SongDetailAdapter(::onItemClick)
-    private val songAgainAdapter = SongAgainAdapter(::onItemClick)
-
+    private val songAgainAdapter = SongAgainAdapter(::onItemClick, 0)
+    private var mSongs = arrayListOf<Song>()
+    private var songsAgain = mutableListOf<SongAgain>()
+    private var value: String? = null
     private val binding by lazy {
         ActivitySongDownBinding.inflate(layoutInflater)
+    }
+
+    private val sharedPreferences: SharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +59,7 @@ class SongUserActivity : AppCompatActivity() {
     }
 
     private fun getValueIntent() {
-        val value = intent.getStringExtra(Constant.KEY_INTENT_ITEM)
+        value = intent.getStringExtra(Constant.KEY_INTENT_ITEM)
         val name = intent.getStringExtra(Constant.KEY_NAME)
         binding.tvTitleSongUser.text = name
         when(value){
@@ -59,9 +71,11 @@ class SongUserActivity : AppCompatActivity() {
             }
         }
         if (value != null) {
-            setViewModel(value)
-            initRecyclerview(value)
+            setViewModel(value!!)
+            initRecyclerview(value!!)
         }
+        sharedPreferences.edit().putString(Constant.KEY_NAME_TAB, name)
+            .apply()
     }
 
     private fun showLoading() {
@@ -82,6 +96,7 @@ class SongUserActivity : AppCompatActivity() {
                         binding.layoutSongUserLoading.visibility = View.GONE
                         if (it.isNotEmpty()) {
                             adapter.submitList(it)
+                            mSongs = it
                         } else {
                             binding.layoutSongUserEmpty.visibility = View.VISIBLE
                         }
@@ -93,7 +108,8 @@ class SongUserActivity : AppCompatActivity() {
                     handlerPostDelay {
                         binding.layoutSongUserLoading.visibility = View.GONE
                         if (it.isNotEmpty()) {
-                            songAgainAdapter.submitList(it)
+                            songAgainAdapter.submitList(it.reversed()) // đảo ngược mảng
+                            songsAgain = it.reversed() as MutableList<SongAgain>
                         } else {
                             binding.layoutSongUserEmpty.visibility = View.VISIBLE
                         }
@@ -106,6 +122,15 @@ class SongUserActivity : AppCompatActivity() {
     private fun handleEvent() {
         binding.btnBackSongDown.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
         binding.btnExplore.setOnClickListener { startExplore() }
+        binding.btnPlaySongUser.setOnClickListener { startSong() }
+    }
+
+    private fun startSong() {
+        val intent = Intent(this, SongActivity::class.java)
+        sharedPreferences.edit().putBoolean(KEY_SONG_LOCAL, true).apply()
+        intent.putExtra(Constant.KEY_POSITION_SONG, 0)
+        intent.putParcelableArrayListExtra(Constant.KEY_INTENT_ITEM, mSongs)
+        startActivity(intent)
     }
 
     private fun startExplore() {
@@ -125,7 +150,38 @@ class SongUserActivity : AppCompatActivity() {
     }
 
     private fun onItemClick(any: Any, position: Int) {
-        startActivity(Intent(this, SongActivity::class.java))
+        val intent = Intent(this, SongActivity::class.java)
+        val  songs =  addListSong()
+
+        when(value){
+            Constant.DOWN -> {
+                intent.putParcelableArrayListExtra(Constant.KEY_INTENT_ITEM, mSongs)
+                sharedPreferences.edit().putBoolean(KEY_SONG_LOCAL, true).apply()
+            }
+            Constant.AGAIN -> {
+                intent.putParcelableArrayListExtra(Constant.KEY_INTENT_ITEM, songs)
+            }
+        }
+
+        intent.putExtra(Constant.KEY_POSITION_SONG, position)
+        startActivity(intent)
+    }
+
+    private fun addListSong() : ArrayList<Song>{
+        val songList  = arrayListOf<Song>()
+        for (songAgain in songsAgain){
+            val song = Song(
+                0,
+                songAgain.id,
+                songAgain.name,
+                songAgain.image,
+                songAgain.url,
+                songAgain.nameArtist,
+                0
+            )
+            songList.add(song)
+        }
+        return songList
     }
 
     private fun handlerPostDelay(listener: () -> Unit) {

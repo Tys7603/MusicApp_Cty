@@ -17,6 +17,9 @@ class MusicRemoteImpl : MusicDataSource.Remote {
     override suspend fun createSongLove(userId: String, songId: Int) =
         ApiClient.apiService.createSongLove(userId, songId)
 
+    override suspend fun createSongAgain(userId: String, songId: Int) =
+        ApiClient.apiService.createSongAgain(userId, songId)
+
     override suspend fun insertPlaylistIntoPlaylistLove(userId: String, playlistId: Int) =
         ApiClient.apiService.insertPlaylistIntoPlaylistLove(userId, playlistId)
 

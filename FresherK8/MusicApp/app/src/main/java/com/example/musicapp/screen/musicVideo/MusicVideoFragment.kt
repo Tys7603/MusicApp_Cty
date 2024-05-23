@@ -191,7 +191,7 @@ class MusicVideoFragment : Fragment() {
     private fun handlerPostDelay(listener: () -> Unit) {
         Handler(Looper.getMainLooper()).postDelayed({
             listener.invoke()
-        }, 500)
+        }, 200)
     }
 
     override fun onStart() {

@@ -61,6 +61,16 @@ class MusicViewModel(private val musicRepository: MusicRepository) : BaseViewMod
 
     }
 
+    fun addSongAgain(userId: String, songId: Int) {
+        launchTaskSync(
+            onRequest = { musicRepository.createSongAgain(userId, songId) },
+            onSuccess = { Log.d("TAG", "addSongAgain: oke")},
+            onFailure = { Log.e("FetchSong", "fetchSongLove: $it") },
+            onError = { exception.value = it }
+        )
+
+    }
+
     fun deleteSongLove(songId: Int) {
         launchTaskSync(
             onRequest = { musicRepository.deleteSongLove(songId) },

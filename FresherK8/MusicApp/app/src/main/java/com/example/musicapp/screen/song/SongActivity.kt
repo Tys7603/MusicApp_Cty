@@ -31,15 +31,13 @@ import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.utils.BooleanProperty
 import com.example.musicapp.shared.utils.DownloadMusic
-import com.example.musicapp.shared.utils.OnChangeListener
 import com.example.musicapp.shared.utils.constant.Constant.KEY_AUTO_RESTART
 import com.example.musicapp.shared.utils.constant.Constant.KEY_DOWN
-import com.example.musicapp.shared.utils.constant.Constant.KEY_HAVE_DOWN
 import com.example.musicapp.shared.utils.constant.Constant.KEY_NAME_TAB
 import com.example.musicapp.shared.utils.constant.Constant.KEY_PLAY_CLICK
 import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_SONG
-import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_SONG_LIST_NAME
 import com.example.musicapp.shared.utils.constant.Constant.KEY_SHUFFLE
+import com.example.musicapp.shared.utils.constant.Constant.KEY_SONG_LOCAL
 import com.example.musicapp.shared.utils.constant.Constant.VALUE_DEFAULT
 import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_SONG_LOVE
 import com.example.musicapp.shared.utils.format.FormatUtils
@@ -94,6 +92,7 @@ class SongActivity : AppCompatActivity(), BaseService {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         handlerEvent()
         setUpViewModel()
         initViewModel()
@@ -184,7 +183,7 @@ class SongActivity : AppCompatActivity(), BaseService {
     private fun putLyrics() {
         position = getPosition()
         val intent = Intent(this, LyricActivity::class.java)
-        intent.putExtra(Constant.KEY_INTENT_ITEM, mSongs.getOrNull(position))
+        intent.putExtra(Constant.KEY_INTENT_ITEM,  sharedPreferences.getString(Constant.KEY_SONG, ""))
         startActivity(intent)
     }
 
@@ -245,6 +244,7 @@ class SongActivity : AppCompatActivity(), BaseService {
     // hiển thị tên, ảnh bài hát, tên ca sĩ, bg
     private fun initValueSong() {
         position = getPosition()
+        val local = sharedPreferences.getBoolean(KEY_SONG_LOCAL, false)
         val song = mSongs.getOrNull(position)
 
         if (song != null) {
@@ -254,7 +254,12 @@ class SongActivity : AppCompatActivity(), BaseService {
             binding.imgBg.loadImageUrl(song.image)
 
             if (isServiceBound) {
-                val musicPrepared = checkMusicServiceToPlay(song)
+                val musicPrepared = if (local) {
+                    checkMusicServiceToPlayLocal(song)
+                }else{
+                    checkMusicServiceToPlay(song)
+                }
+
                 if (musicPrepared) {
                     // khi bài hát đã được chuẩn bị
                     setTimeTotal()
@@ -268,9 +273,22 @@ class SongActivity : AppCompatActivity(), BaseService {
         }
     }
 
+    private fun checkMusicServiceToPlayLocal(song: Song): Boolean {
+        return if (!musicService?.isMediaPrepared()!!) {
+            musicService?.playFromLocal(song.name)
+            musicService?.setOnCompletionListener {
+                // Xử lý khi bài hát kết thúc, chuyển sang bài hát tiếp theo
+                nextMusic()
+            }
+            false
+        } else {
+            true
+        }
+    }
+
     private fun checkMusicServiceToPlay(song: Song): Boolean {
         return if (!musicService?.isMediaPrepared()!!) {
-            musicService?.songPlayFromUrl(song.url)
+            musicService?.playFromUrl(song.url)
             musicService?.setOnCompletionListener {
                 // Xử lý khi bài hát kết thúc, chuyển sang bài hát tiếp theo
                 nextMusic()
@@ -344,6 +362,7 @@ class SongActivity : AppCompatActivity(), BaseService {
             binding.layoutPlay,
             binding.btnPlay
         )
+        reFreshPutLyrics()
     }
 
     private fun backMusic() {
@@ -354,11 +373,22 @@ class SongActivity : AppCompatActivity(), BaseService {
         }
         putPosition(position)
         setFuncMusic()
+        musicService?.setNextMusic(true)
         ProgressBarManager.showProgressBarPlay(
             binding.progressBarPlay,
             binding.layoutPlay,
             binding.btnPlay
         )
+    }
+
+    private fun reFreshPutLyrics(){
+        val isCheck = sharedPreferences.getBoolean(Constant.KEY_ACTIVITY_LYRIC, false)
+        if (isCheck) {
+            val intent = Intent(this, LyricActivity::class.java)
+            intent.putExtra(Constant.KEY_INTENT_ITEM, sharedPreferences.getString(Constant.KEY_SONG, ""))
+            intent.putExtra(Constant.KEY_REFRESH_LYRIC, "Activity")
+            startActivity(intent)
+        }
     }
 
     private fun setFuncMusic() {
@@ -367,17 +397,9 @@ class SongActivity : AppCompatActivity(), BaseService {
         sharedPreferences.edit().putBoolean(KEY_PLAY_CLICK, true).apply()
         initValueSong()
         checkSongLove()
+        saveSong()
         sharedPreferences.edit().putBoolean(Constant.KEY_LYRIC_NEW, true).apply()
-        senBroadcastInitValueLyric()
-    }
 
-    private fun senBroadcastInitValueLyric() {
-        val isCheck = sharedPreferences.getBoolean(Constant.KEY_ACTIVITY_LYRIC, false)
-        if (isCheck) {
-            val intent = Intent(Constant.UPDATE_LYRIC)
-            intent.putExtra(Constant.KEY_INTENT_ITEM, sharedPreferences.getString(Constant.KEY_SONG, ""))
-            sendBroadcast(intent)
-        }
     }
 
     private fun autoRestart() {
@@ -465,6 +487,7 @@ class SongActivity : AppCompatActivity(), BaseService {
     private fun getListSongIntent() {
         val songs = intent.getParcelableArrayListExtra<Song>(Constant.KEY_INTENT_ITEM)
         val mPosition = intent.getIntExtra(KEY_POSITION_SONG, 0)
+        Log.d("TAG", "initValueSong: " + songs.toString())
         if (songs != null){
             mSongs = songs
             mSongsDefault = songs
@@ -473,9 +496,20 @@ class SongActivity : AppCompatActivity(), BaseService {
             sharedPreferences.edit().putString(Constant.KEY_LIST_SONG, Gson().toJson(songs)).apply()
             sharedPreferences.edit().putInt(KEY_POSITION_SONG, mPosition).apply()
             binding.tvTitleSong.text = sharedPreferences.getString(KEY_NAME_TAB, "")
-            setFuncMusic()
+            setFuncMusicStart()
             initFunc()
         }
+    }
+
+    private fun setFuncMusicStart() {
+        musicService?.stop()
+        musicService?.setMediaPrepared(false)
+        sharedPreferences.edit().putBoolean(KEY_PLAY_CLICK, false).apply()
+        musicService?.setNextMusic(false)
+        initValueSong()
+        checkSongLove()
+        saveSong()
+        sharedPreferences.edit().putBoolean(Constant.KEY_LYRIC_NEW, true).apply()
     }
 
     override fun onMediaPrepared() {
@@ -511,12 +545,8 @@ class SongActivity : AppCompatActivity(), BaseService {
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (isServiceBound) {
-            // ngắt kiên kết
-            unbindService(serviceConnection)
-            isServiceBound = false
-        }
+    override fun onStop() {
+        super.onStop()
+        sharedPreferences.edit().putBoolean(Constant.KEY_SONG_LOCAL, false).apply()
     }
 }

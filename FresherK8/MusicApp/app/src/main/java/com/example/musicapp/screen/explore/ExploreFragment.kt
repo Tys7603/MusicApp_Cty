@@ -11,6 +11,7 @@ import android.os.Handler
 import android.os.Handler.Callback
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +38,7 @@ import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.FragmentExploreBinding
+import com.example.musicapp.screen.base.BaseService
 import com.example.musicapp.screen.exploreDetail.ExploreDetailActivity
 import com.example.musicapp.screen.song.SongActivity
 import com.example.musicapp.screen.songDetail.SongDetailActivity
@@ -53,7 +55,7 @@ import com.example.musicapp.shared.utils.constant.Constant.KEY_NAME_TAB
 import java.util.Random
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ExploreFragment : Fragment() {
+class ExploreFragment : Fragment(), BaseService {
     private val viewModel: ExploreViewModel by viewModel()
     private var musicService: MusicService? = null
     private var isServiceBound = false
@@ -61,10 +63,11 @@ class ExploreFragment : Fragment() {
     private val playListMoodAdapter = PlayListAdapter(::onItemClick, 1)
     private val topicAdapter = TopicAdapterLinear(::onItemClick)
     private val categoriesAdapter = CategoriesAdapter(::onItemClick, 1)
-    private val songAgainAdapter = SongAgainAdapter(::onItemClickAgain)
+    private val songAgainAdapter = SongAgainAdapter(::onItemClickAgain, 1)
     private val albumNewAdapter = AlbumAdapter(::onItemClick, 1)
     private val albumLoveAdapter = AlbumAdapter(::onItemClick, 1)
     private val songRankAdapter = SongRankAdapter(::onItemClickSongRank)
+    private var songsAgain = mutableListOf<SongAgain>()
     private var isSnapHelperAttached = false
 
     private val binding by lazy {
@@ -81,6 +84,8 @@ class ExploreFragment : Fragment() {
             val binder = service as MusicService.LocalBinder
             musicService = binder.getService()
             isServiceBound = true
+            musicService?.musicService(this@ExploreFragment)
+            mediaPrepared()
         }
 
         // ngắt kết nối music service
@@ -101,11 +106,29 @@ class ExploreFragment : Fragment() {
         setViewModel()
         setAdapterView()
         handlerEvent()
-        initMusicView()
         initAdapterDefault()
+        showProgressBar(true)
+
     }
 
-    private fun initAdapterDefault(){
+    private fun showProgressBar(boolean: Boolean){
+        if (boolean){
+            binding.includeLayout.progressBar4.visibility = View.VISIBLE
+            binding.includeLayout.btnLayoutBottomPause.visibility = View.INVISIBLE
+        }else{
+            binding.includeLayout.progressBar4.visibility = View.INVISIBLE
+            binding.includeLayout.btnLayoutBottomPause.visibility = View.VISIBLE
+        }
+    }
+
+    private fun mediaPrepared(){
+        if (musicService?.isMediaPrepared() == true){
+            binding.includeLayout.progressBar4.visibility = View.INVISIBLE
+            binding.includeLayout.btnLayoutBottomPause.visibility = View.VISIBLE
+        }
+    }
+
+    private fun initAdapterDefault() {
         playListAdapter.submitList(ListDefault.initListPlaylist())
         playListAdapter.setEnableItem(false)
         playListMoodAdapter.submitList(ListDefault.initListPlaylist())
@@ -163,8 +186,9 @@ class ExploreFragment : Fragment() {
             }
         }
 
-        viewModel.songAgain.observe(viewLifecycleOwner) { songAgain ->
-            songAgainAdapter.submitList(songAgain)
+        viewModel.songAgain.observe(viewLifecycleOwner) {
+            songAgainAdapter.submitList(it.reversed())
+            songsAgain = it.reversed() as MutableList<SongAgain>
         }
 
         viewModel.albumLove.observe(viewLifecycleOwner) {
@@ -216,28 +240,32 @@ class ExploreFragment : Fragment() {
         binding.tvAddTopic.setOnClickListener { onStartActivity(Constant.CATEGORIES) }
         binding.tvAddLoving.setOnClickListener { onStartActivity(Constant.ALBUM_LOVE) }
         binding.tvAddMood.setOnClickListener { onStartActivity(Constant.MOOD_TODAY) }
-        binding.btnShareMusic.setOnClickListener {  }
+        binding.btnShareMusic.setOnClickListener { }
     }
 
     private fun onStartActivity(nameData: String) {
         val intent = Intent(requireContext(), ExploreDetailActivity::class.java)
-        when(nameData){
+        when (nameData) {
             Constant.PLAYLIST -> {
                 intent.putExtra(KEY_INTENT_ITEM, Constant.PLAYLIST)
                 intent.putExtra(KEY_NAME, binding.tvTitlePlaylist.text)
             }
+
             Constant.CATEGORIES -> {
                 intent.putExtra(KEY_INTENT_ITEM, Constant.CATEGORIES)
                 intent.putExtra(KEY_NAME, binding.tvTitleCategory.text)
             }
+
             Constant.MOOD_TODAY -> {
                 intent.putExtra(KEY_INTENT_ITEM, Constant.MOOD_TODAY)
                 intent.putExtra(KEY_NAME, binding.tvTitleMood.text)
             }
+
             Constant.ALBUM_NEW -> {
                 intent.putExtra(KEY_INTENT_ITEM, Constant.ALBUM_NEW)
                 intent.putExtra(KEY_NAME, binding.tvTitleNew.text)
             }
+
             Constant.ALBUM_LOVE -> {
                 intent.putExtra(KEY_INTENT_ITEM, Constant.ALBUM_LOVE)
                 intent.putExtra(KEY_NAME, binding.tvTitleLoved.text)
@@ -284,11 +312,6 @@ class ExploreFragment : Fragment() {
                 startActivity(intent)
             }
 
-            is SongAgain -> {
-                val intent = Intent(requireContext(), SongActivity::class.java)
-                startActivity(intent)
-            }
-
             is Album -> {
                 val intent = Intent(requireContext(), SongDetailActivity::class.java)
                 intent.putExtra(KEY_INTENT_ITEM, item)
@@ -297,9 +320,32 @@ class ExploreFragment : Fragment() {
         }
     }
 
-    private fun onItemClickAgain(any: Any, position: Int) {
+    private fun onItemClickAgain(songAgain: SongAgain, position: Int) {
         val intent = Intent(requireContext(), SongActivity::class.java)
+        val song = addListSong()
+
+        sharedPreferences.edit().putString(KEY_NAME_TAB, "Nghe gần đây")
+            .apply()
+        intent.putExtra(Constant.KEY_POSITION_SONG, position)
+        intent.putParcelableArrayListExtra(KEY_INTENT_ITEM, song)
         startActivity(intent)
+    }
+
+    private fun addListSong() : ArrayList<Song>{
+        val songList  = arrayListOf<Song>()
+        for (songAgain in songsAgain){
+            val song = Song(
+                0,
+                songAgain.id,
+                songAgain.name,
+                songAgain.image,
+                songAgain.url,
+                songAgain.nameArtist,
+                0
+            )
+            songList.add(song)
+        }
+        return songList
     }
 
     private fun onItemClickSongRank(song: ArrayList<Song>, position: Int, name: String) {
@@ -310,13 +356,13 @@ class ExploreFragment : Fragment() {
         startActivity(intent)
     }
 
-    private fun handlerPostDelay(listener : () -> Unit){
+    private fun handlerPostDelay(listener: () -> Unit) {
         Handler(Looper.getMainLooper()).postDelayed({
             listener.invoke()
-        }, 500)
+        }, 200)
     }
 
-    fun scrollTop(){
+    fun scrollTop() {
         binding.nestedScrollView.post {
             binding.nestedScrollView.smoothScrollTo(0, binding.tvTitlePlaylist.top)
         }
@@ -327,6 +373,7 @@ class ExploreFragment : Fragment() {
         val intent = Intent(activity, MusicService::class.java)
         activity?.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         initSongView()
+        initMusicView()
     }
 
     override fun onDestroy() {
@@ -337,5 +384,16 @@ class ExploreFragment : Fragment() {
         }
         musicService = null
     }
+
+    override fun onMediaPrepared() {
+        showProgressBar(false)
+        musicService?.start()
+    }
+
+    override fun onNextMusic() = Unit
+
+    override fun onBackMusic() = Unit
+
+    override fun onPlayMusic() = Unit
 }
 

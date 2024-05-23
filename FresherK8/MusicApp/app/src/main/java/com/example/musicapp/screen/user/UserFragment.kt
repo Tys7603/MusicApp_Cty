@@ -20,6 +20,7 @@ import com.example.musicapp.data.model.PlaylistUser
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.FragmentUserBinding
 import com.example.musicapp.screen.account.information.InformationActivity
+import com.example.musicapp.screen.base.BaseService
 import com.example.musicapp.screen.main.MainActivity
 import com.example.musicapp.screen.music.MusicFragment
 import com.example.musicapp.screen.songDetail.SongDetailActivity
@@ -41,7 +42,7 @@ import com.google.firebase.auth.FirebaseAuth
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class UserFragment : Fragment(), OnChangeListener.FragmentChangeListener {
+class UserFragment : Fragment(), BaseService {
 
     private var musicService: MusicService? = null
     private var isServiceBound = false
@@ -67,6 +68,8 @@ class UserFragment : Fragment(), OnChangeListener.FragmentChangeListener {
             val binder = service as MusicService.LocalBinder
             musicService = binder.getService()
             isServiceBound = true
+            musicService?.musicService(this@UserFragment)
+            mediaPrepared()
         }
 
         // ngắt kết nối music service
@@ -91,6 +94,24 @@ class UserFragment : Fragment(), OnChangeListener.FragmentChangeListener {
         initRecyclerView()
         handleEventViewModel()
         showLoading()
+        showProgressBar(true)
+    }
+
+    private fun showProgressBar(boolean: Boolean){
+        if (boolean){
+            binding.includeLayout1.progressBar4.visibility = View.VISIBLE
+            binding.includeLayout1.btnLayoutBottomPause.visibility = View.INVISIBLE
+        }else{
+            binding.includeLayout1.progressBar4.visibility = View.INVISIBLE
+            binding.includeLayout1.btnLayoutBottomPause.visibility = View.VISIBLE
+        }
+    }
+
+    private fun mediaPrepared(){
+        if (musicService?.isMediaPrepared() == true){
+            binding.includeLayout1.progressBar4.visibility = View.INVISIBLE
+            binding.includeLayout1.btnLayoutBottomPause.visibility = View.VISIBLE
+        }
     }
 
     private fun fetchData() {
@@ -202,14 +223,14 @@ class UserFragment : Fragment(), OnChangeListener.FragmentChangeListener {
                     binding.tvAgain.text.toString()
                 )
             } else {
-                SnackBarManager.showMessage(binding.imgAvatar, MusicFragment.NOT_LOGIN)
+                openBottomSheetLogin()
             }
         }
         binding.btnAddPlaylistUserFragment.setOnClickListener { openBottomSheetCreatePlaylistFragment() }
         binding.btnExplore.setOnClickListener { startExplore() }
         binding.btnOpenBottomSheet.setOnClickListener { checkUserLogin(0) }
         binding.btnOpenBottomSheetSelect.setOnClickListener { checkUserLogin(1) }
-        binding.btnOpenBottomSheetLove.setOnClickListener { openBottomSheet() }
+        binding.btnOpenBottomSheetLove.setOnClickListener { openBottomSheetCheckUser() }
         binding.btnLove.setOnClickListener { startSongDetail() }
         binding.btnLogin.setOnClickListener { openBottomSheetLogin() }
         binding.includeLayout1.btnLayoutBottomPause.setOnClickListener { onCheckPlayMusic() }
@@ -258,6 +279,14 @@ class UserFragment : Fragment(), OnChangeListener.FragmentChangeListener {
     private fun openBottomSheetCreatePlaylistFragment() {
         if (user != null){
             openBottomSheetCreatePlaylist()
+        }else{
+            openBottomSheetLogin()
+        }
+    }
+
+    private fun openBottomSheetCheckUser() {
+        if (user != null){
+            openBottomSheet()
         }else{
             openBottomSheetLogin()
         }
@@ -315,11 +344,15 @@ class UserFragment : Fragment(), OnChangeListener.FragmentChangeListener {
     }
 
     private fun onItemClickBottomSheetLove() {
-        viewModelLove.fetchPlaylists(user!!.uid)
+        if (user != null){
+            viewModelLove.fetchPlaylists(user.uid)
+        }
     }
 
     private fun onItemClickBottomSheetUser() {
-        viewModelUser.fetchPlaylistsUser(user!!.uid)
+        if (user != null){
+            viewModelUser.fetchPlaylistsUser(user.uid)
+        }
     }
 
     private fun onItemClick(boolean: Boolean, any: Any) {
@@ -353,6 +386,17 @@ class UserFragment : Fragment(), OnChangeListener.FragmentChangeListener {
         fetchData()
     }
 
+    override fun onMediaPrepared() {
+        showProgressBar(false)
+        musicService?.start()
+    }
+
+    override fun onNextMusic() = Unit
+
+    override fun onBackMusic() = Unit
+
+    override fun onPlayMusic() = Unit
+
     override fun onDestroy() {
         super.onDestroy()
         if (isServiceBound) {
@@ -360,8 +404,5 @@ class UserFragment : Fragment(), OnChangeListener.FragmentChangeListener {
             isServiceBound = false
         }
         musicService = null
-    }
-
-    override fun onFragmentChanged() {
     }
 }

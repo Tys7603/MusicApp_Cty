@@ -13,12 +13,6 @@ import com.example.musicapp.shared.utils.constant.Constant
 
 class MusicBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        val data = intent?.getParcelableExtra<Song>(Constant.KEY_INTENT_ITEM)
-        val activityIntent = Intent(context, LyricActivity::class.java).apply {
-            putExtra(Constant.KEY_INTENT_ITEM, data)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        context?.startActivity(activityIntent)
+
     }
 }
-
