@@ -20,6 +20,8 @@ import com.example.musicapp.data.model.Status
 import com.example.musicapp.data.model.reponse.LyricRepository
 import com.example.musicapp.data.model.reponse.MusicVideoRepository
 import com.example.musicapp.data.model.reponse.PlaylistUserRepository
+import com.example.musicapp.data.model.reponse.SearchAllRepository
+import com.example.musicapp.data.model.reponse.SearchRepository
 import com.example.musicapp.data.model.reponse.TopicRepository
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_PLAYLIST_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_SONG_AGAIN
@@ -33,6 +35,8 @@ import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO_EXCLUDING_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_PLAYLIST_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_PLAYLIST_USER
+import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SEARCH
+import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SEARCH_NAME_ALL
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_ALBUM_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_PLAYLIST_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_TOPIC_ID
@@ -170,4 +174,11 @@ interface ApiService {
     // lyrics
     @GET(GET_LYRIC_SONG_ID)
     suspend fun getLyricsBySongId(@Path("songId") songId: Int): Response<LyricRepository>
+
+    //search
+    @GET(GET_SEARCH_NAME_ALL)
+    suspend fun getSearchAllName(): Response<SearchAllRepository>
+
+    @GET(GET_SEARCH)
+    suspend fun getSearch(@Path("keyword") keyword : String): Response<SearchRepository>
 }

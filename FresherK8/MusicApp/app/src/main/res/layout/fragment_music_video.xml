@@ -43,14 +43,14 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:id="@+id/imageView10"
+                    android:id="@+id/btn_share"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     app:srcCompat="@drawable/ic_trailing" />
 
                 <ImageView
-                    android:id="@+id/imageView7"
+                    android:id="@+id/btn_search_mv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_search" />

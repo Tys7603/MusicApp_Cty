@@ -68,4 +68,8 @@
     <string name="kh_ng_c_d_li_u">Không có dữ liệu</string>
     <string name="nh_c_t_i">Nhạc đã tải</string>
     <string name="h_y_kh_m_ph_nh_ng_phaylist_kh_c_nh">Hãy khám phá những phaylist khác nhé</string>
+    <string name="playlists">Playlist</string>
+    <string name="albums">Album</string>
+    <string name="songs">Bài hát</string>
+    <string name="music_videos">Video</string>
 </resources>

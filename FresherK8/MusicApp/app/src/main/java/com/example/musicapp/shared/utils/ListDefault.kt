@@ -10,12 +10,12 @@ import com.example.musicapp.data.model.Topic
 object ListDefault {
     fun initListPlaylist(): MutableList<Playlist> {
         return mutableListOf(
-            Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, false),
-            Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, false),
-            Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, false),
-            Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, false),
-            Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, false),
-            Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, false),
+            Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, 0,false),
+            Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, 0,false),
+            Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, 0,false),
+            Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, 0,false),
+            Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, 0,false),
+            Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, 0,false),
         )
     }
 
@@ -45,12 +45,12 @@ object ListDefault {
 
     fun initListAlbum(): MutableList<Album> {
         return mutableListOf(
-            Album(0,"Loading","https://iili.io/HlHy9Yx.png","Loading"),
-            Album(0,"Loading","https://iili.io/HlHy9Yx.png","Loading"),
-            Album(0,"Loading","https://iili.io/HlHy9Yx.png","Loading"),
-            Album(0,"Loading","https://iili.io/HlHy9Yx.png","Loading"),
-            Album(0,"Loading","https://iili.io/HlHy9Yx.png","Loading"),
-            Album(0,"Loading","https://iili.io/HlHy9Yx.png","Loading"),
+            Album(0,"Loading","https://iili.io/HlHy9Yx.png","Loading",0),
+            Album(0,"Loading","https://iili.io/HlHy9Yx.png","Loading",0),
+            Album(0,"Loading","https://iili.io/HlHy9Yx.png","Loading",0),
+            Album(0,"Loading","https://iili.io/HlHy9Yx.png","Loading",0),
+            Album(0,"Loading","https://iili.io/HlHy9Yx.png","Loading",0),
+            Album(0,"Loading","https://iili.io/HlHy9Yx.png","Loading",0),
         )
     }
 }

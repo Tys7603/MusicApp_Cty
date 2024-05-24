@@ -17,21 +17,21 @@ const getListSearchController = async (req, res) => {
     search.forEach(result => {
       switch (result.type) {
         case 'song':
-          groupedResults.songs.push({ id: result.id, name: result.name });
+          groupedResults.songs.push({ song_id: result.id, song_name: result.name, song_image : result.image, song_url : result.url, name_artist : result.artist, song_count : result.song_count });
           break;
         case 'playlist':
-          groupedResults.playlists.push({ id: result.id, name: result.name });
+          groupedResults.playlists.push({ playlist_id: result.id, playlist_name: result.name, playlist_image : result.image, url : result.url, name_artist : result.artist, song_count : result.song_count });
           break;
         case 'music_video':
-          groupedResults.music_videos.push({ id: result.id, name: result.name });
+          groupedResults.music_videos.push({ music_video_id: result.id, music_video_name: result.name, artist_image : result.image, music_video_time : result.url, artist_name : result.artist, music_video_image : result.song_count });
           break;
         case 'album':
-          groupedResults.albums.push({ id: result.id, name: result.name });
+          groupedResults.albums.push({ album_id: result.id, album_name: result.name, album_image : result.image, url : result.url, name_artist : result.artist, song_count : result.song_count });
           break;
       }
     });
 
-    res.json({ status: 200, search: groupedResults })
+    res.json({ status: 200, search : groupedResults})
   } catch (error) {
     res.json({ status: "400", message: error.message });
   }
@@ -42,9 +42,9 @@ const getListSearchAllNameController = async (req, res) => {
 
   try {
 
-    const searchAllName = await model.searchNameAllModel()
+    const search = await model.searchNameAllModel()
 
-    res.json({ status: 200, searchAllName })
+    res.json({ status: 200, search })
 
   } catch (error) {
     res.json({ status: "400", message: error.message });

@@ -6,6 +6,8 @@ import com.example.musicapp.data.repositories.musicRepository.MusicRepository
 import com.example.musicapp.data.repositories.musicRepository.MusicRepositoryImpl
 import com.example.musicapp.data.repositories.musicVideoRepository.MusicVideoRepository
 import com.example.musicapp.data.repositories.musicVideoRepository.MusicVideoRepositoryImpl
+import com.example.musicapp.data.repositories.searchRepository.SearchRepository
+import com.example.musicapp.data.repositories.searchRepository.SearchRepositoryImpl
 import com.example.musicapp.data.repositories.topicRepository.TopicRepository
 import com.example.musicapp.data.repositories.topicRepository.TopicRepositoryImpl
 import com.example.musicapp.data.repositories.userRepository.UserRepository
@@ -19,4 +21,5 @@ val repositoryModule = module {
     single<TopicRepository>   { TopicRepositoryImpl(get()) }
     single<UserRepository>    { UserRepositoryImpl(get()) }
     single<MusicVideoRepository>    { MusicVideoRepositoryImpl(get()) }
+    single<SearchRepository>    { SearchRepositoryImpl(get()) }
 }

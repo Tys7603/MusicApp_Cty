@@ -6,6 +6,7 @@ import com.example.musicapp.screen.lyrics.LyricViewModel
 import com.example.musicapp.screen.music.MusicViewModel
 import com.example.musicapp.screen.musicVideo.MusicVideoViewModel
 import com.example.musicapp.screen.musicVideoDetail.MusicVideoDetailViewModel
+import com.example.musicapp.screen.search.SearchViewModel
 import com.example.musicapp.screen.songDetail.SongDetailViewModel
 import com.example.musicapp.screen.songUser.SongUserViewModel
 import com.example.musicapp.screen.topic.TopicViewModel
@@ -31,5 +32,5 @@ val viewModelModule = module {
     viewModel { PlaylistLoveViewModel(get()) }
     viewModel { SongDetailViewModel(get()) }
     viewModel { LyricViewModel(get()) }
-
+    viewModel { SearchViewModel(get()) }
 }

@@ -13,5 +13,7 @@ data class Album(
     @SerializedName("album_image")
     val albumImage: String,
     @SerializedName("name_artist")
-    val nameArtist: String
+    val nameArtist: String ,
+    @SerializedName("song_count")
+    val songCount: Int
 ) : Parcelable

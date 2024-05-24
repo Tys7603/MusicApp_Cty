@@ -22,10 +22,12 @@ import com.example.musicapp.databinding.FragmentMusicVideoBinding
 import com.example.musicapp.screen.musicVideo.adapter.TopicMVAdapter
 import com.example.musicapp.screen.musicVideo.adapter.MusicVideoAdapter
 import com.example.musicapp.screen.musicVideoDetail.MusicVideoDetailActivity
+import com.example.musicapp.screen.search.SearchActivity
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.extension.setAdapterLinearHorizontal
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.constant.Constant
+import com.example.musicapp.shared.widget.SnackBarManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MusicVideoFragment : Fragment() {
@@ -70,7 +72,13 @@ class MusicVideoFragment : Fragment() {
         initViewModel()
         initRecyclerView()
         handlerEventViewModel()
+        handleEvent()
         checkVisibilityLayout(false)
+    }
+
+    private fun handleEvent() {
+        binding.btnSearchMv.setOnClickListener { startActivity(Intent(requireContext(), SearchActivity::class.java)) }
+        binding.btnShare.setOnClickListener { SnackBarManager.showMessage(binding.btnSearchMv, "Tính năng phát triển sau") }
     }
 
     private fun initViewModel() {

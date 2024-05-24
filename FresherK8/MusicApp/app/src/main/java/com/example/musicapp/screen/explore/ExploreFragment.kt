@@ -32,6 +32,7 @@ import com.example.musicapp.databinding.FragmentExploreBinding
 import com.example.musicapp.screen.base.BaseService
 import com.example.musicapp.screen.exploreDetail.ExploreDetailActivity
 import com.example.musicapp.screen.music.MusicViewModel
+import com.example.musicapp.screen.search.SearchActivity
 import com.example.musicapp.screen.song.SongActivity
 import com.example.musicapp.screen.songDetail.SongDetailActivity
 import com.example.musicapp.screen.topic.TopicActivity
@@ -240,6 +241,7 @@ class ExploreFragment : Fragment(), BaseService {
         binding.tvAddTopic.setOnClickListener { onStartActivity(Constant.CATEGORIES) }
         binding.tvAddLoving.setOnClickListener { onStartActivity(Constant.ALBUM_LOVE) }
         binding.tvAddMood.setOnClickListener { onStartActivity(Constant.MOOD_TODAY) }
+        binding.btnSearch.setOnClickListener { startActivity(Intent(requireContext(), SearchActivity::class.java)) }
     }
 
     private fun onStartActivity(nameData: String) {

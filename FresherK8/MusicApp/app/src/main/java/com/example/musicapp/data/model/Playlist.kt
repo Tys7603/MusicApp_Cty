@@ -16,5 +16,7 @@ data class Playlist (
     var nameArtist : String,
     @SerializedName("playlist_user_love_id")
     var playlistUserLoveId : Int,
+    @SerializedName("song_count")
+    var songCount : Int,
     var isSelected : Boolean
 ) : Parcelable
