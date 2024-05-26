@@ -26,5 +26,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="@string/kh_ng_c_n_i_dung_t_m_ki_m"
+            android:fontFamily="@font/product_sans_regular"
+            app:layout_constraintBottom_toBottomOf="@+id/rcv_playlist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/rcv_playlist" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

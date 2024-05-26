@@ -8,6 +8,11 @@ import com.example.musicapp.data.model.SongRank
 import com.example.musicapp.data.model.Topic
 
 object ListDefault {
+
+    fun initSong(): Song {
+        return Song(0,0,"Loading","https://iili.io/HlHy9Yx.png","","Loading",0)
+    }
+
     fun initListPlaylist(): MutableList<Playlist> {
         return mutableListOf(
             Playlist(0, "Loading", "https://iili.io/HlHy9Yx.png", "Loading...", 0, 0,false),

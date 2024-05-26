@@ -3,21 +3,20 @@ package com.example.musicapp.screen.main
 import android.Manifest
 import android.app.Activity
 import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.example.musicapp.R
 import com.example.musicapp.databinding.ActivityMainBinding
@@ -44,6 +43,7 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
 
     companion object {
         const val MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 123
+        const val NOTIFICATION_PERMISSION_REQUEST_CODE = 1
         const val MUSIC = "Music"
         const val EXPLORE = "Explore"
         const val MV = "MV"
@@ -67,10 +67,9 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
         if (!checkPermission(this)) {
             requestPermission(this)
         }
-        if (!checkNotificationPermission()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                requestNotificationPermission()
-            }
+
+        if (!isNotificationPermissionGranted(this)) {
+            requestNotificationPermission(this, NOTIFICATION_PERMISSION_REQUEST_CODE);
         }
 
     }
@@ -105,20 +104,21 @@ class MainActivity : AppCompatActivity(), OnChangeListener {
         )
     }
 
-    private fun checkNotificationPermission(): Boolean {
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager.notificationChannels.any { it.importance != NotificationManager.IMPORTANCE_NONE }
-        } else {
-            true
+    private fun isNotificationPermissionGranted(context: Context): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val notificationManager =
+                context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            return notificationManager.areNotificationsEnabled()
         }
+        return true // Các phiên bản Android thấp hơn tự động có quyền thông báo
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun requestNotificationPermission() {
-        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-        intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
-        startActivity(intent)
+    private fun requestNotificationPermission(activity: Activity, requestCode: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                .putExtra(Settings.EXTRA_APP_PACKAGE, activity.packageName)
+            activity.startActivityForResult(intent, requestCode)
+        }
     }
 
     private fun fragmentManager(tag: String) {

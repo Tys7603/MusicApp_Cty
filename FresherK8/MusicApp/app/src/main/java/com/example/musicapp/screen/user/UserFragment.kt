@@ -19,10 +19,8 @@ import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.data.model.PlaylistUser
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.FragmentUserBinding
-import com.example.musicapp.screen.account.information.InformationActivity
 import com.example.musicapp.screen.base.BaseService
 import com.example.musicapp.screen.main.MainActivity
-import com.example.musicapp.screen.music.MusicFragment
 import com.example.musicapp.screen.music.MusicViewModel
 import com.example.musicapp.screen.songDetail.SongDetailActivity
 import com.example.musicapp.screen.songUser.SongUserActivity
@@ -36,7 +34,7 @@ import com.example.musicapp.shared.extension.loadImageUrl
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.BooleanProperty
 import com.example.musicapp.shared.utils.GetValue
-import com.example.musicapp.shared.utils.OnChangeListener
+import com.example.musicapp.shared.utils.ListDefault
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.widget.SnackBarManager
 import com.google.firebase.auth.FirebaseAuth
@@ -51,7 +49,7 @@ class UserFragment : Fragment(), BaseService {
     private val viewModelUser: PlaylistUserViewModel by viewModel()
     private val viewModelLove: PlaylistLoveViewModel by viewModel()
     private var songsLove: MutableList<Song> = mutableListOf()
-    private val user = FirebaseAuth.getInstance().currentUser
+    private var user = FirebaseAuth.getInstance().currentUser
     private val playlistLoveAdapter = PlaylistLoveAdapter(::onItemClick, 2)
     private val playlistUserAdapter = PlaylistUserAdapter(::onItemClick, 2)
 
@@ -61,6 +59,10 @@ class UserFragment : Fragment(), BaseService {
 
     private val sharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(requireContext())
+    }
+
+    companion object{
+        const val NO_SONG = "0 bài hát"
     }
 
     private val serviceConnection = object : ServiceConnection {
@@ -117,8 +119,8 @@ class UserFragment : Fragment(), BaseService {
 
     private fun fetchData() {
         if (user != null){
-            viewModelUser.fetchPlaylistsUser(user.uid)
-            viewModelLove.fetchPlaylists(user.uid)
+            viewModelUser.fetchPlaylistsUser(user!!.uid)
+            viewModelLove.fetchPlaylists(user!!.uid)
         }else{
             binding.layoutPlaylistUserLoading.visibility = View.INVISIBLE
             binding.layoutPlaylistUserEmpty.visibility = View.VISIBLE
@@ -145,8 +147,8 @@ class UserFragment : Fragment(), BaseService {
     private fun handleEventViewModel() {
         viewModel.songsLove.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
-                binding.imgLove.loadImageUrl(it[0].image)
-                songsLove = it
+                songsLove = it.shuffled().toMutableList()
+                binding.imgLove.loadImageUrl(songsLove[0].image)
             }
         }
 
@@ -203,14 +205,7 @@ class UserFragment : Fragment(), BaseService {
                 binding.tvUnderlinedLove.visibility = View.VISIBLE
             }
         }
-        binding.btnInformation.setOnClickListener {
-            startActivity(
-                Intent(
-                    requireContext(),
-                    InformationActivity::class.java
-                )
-            )
-        }
+        binding.btnLogout.setOnClickListener {logout()}
         binding.btnTrackDown.setOnClickListener {
             startSongUser(
                 Constant.DOWN,
@@ -235,6 +230,21 @@ class UserFragment : Fragment(), BaseService {
         binding.btnLove.setOnClickListener { startSongDetail() }
         binding.btnLogin.setOnClickListener { openBottomSheetLogin() }
         binding.includeLayout1.btnLayoutBottomPause.setOnClickListener { onCheckPlayMusic() }
+    }
+
+    private fun logout(){
+        FirebaseAuth.getInstance().signOut()
+        user = FirebaseAuth.getInstance().currentUser
+        binding.layoutPlaylistUserEmpty.visibility = View.VISIBLE
+        binding.layoutPlaylistLoveEmpty.visibility = View.VISIBLE
+        binding.rcvPlaylistUser.visibility = View.GONE
+        binding.rcvPlaylistLove.visibility = View.GONE
+        binding.tvAgainQuantity.text = NO_SONG
+        binding.tvQuantityTrackDown.text = NO_SONG
+        binding.tvLoveQuantity.text = NO_SONG
+        binding.imgLoveSub.setBackgroundResource(R.drawable.ic_heart)
+        binding.imgLove.visibility = View.INVISIBLE
+        viewModel.initValueUser()
     }
 
     private fun startExplore() {
@@ -315,7 +325,11 @@ class UserFragment : Fragment(), BaseService {
 
     fun initSongView() {
         val song = GetValue.getSong(sharedPreferences)
-        binding.includeLayout1.song = song
+        if (song != null){
+            binding.includeLayout1.song = song
+        }else{
+            binding.includeLayout1.song = ListDefault.initSong()
+        }
     }
 
     private fun initMusicView() {
@@ -347,13 +361,13 @@ class UserFragment : Fragment(), BaseService {
 
     private fun onItemClickBottomSheetLove() {
         if (user != null){
-            viewModelLove.fetchPlaylists(user.uid)
+            viewModelLove.fetchPlaylists(user!!.uid)
         }
     }
 
     private fun onItemClickBottomSheetUser() {
         if (user != null){
-            viewModelUser.fetchPlaylistsUser(user.uid)
+            viewModelUser.fetchPlaylistsUser(user!!.uid)
         }
     }
 
@@ -394,6 +408,7 @@ class UserFragment : Fragment(), BaseService {
         activity?.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         viewModel.initValueUser()
         fetchData()
+        viewModel.fetchSongLocal()
     }
 
     override fun onMediaPrepared() {

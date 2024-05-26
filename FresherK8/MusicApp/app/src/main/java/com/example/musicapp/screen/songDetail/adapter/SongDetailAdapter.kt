@@ -1,11 +1,14 @@
 package com.example.musicapp.screen.songDetail.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.ItemSongListBinding
+import com.example.musicapp.screen.user.adapter.BottomSheetLogin
 import com.example.musicapp.shared.utils.GenericDiffCallback
 
 class SongDetailAdapter(
@@ -27,6 +30,11 @@ class SongDetailAdapter(
             binding.song = song
             binding.root.setOnClickListener {
                 mListener.invoke(song, layoutPosition)
+            }
+
+            binding.ingExtSongItem.setOnClickListener {
+                val bottomSheet = BottomSheetSongDetail(song)
+                bottomSheet.show((binding.root.context as AppCompatActivity).supportFragmentManager, bottomSheet.tag)
             }
         }
     }

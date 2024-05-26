@@ -63,7 +63,7 @@ class UserViewModel (private val musicRepository: MusicRepository) : BaseViewMod
         }
     }
 
-    private fun fetchSongLocal() {
+    fun fetchSongLocal() {
         viewModelScope.launch {
             val songs = musicRepository.getListSongLocal()
             _songsLocal.postValue(songs.value)

@@ -189,11 +189,13 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/img_avatar" />
 
-                    <ImageView
-                        android:id="@+id/btn_information"
+                    <Button
+                        android:id="@+id/btn_logout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
+                        android:text="Đăng xuất"
+                        android:backgroundTint="@color/teal"
                         android:visibility="@{userViewModel.isLogin() ? View.VISIBLE : View.GONE}"
                         app:layout_constraintBottom_toBottomOf="@+id/img_avatar"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -489,7 +491,7 @@
                                 app:layout_constraintTop_toTopOf="@+id/imageView20" />
 
                             <TextView
-                                android:id="@+id/textView23"
+                                android:id="@+id/tv_again_quantity"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:text="@{userViewModel.songsAgain.size() > 0 ? String.valueOf(userViewModel.songsAgain.size()) + @string/b_i_h_t : @string/_0_b_i_h_t }"
@@ -540,7 +542,7 @@
                             android:id="@+id/img_love_sub"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@{userViewModel.songsLove.size() > 0 ? @drawable/ic_loved : @drawable/ic_heart}"
+                            android:src="@drawable/ic_heart"
                             app:layout_constraintBottom_toBottomOf="@+id/img_love"
                             app:layout_constraintEnd_toEndOf="@+id/img_love"
                             app:layout_constraintStart_toStartOf="@+id/img_love"
@@ -560,7 +562,7 @@
                             app:layout_constraintTop_toTopOf="@+id/img_love" />
 
                         <TextView
-                            android:id="@+id/textView26"
+                            android:id="@+id/tv_love_quantity"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/product_sans_regular"
@@ -637,6 +639,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:nestedScrollingEnabled="false"
+                            android:visibility="visible"
                             app:layout_constraintEnd_toEndOf="@+id/btn_open_bottom_sheet_select"
                             app:layout_constraintStart_toStartOf="@+id/textView931"
                             app:layout_constraintTop_toBottomOf="@+id/textView931" />
@@ -666,12 +669,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_margin="8dp"
-                            android:layout_marginBottom="8dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
                             android:visibility="invisible"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="@+id/rcv_playlist_user"
-                            app:layout_constraintStart_toStartOf="@+id/rcv_playlist_user"
-                            app:layout_constraintTop_toTopOf="@+id/rcv_playlist_user">
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView931">
 
 
                             <LinearLayout

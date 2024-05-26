@@ -1,5 +1,6 @@
 package com.example.musicapp.screen.search.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,8 +12,10 @@ import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.FragmentPlaylistBinding
 import com.example.musicapp.databinding.FragmentSongBinding
 import com.example.musicapp.screen.search.adapter.PlaylistSubAdapter
+import com.example.musicapp.screen.songDetail.SongDetailActivity
 import com.example.musicapp.screen.songDetail.adapter.SongDetailAdapter
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
+import com.example.musicapp.shared.utils.constant.Constant
 
 class PlaylistSubFragment : Fragment() {
     private var playlists = arrayListOf<Playlist>()
@@ -38,11 +41,14 @@ class PlaylistSubFragment : Fragment() {
 
     private fun setUpAdapter() {
         binding.rcvPlaylist.setAdapterLinearVertical(playlistAdapter)
+        if (playlists.isEmpty()) binding.tvEmpty.visibility = View.VISIBLE else binding.tvEmpty.visibility = View.GONE
         playlistAdapter.submitList(playlists)
     }
 
     private fun onItemClick(playlist: Playlist, position: Int) {
-//        onStartPosition(position, false)
+        val intent = Intent(requireContext(), SongDetailActivity::class.java)
+        intent.putExtra(Constant.KEY_INTENT_ITEM, playlist)
+        startActivity(intent)
     }
 
 }

@@ -8,6 +8,7 @@ object Constant {
     const val URL_IMAGE = "https://cdn-icons-png.freepik.com/512/3607/3607444.png"
     const val URL_IMAGE_UPDATE = "https://pngtree.com/freepng/user-icon-isolated-on-abstract-background_5192004.html"
     const val KEY_SONG = "song"
+    const val KEY_SONG_DOWN = "song_list_down"
     const val KEY_USER = "start_user"
     const val KEY_SONG_USER = "start_song_user"
     const val KEY_INTENT_ITEM = "item"

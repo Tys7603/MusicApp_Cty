@@ -1,6 +1,5 @@
 package com.example.musicapp.screen.music
 
-import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -21,6 +20,7 @@ import com.example.musicapp.R
 import com.example.musicapp.shared.utils.constant.Constant.KEY_SONG
 import com.example.musicapp.databinding.FragmentMusicBinding
 import com.example.musicapp.data.model.Song
+import com.example.musicapp.data.source.local.dao.SongDao
 import com.example.musicapp.shared.utils.constant.Constant.KEY_PLAY_CLICK
 import com.example.musicapp.screen.base.BaseService
 import com.example.musicapp.screen.lyrics.LyricActivity
@@ -33,7 +33,6 @@ import com.example.musicapp.shared.utils.DownloadMusic
 import com.example.musicapp.shared.utils.OnChangeListener
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.utils.constant.Constant.KEY_AUTO_RESTART
-import com.example.musicapp.shared.utils.constant.Constant.KEY_DOWN
 import com.example.musicapp.shared.utils.constant.Constant.KEY_INTENT_ITEM
 import com.example.musicapp.shared.utils.constant.Constant.KEY_LIST_SONG
 import com.example.musicapp.shared.utils.constant.Constant.KEY_LYRIC_NEW
@@ -42,6 +41,7 @@ import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION
 import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_SONG
 import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_TAB
 import com.example.musicapp.shared.utils.constant.Constant.KEY_SHUFFLE
+import com.example.musicapp.shared.utils.constant.Constant.KEY_SONG_DOWN
 import com.example.musicapp.shared.utils.constant.Constant.KEY_TAB_MUSIC
 import com.example.musicapp.shared.utils.constant.Constant.VALUE_DEFAULT
 import com.example.musicapp.shared.utils.format.FormatUtils
@@ -59,10 +59,12 @@ class MusicFragment : Fragment(), BaseService {
     private val binding by lazy {
         FragmentMusicBinding.inflate(layoutInflater)
     }
+
     private var musicService: MusicService? = null
     private var mSongs: MutableList<Song> = mutableListOf()
     private var mSongsLove: MutableList<Song> = mutableListOf()
     private var mSongsDefault: MutableList<Song> = mutableListOf()
+    private var mSongsDown: MutableList<Song> = mutableListOf()
     private var position = 0
     private var isServiceBound = false // kiểm tra kết nối service
     private var listener: OnChangeListener? = null
@@ -576,7 +578,35 @@ class MusicFragment : Fragment(), BaseService {
     }
 
     private fun downloadMusic() {
-        mSongs.getOrNull(position)?.let { DownloadMusic.downloadMusic(requireContext(), it) }
+        val jsonSongs = sharedPreferences.getString(KEY_SONG_DOWN, "")
+        if (!jsonSongs.isNullOrEmpty()) {
+            val myListType = object : TypeToken<ArrayList<Song>>() {}.type
+            val songs: ArrayList<Song> = Gson().fromJson(jsonSongs, myListType)
+
+            if (!isCheckSongId(mSongs.getOrNull(position)!!, songs)) {
+                songs.add(mSongs.getOrNull(position)!!)
+                sharedPreferences.edit()
+                    .putString(KEY_SONG_DOWN, Gson().toJson(songs)).apply()
+                mSongs.getOrNull(position)
+                    ?.let { DownloadMusic.downloadMusic(requireContext(), it) }
+            } else {
+                Toast.makeText(requireContext(), "Đã tải bài hát này", Toast.LENGTH_SHORT).show()
+            }
+
+        }else{
+            mSongs.getOrNull(position)?.let { mSongsDown.add(it) }
+            sharedPreferences.edit().putString(KEY_SONG_DOWN, Gson().toJson(mSongsDown)).apply()
+            mSongs.getOrNull(position)?.let { DownloadMusic.downloadMusic(requireContext(), it) }
+        }
+    }
+
+    private fun isCheckSongId(song: Song, songs: List<Song>): Boolean {
+        for (mSong in songs) {
+            if (mSong.id == song.id) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun saveSong() {

@@ -107,8 +107,9 @@ class SearchActivity : AppCompatActivity() {
                 binding.searchView.clearFocus()
                 query?.let {
                     filterList(it)
+                    viewModel.fetchSearch(query)
                 }
-                visibilityView(true)
+                visibilityView(false)
                 return true
             }
 
@@ -121,18 +122,6 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
-        binding.searchView.setOnKeyListener { v, keyCode, event ->
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                // Xử lý sự kiện khi người dùng nhấn Enter trên bàn phím ở đây
-                val query = binding.searchView.query.toString()
-
-                visibilityView(false)
-                viewModel.fetchSearch(query)
-                Log.d("TAG", "handlerEvent: " + query)
-                return@setOnKeyListener true
-            }
-            return@setOnKeyListener false
-        }
     }
 
     private fun filterList(query : String){

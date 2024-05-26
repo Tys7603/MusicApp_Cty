@@ -18,7 +18,6 @@ import com.example.musicapp.shared.utils.constant.Constant
 
 object DownloadMusic {
     fun downloadMusic(context: Context, song: Song) {
-        if (!isCheckSongId(song,context)){
             val request = DownloadManager.Request(Uri.parse(song.url))
             request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
             request.setTitle("Downloading ${song.name}")
@@ -43,9 +42,10 @@ object DownloadMusic {
                                 // Lấy thông tin về bài hát đã tải xuống
                                 val uri =
                                     cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
-                                val downloadedSong = Song(0,song.id, song.name, song.image, uri , song.nameArtis, 1)
+                                val downloadedSong = Song(song.songLoveId,song.id, song.name, song.image, uri , song.nameArtis, 1)
                                 // Thêm thông tin bài hát vào SQLite
                                 SongDao(context).insertSong(downloadedSong)
+                                Log.d("DownloadMusic", "onReceive: " +   SongDao(context).readSongs().value.toString())
                             }
                         }
                         cursor.close()
@@ -64,20 +64,5 @@ object DownloadMusic {
                     onCompleteListener,
                     IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
             }
-        }else{
-            Toast.makeText(context,"Đã tái bài hát này", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun isCheckSongId(song: Song, context: Context): Boolean {
-        val mSongs = SongDao(context).readSongs().value
-        if (mSongs != null){
-            for (mSong in mSongs) {
-                if (mSong.id == song.id) {
-                    return true
-                }
-            }
-        }
-        return false
     }
 }

@@ -5,13 +5,13 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.musicapp.R
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
@@ -19,24 +19,27 @@ import com.example.musicapp.databinding.ActivitySongDownBinding
 import com.example.musicapp.screen.explore.adapter.SongAgainAdapter
 import com.example.musicapp.screen.main.MainActivity
 import com.example.musicapp.screen.song.SongActivity
-import com.example.musicapp.screen.songDetail.adapter.SongDetailAdapter
+import com.example.musicapp.screen.songUser.adapter.SongDownAdapter
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.utils.constant.Constant.KEY_NAME_TAB
+import com.example.musicapp.shared.utils.constant.Constant.KEY_SONG_DOWN
 import com.example.musicapp.shared.utils.constant.Constant.KEY_SONG_LOCAL
-import com.example.musicapp.shared.utils.constant.Constant.LOCAL
+import com.example.musicapp.shared.widget.SwipeToDeleteCallback
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.Random
+
 
 class SongUserActivity : AppCompatActivity() {
     private val viewModel: SongUserViewModel by viewModel()
-    private val adapter = SongDetailAdapter(::onItemClick)
+    private val adapter = SongDownAdapter(::onItemClick, ::onItemClickDelete)
     private val songAgainAdapter = SongAgainAdapter(::onItemClick, 0)
     private var mSongs = arrayListOf<Song>()
     private var songsAgain = mutableListOf<SongAgain>()
     private var value: String? = null
-    private var title : String? = null
+    private var title: String? = null
     private val binding by lazy {
         ActivitySongDownBinding.inflate(layoutInflater)
     }
@@ -64,10 +67,11 @@ class SongUserActivity : AppCompatActivity() {
         value = intent.getStringExtra(Constant.KEY_INTENT_ITEM)
         val name = intent.getStringExtra(Constant.KEY_NAME)
         binding.tvTitleSongUser.text = name
-        when(value){
+        when (value) {
             Constant.DOWN -> {
                 viewModel.fetchSongLocal()
             }
+
             Constant.AGAIN -> {
                 FirebaseAuth.getInstance().currentUser?.uid?.let { viewModel.fetchSongAgain(it) }
             }
@@ -76,7 +80,7 @@ class SongUserActivity : AppCompatActivity() {
             setViewModel(value!!)
             initRecyclerview(value!!)
         }
-       title = name
+        title = name
     }
 
     private fun showLoading() {
@@ -90,8 +94,8 @@ class SongUserActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
     }
 
-    private fun setViewModel(value : String) {
-        when(value){
+    private fun setViewModel(value: String) {
+        when (value) {
             Constant.DOWN -> {
                 viewModel.songs.observe(this) {
                     handlerPostDelay {
@@ -106,7 +110,8 @@ class SongUserActivity : AppCompatActivity() {
                     }
                 }
             }
-           Constant.AGAIN -> {
+
+            Constant.AGAIN -> {
                 viewModel.songsAgain.observe(this) {
                     handlerPostDelay {
                         binding.layoutSongUserLoading.visibility = View.GONE
@@ -144,25 +149,44 @@ class SongUserActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun initRecyclerview(value : String) {
-        when(value){
+    private fun initRecyclerview(value: String) {
+        when (value) {
             Constant.DOWN -> {
                 binding.rcvSongDown.setAdapterLinearVertical(adapter)
+                val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(adapter))
+                itemTouchHelper.attachToRecyclerView(binding.rcvSongDown)
             }
+
             Constant.AGAIN -> {
-                binding.rcvSongDown.setAdapterLinearVertical(songAgainAdapter)            }
+                binding.rcvSongDown.setAdapterLinearVertical(songAgainAdapter)
+            }
+        }
+    }
+
+    private fun onItemClickDelete(songs: List<Song>, position: Int) {
+        if (songs.isEmpty()) {
+            binding.layoutSongUserEmpty.visibility = View.VISIBLE
+        }
+
+        val jsonSongs = sharedPreferences.getString(KEY_SONG_DOWN, "")
+        if (!jsonSongs.isNullOrEmpty()) {
+            val myListType = object : TypeToken<ArrayList<Song>>() {}.type
+            val songs: ArrayList<Song> = Gson().fromJson(jsonSongs, myListType)
+            songs.removeAt(position)
+            sharedPreferences.edit().putString(KEY_SONG_DOWN, Gson().toJson(songs)).apply()
         }
     }
 
     private fun onItemClick(any: Any, position: Int) {
         val intent = Intent(this, SongActivity::class.java)
-        val  songs =  addListSong()
+        val songs = addListSong()
 
-        when(value){
+        when (value) {
             Constant.DOWN -> {
                 intent.putParcelableArrayListExtra(Constant.KEY_INTENT_ITEM, mSongs)
                 sharedPreferences.edit().putBoolean(KEY_SONG_LOCAL, true).apply()
             }
+
             Constant.AGAIN -> {
                 intent.putParcelableArrayListExtra(Constant.KEY_INTENT_ITEM, songs)
             }
@@ -173,9 +197,9 @@ class SongUserActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun addListSong() : ArrayList<Song>{
-        val songList  = arrayListOf<Song>()
-        for (songAgain in songsAgain){
+    private fun addListSong(): ArrayList<Song> {
+        val songList = arrayListOf<Song>()
+        for (songAgain in songsAgain) {
             val song = Song(
                 0,
                 songAgain.id,

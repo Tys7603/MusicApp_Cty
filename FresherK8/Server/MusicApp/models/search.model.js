@@ -9,9 +9,10 @@ const searchModel = async (keyword) => {
 
   UNION
 
-  SELECT 'playlist' AS type, pl.playlist_id as id, pl.playlist_name as name, pl.playlist_image as image, NULL as url, NULL as artist, COUNT(s.song_id) as song_count
+  SELECT 'playlist' AS type, pl.playlist_id as id, pl.playlist_name as name, pl.playlist_image as image, NULL as url, GROUP_CONCAT(a.name_artist SEPARATOR ', ') as artist, COUNT(s.song_id) as song_count
   FROM Playlist as pl
   LEFT JOIN Song as s ON s.playlist_id = pl.playlist_id
+  RIGHT JOIN Album as a ON s.album_id = a.album_id
   WHERE pl.playlist_name LIKE CONCAT('%', ?, '%')
   GROUP BY pl.playlist_id
 
@@ -30,11 +31,11 @@ const searchModel = async (keyword) => {
   WHERE a.album_name LIKE CONCAT('%', ?, '%')
   GROUP BY a.album_id
 `;
-    return await queryDatabase(query, [keyword, keyword, keyword, keyword]);
+  return await queryDatabase(query, [keyword, keyword, keyword, keyword]);
 };
 
 const searchNameAllModel = async () => {
-    const query = `
+  const query = `
     SELECT playlist_name AS name FROM playlist
     UNION
     SELECT song_name AS name FROM song
@@ -43,10 +44,10 @@ const searchNameAllModel = async () => {
     UNION
     SELECT music_video_name AS name FROM music_video;
   `;
-    return await queryDatabase(query);
+  return await queryDatabase(query);
 };
 
 module.exports = {
-    searchModel,
-    searchNameAllModel
+  searchModel,
+  searchNameAllModel
 }

@@ -4,10 +4,11 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.musicapp.data.source.local.database.SongDatabase
 import com.example.musicapp.data.model.Song
+import com.example.musicapp.data.source.local.database.SongDatabase
 import com.example.musicapp.data.source.local.entry.SongEntryLocal
 
 class SongDao(val context: Context) {
@@ -49,7 +50,7 @@ class SongDao(val context: Context) {
         return getData("SELECT * FROM ${SongEntryLocal.TABLE_NAME}")
     }
 
-    fun deleteSong (songId : String) : Int {
-        return sqlData.delete(SongEntryLocal.TABLE_NAME, "${SongEntryLocal.COLUMN_SONG_ID} = ? ", arrayOf(songId))
+    fun deleteSong (songId : Int) : Int {
+        return sqlData.delete(SongEntryLocal.TABLE_NAME, "${SongEntryLocal.COLUMN_SONG_ID} = ? ", arrayOf(songId.toString()))
     }
 }

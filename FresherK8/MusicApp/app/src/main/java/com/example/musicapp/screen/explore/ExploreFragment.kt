@@ -230,8 +230,11 @@ class ExploreFragment : Fragment(), BaseService {
 
     fun initSongView() {
         val song = GetValue.getSong(sharedPreferences)
-        binding.includeLayout.song = song
-        val user = FirebaseAuth.getInstance().currentUser
+        if (song != null){
+            binding.includeLayout.song = song
+        }else{
+            binding.includeLayout.song = ListDefault.initSong()
+        }
     }
 
     private fun handlerEvent() {

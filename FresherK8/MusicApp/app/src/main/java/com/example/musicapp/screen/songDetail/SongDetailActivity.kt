@@ -46,9 +46,7 @@ class SongDetailActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivitySongDetailBinding.inflate(layoutInflater)
     }
-    private val sharedPreferences: SharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(this)
-    }
+
     private var mSongs: ArrayList<Song>? = arrayListOf()
     private var mPlaylist: Playlist? = null
     private var title : String? = null

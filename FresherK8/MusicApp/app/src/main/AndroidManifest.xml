@@ -35,10 +35,6 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".screen.account.information.InformationActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".screen.lyrics.LyricActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
