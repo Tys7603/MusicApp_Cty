@@ -106,7 +106,6 @@ class MusicService : Service() {
 
     // Phương thức để tạo notification
     @SuppressLint("NotificationId0","ForegroundServiceType")
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun createNotification() {
         // Tạo Intent để mở Activity khi notification được nhấn
         val notificationIntent = Intent(this, MainActivity::class.java)
@@ -165,7 +164,7 @@ class MusicService : Service() {
                                     )
                             )
                             .build()
-                    startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
+                    startForeground(NOTIFICATION_ID, notification)
                 }
             })
     }
@@ -178,9 +177,8 @@ class MusicService : Service() {
             setOnPreparedListener {
                 isMediaPrepared = true // Đánh dấu rằng âm thanh đã được chuẩn bị
                 mBaseService?.onMediaPrepared()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    createNotification()
-                }
+                createNotification()
+
             }
         }
     }
@@ -193,9 +191,7 @@ class MusicService : Service() {
             setOnPreparedListener {
                 isMediaPrepared = true // Đánh dấu rằng âm thanh đã được chuẩn bị
                 mBaseService?.onMediaPrepared()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    createNotification()
-                }
+                createNotification()
                 onStartMusic?.invoke()
             }
         }
@@ -212,17 +208,14 @@ class MusicService : Service() {
             setOnPreparedListener {
                 isMediaPrepared = true
                 mBaseService?.onMediaPrepared()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    createNotification()
-                }
+                createNotification()
+
             }
         }
     }
 
     fun updateNotificationFromActivity(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            createNotification()
-        }
+        createNotification()
     }
 
     fun start() {

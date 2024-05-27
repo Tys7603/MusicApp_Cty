@@ -11,12 +11,14 @@ import android.os.Build
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.source.local.dao.SongDao
 import com.example.musicapp.shared.utils.constant.Constant
 
 
 object DownloadMusic {
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun downloadMusic(context: Context, song: Song) {
             val request = DownloadManager.Request(Uri.parse(song.url))
             request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
@@ -27,9 +29,11 @@ object DownloadMusic {
             val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             val downloadId = downloadManager.enqueue(request)
             Toast.makeText(context, Constant.KEY_DOWN, Toast.LENGTH_SHORT).show()
+
             val onCompleteListener = object : BroadcastReceiver() {
                 @SuppressLint("Range")
                 override fun onReceive(context: Context, intent: Intent) {
+                    Log.d("DownloadMusic", "onReceive: ")
                     if (DownloadManager.ACTION_DOWNLOAD_COMPLETE == intent.action) {
                         val query = DownloadManager.Query()
                         query.setFilterById(downloadId)
@@ -62,7 +66,7 @@ object DownloadMusic {
             }else{
                 context.registerReceiver(
                     onCompleteListener,
-                    IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+                    IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), Context.RECEIVER_NOT_EXPORTED)
             }
     }
 }

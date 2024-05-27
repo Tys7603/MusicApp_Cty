@@ -43,11 +43,16 @@ class MusicVideoDetailActivity : AppCompatActivity() {
             insets
         }
         initViewModel()
+        handlerEvent()
         getBundlerValue()
         initRecyclerView()
         handlerEventViewModel()
         initPlayerYoutube()
         showLayout(true)
+    }
+
+    private fun handlerEvent() {
+        binding.btnFollow.setOnClickListener { SnackBarManager.showMessage(binding.imageView13, "Tính năng phá triển sau") }
     }
 
     private fun getBundlerValue() {

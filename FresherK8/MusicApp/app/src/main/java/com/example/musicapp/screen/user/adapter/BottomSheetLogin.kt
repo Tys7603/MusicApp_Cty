@@ -41,6 +41,13 @@ class BottomSheetLogin : BottomSheetDialogFragment() {
     private fun initHandler() {
         initViewModel()
         handlerEventViewModel()
+        handlerEvent()
+    }
+
+    private fun handlerEvent() {
+        binding?.btnSdt?.setOnClickListener { SnackBarManager.showMessage(binding?.imageView, "Tính năng phát triển sau") }
+        binding?.btnFace?.setOnClickListener { SnackBarManager.showMessage(binding?.imageView, "Tính năng phát triển sau") }
+        binding?.btnGg?.setOnClickListener { SnackBarManager.showMessage(binding?.imageView, "Tính năng phát triển sau") }
     }
 
     private fun initViewModel() {

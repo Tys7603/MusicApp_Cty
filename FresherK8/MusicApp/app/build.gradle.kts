@@ -83,4 +83,10 @@ dependencies {
     implementation ("com.makeramen:roundedimageview:2.3.0")
     //noinspection UseTomlInstead
     implementation ("com.google.code.gson:gson:2.10.1")
+    //noinspection UseTomlInstead
+    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
+    //noinspection UseTomlInstead
+    implementation ("androidx.mediarouter:mediarouter:1.7.0")
+    implementation ("com.google.android.gms:play-services-cast-framework:21.4.0")
+
 }

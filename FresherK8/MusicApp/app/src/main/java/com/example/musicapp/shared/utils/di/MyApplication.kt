@@ -7,6 +7,7 @@ import android.os.Build
 import com.example.musicapp.data.di.dataSourceModule
 import com.example.musicapp.data.di.networkModule
 import com.example.musicapp.data.di.repositoryModule
+import com.google.android.gms.cast.framework.CastContext
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -19,7 +20,6 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         createNotification()
-
         val modules = listOf(repositoryModule,dataSourceModule, networkModule , viewModelModule)
 
         startKoin {

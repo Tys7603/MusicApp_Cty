@@ -8,27 +8,32 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.data.model.MusicVideo
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.FragmentMusicVideoBinding
-import com.example.musicapp.screen.musicVideo.adapter.TopicMVAdapter
 import com.example.musicapp.screen.musicVideo.adapter.MusicVideoAdapter
+import com.example.musicapp.screen.musicVideo.adapter.TopicMVAdapter
 import com.example.musicapp.screen.musicVideoDetail.MusicVideoDetailActivity
 import com.example.musicapp.screen.search.SearchActivity
 import com.example.musicapp.service.MusicService
 import com.example.musicapp.shared.extension.setAdapterLinearHorizontal
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
+import com.example.musicapp.shared.utils.SimpleChromecastConnectionListener
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.widget.SnackBarManager
+import com.google.android.gms.cast.framework.CastButtonFactory
+import com.google.android.gms.cast.framework.CastContext
+import com.pierfrancescosoffritti.androidyoutubeplayer.chromecast.chromecastsender.ChromecastYouTubePlayerContext
+import com.pierfrancescosoffritti.androidyoutubeplayer.chromecast.chromecastsender.utils.PlayServicesUtils
+import com.pierfrancescosoffritti.androidyoutubeplayer.chromecast.chromecastsender.utils.PlayServicesUtils.checkGooglePlayServicesAvailability
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class MusicVideoFragment : Fragment() {
     private var musicService: MusicService? = null
@@ -74,11 +79,32 @@ class MusicVideoFragment : Fragment() {
         handlerEventViewModel()
         handleEvent()
         checkVisibilityLayout(false)
+        setUpChromeCast()
+    }
+
+    private fun setUpChromeCast() {
+        CastButtonFactory.setUpMediaRouteButton(requireContext(), binding.btnShare)
+        checkGooglePlayServicesAvailability(requireActivity(), CODE, this::initChromecast);
+    }
+
+    private fun initChromecast() {
+        ChromecastYouTubePlayerContext(
+            CastContext.getSharedInstance(requireContext()).sessionManager,
+            SimpleChromecastConnectionListener()
+        )
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CODE) checkGooglePlayServicesAvailability(
+            requireActivity(),
+            CODE,
+            ::initChromecast
+        )
     }
 
     private fun handleEvent() {
         binding.btnSearchMv.setOnClickListener { startActivity(Intent(requireContext(), SearchActivity::class.java)) }
-        binding.btnShare.setOnClickListener { SnackBarManager.showMessage(binding.btnSearchMv, "Tính năng phát triển sau") }
     }
 
     private fun initViewModel() {
@@ -220,5 +246,6 @@ class MusicVideoFragment : Fragment() {
     companion object {
         const val ALL = "Tất cả"
         const val NEW_PROPOSAL = "Đề xuất mới"
+        const val CODE = 1
     }
 }

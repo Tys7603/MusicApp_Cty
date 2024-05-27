@@ -118,9 +118,10 @@ class UserFragment : Fragment(), BaseService {
     }
 
     private fun fetchData() {
+        val user = FirebaseAuth.getInstance().currentUser
         if (user != null){
-            viewModelUser.fetchPlaylistsUser(user!!.uid)
-            viewModelLove.fetchPlaylists(user!!.uid)
+            viewModelUser.fetchPlaylistsUser(user.uid)
+            viewModelLove.fetchPlaylists(user.uid)
         }else{
             binding.layoutPlaylistUserLoading.visibility = View.INVISIBLE
             binding.layoutPlaylistUserEmpty.visibility = View.VISIBLE
@@ -172,6 +173,8 @@ class UserFragment : Fragment(), BaseService {
                 if (it.isNotEmpty()) {
                     playlistUserAdapter.submitList(it)
                     binding.layoutPlaylistUserEmpty.visibility = View.GONE
+                    binding.rcvPlaylistUser.visibility = View.VISIBLE
+
                 } else {
                     binding.rcvPlaylistUser.visibility = View.INVISIBLE
                     binding.layoutPlaylistUserEmpty.visibility = View.VISIBLE
@@ -237,6 +240,7 @@ class UserFragment : Fragment(), BaseService {
         user = FirebaseAuth.getInstance().currentUser
         binding.layoutPlaylistUserEmpty.visibility = View.VISIBLE
         binding.layoutPlaylistLoveEmpty.visibility = View.VISIBLE
+        binding.layoutSongUserEmpty.visibility = View.GONE
         binding.rcvPlaylistUser.visibility = View.GONE
         binding.rcvPlaylistLove.visibility = View.GONE
         binding.tvAgainQuantity.text = NO_SONG
@@ -366,8 +370,10 @@ class UserFragment : Fragment(), BaseService {
     }
 
     private fun onItemClickBottomSheetUser() {
+        val user = FirebaseAuth.getInstance().currentUser
         if (user != null){
-            viewModelUser.fetchPlaylistsUser(user!!.uid)
+            viewModelUser.fetchPlaylistsUser(user.uid)
+            Log.d("TAG", "onItemClickBottomSheetUser: ")
         }
     }
 
