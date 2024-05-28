@@ -73,4 +73,10 @@
     <string name="songs">Bài hát</string>
     <string name="music_videos">Video</string>
     <string name="kh_ng_c_n_i_dung_t_m_ki_m">Không có nội dung tìm kiếm</string>
+    <string name="nh_p_s_i_n_tho_i_c_a_b_n">Nhập số điện thoại của bạn</string>
+    <string name="s_i_n_tho_i_s_c_t_ng_ng_k_sau_khi_x_c_th_c_th_nh_c_ng">Số điện thoại sẽ được tự động đăng ký sau khi xác thực thành công</string>
+    <string name="s_i_n_tho_i">Số điện thoại</string>
+    <string name="g_i_m">Gửi mã</string>
+    <string name="s_i_n_tho_i_kh_ng_h_p_l">Số điện thoại không hợp lệ</string>
+    <string name="_84">+84</string>
 </resources>

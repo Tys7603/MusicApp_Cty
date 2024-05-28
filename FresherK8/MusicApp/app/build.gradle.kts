@@ -55,6 +55,15 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    // Import the BoM for the Firebase platform
+    //noinspection UseTomlInstead
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+
+    // Add the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    //noinspection UseTomlInstead
+    implementation("com.google.firebase:firebase-auth")
+
     //noinspection UseTomlInstead
     implementation ("de.hdodenhof:circleimageview:3.1.0")
     //noinspection UseTomlInstead

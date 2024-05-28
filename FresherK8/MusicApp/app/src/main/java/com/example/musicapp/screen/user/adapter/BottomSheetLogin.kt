@@ -1,5 +1,6 @@
 package com.example.musicapp.screen.user.adapter
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import com.example.musicapp.R
 import com.example.musicapp.databinding.LayoutBottomSheetAccountBinding
 import com.example.musicapp.screen.account.AccountActivity
+import com.example.musicapp.screen.account.phone.PhoneLoginActivity
 import com.example.musicapp.shared.utils.constant.Constant.ACCESS_RULES
 import com.example.musicapp.shared.widget.SnackBarManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -45,7 +47,7 @@ class BottomSheetLogin : BottomSheetDialogFragment() {
     }
 
     private fun handlerEvent() {
-        binding?.btnSdt?.setOnClickListener { SnackBarManager.showMessage(binding?.imageView, "Tính năng phát triển sau") }
+        binding?.btnSdt?.setOnClickListener { startActivity(Intent(requireContext(), PhoneLoginActivity::class.java)) }
         binding?.btnFace?.setOnClickListener { SnackBarManager.showMessage(binding?.imageView, "Tính năng phát triển sau") }
         binding?.btnGg?.setOnClickListener { SnackBarManager.showMessage(binding?.imageView, "Tính năng phát triển sau") }
     }
