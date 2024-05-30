@@ -1,36 +1,44 @@
 package com.example.musicapp.screen.explore.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.databinding.ItemSocialRankBinding
 import com.example.musicapp.data.model.Song
+import com.example.musicapp.shared.utils.GenericDiffCallback
 import kotlin.math.min
 
-class SubSongRankAdapter(private var songs: ArrayList<Song>) :
-    RecyclerView.Adapter<SubSongRankAdapter.ViewHolder>() {
+class SubSongRankAdapter(
+    private val mListener: (ArrayList<Song>, Int) -> Unit
+) : ListAdapter<Song, SubSongRankAdapter.SubSongRankViewHolder>(GenericDiffCallback<Song>()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemSocialRankBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubSongRankViewHolder {
+        val binding =
+            ItemSocialRankBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return SubSongRankViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
-        return min(songs.size, 5)
+        return currentList.size.coerceAtMost(5)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(songs[position], position)
+    override fun onBindViewHolder(holder: SubSongRankViewHolder, position: Int) {
+        holder.bind(currentList[position], position)
     }
 
-    class ViewHolder(private val binding: ItemSocialRankBinding) :
+    inner class SubSongRankViewHolder(private val binding: ItemSocialRankBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
         fun bind(song: Song, position: Int) {
             binding.tvSttSocialRank.text = (position + 1).toString()
             binding.song = song
+            val songList = ArrayList(currentList)
+            binding.root.setOnClickListener {
+                mListener.invoke(songList, layoutPosition)
+            }
         }
     }
-
 }

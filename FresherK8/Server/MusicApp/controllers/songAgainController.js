@@ -10,6 +10,19 @@ const getListSongAgainController = async (req, res) => {
     }
 }
 
+
+const createSongAgainController = async (req, res) => {
+
+    try {
+      const { userId, songId } = req.body
+      const songs = await model.createSongAgain(userId, songId)
+      res.json( songs )
+    } catch (error) {
+      res.json({ status: "400", error });
+    }
+  }
+
 module.exports = {
-    getListSongAgainController
+    getListSongAgainController,
+    createSongAgainController
 }

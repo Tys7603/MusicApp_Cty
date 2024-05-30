@@ -29,6 +29,17 @@ const getListSongByTopicId = async (topicId) => {
   return await queryDatabase(query, [topicId])
 }
 
+
+const getListSongByAlbumId = async (albumId) => {
+
+  const query = "SELECT s.song_id, s.song_name, s.song_image, s.song_url, a.name_artist, s.download " +
+    "FROM Song as s " +
+    "INNER JOIN Album as a ON s.album_id = a.album_id " +
+    "WHERE a.album_id = ?"
+
+  return await queryDatabase(query, [albumId])
+}
+
 const getListSonglove = async (userId) => {
 
   const query = "SELECT sl.song_love_id, s.song_id, s.song_name, s.song_image, s.song_url, a.name_artist " +
@@ -60,5 +71,6 @@ module.exports = {
   getListSongByTopicId,
   createSongLove,
   deleteSongLove,
-  getListSonglove
+  getListSonglove,
+  getListSongByAlbumId
 }

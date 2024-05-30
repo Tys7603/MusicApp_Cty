@@ -1,5 +1,6 @@
 package com.example.musicapp.screen.account.singup
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -45,6 +46,8 @@ class SingUpFragment : Fragment() {
                 binding.etRePass.text?.clear()
             }else{
                 SnackBarManager.showMessage(binding.button, Constant.SING_UP_FAILURE)
+                binding.layoutLoading.visibility = View.INVISIBLE
+                binding.layoutContentSingUp.visibility = View.VISIBLE
             }
         }
 
@@ -56,6 +59,14 @@ class SingUpFragment : Fragment() {
             SnackBarManager.showMessage(binding.button, Constant.SING_UP_EQUAL)
         }
 
+        viewModel.loading.observe(viewLifecycleOwner){
+            if (it){
+                binding.layoutLoading.visibility = View.VISIBLE
+                binding.layoutContentSingUp.visibility = View.INVISIBLE
+            }else{
+                binding.layoutLoading.visibility = View.INVISIBLE
+                binding.layoutContentSingUp.visibility = View.VISIBLE
+            }
+        }
     }
-
 }

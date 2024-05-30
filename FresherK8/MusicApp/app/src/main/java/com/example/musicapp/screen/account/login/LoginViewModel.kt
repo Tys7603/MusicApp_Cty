@@ -1,19 +1,19 @@
 package com.example.musicapp.screen.account.login
 
-import android.content.res.ColorStateList
-import android.view.View
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
-import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.musicapp.BR
-import com.example.musicapp.R
 import com.google.firebase.auth.FirebaseAuth
 
 
 class LoginViewModel : BaseObservable() {
     private val _isLogin = MutableLiveData<Boolean>()
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading : LiveData<Boolean> = _isLoading
+
     private val _isValidate = MutableLiveData<Boolean>()
     private val _forgotPasswordEvent = MutableLiveData<Boolean>()
     val forgotPasswordEvent : LiveData<Boolean> = _forgotPasswordEvent
@@ -58,10 +58,12 @@ class LoginViewModel : BaseObservable() {
     }
 
     fun login() {
+        _isLoading.value = true
         if (validateLogin()) {
             FirebaseAuth.getInstance().signInWithEmailAndPassword(getEmail(), getPassword())
                 .addOnCompleteListener { task ->
                     _isLogin.value = task.isSuccessful
+                    _isLoading.value = false
                 }
         } else {
             _isValidate.value = validateLogin()

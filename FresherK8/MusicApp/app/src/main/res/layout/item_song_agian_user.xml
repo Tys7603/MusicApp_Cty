@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="songAgain"
+            type="com.example.musicapp.data.model.SongAgain" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_song_again"
+                imageUrl="@{songAgain.image}"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="1" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/tv_song_again"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/product_sans_regular"
+            android:lines="1"
+            android:text="@{songAgain.name, default = @string/loading}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cardView2"
+            app:layout_constraintTop_toTopOf="@+id/cardView2" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:ellipsize="end"
+            android:text="@{songAgain.nameArtist, default = @string/loading}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tv_song_again"
+            app:layout_constraintStart_toStartOf="@+id/tv_song_again"
+            app:layout_constraintTop_toBottomOf="@+id/tv_song_again" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

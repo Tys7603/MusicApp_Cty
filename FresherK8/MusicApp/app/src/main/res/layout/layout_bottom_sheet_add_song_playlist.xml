@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.musicapp.screen.user.PlaylistUserViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:minHeight="500dp">
+
+        <View
+            android:id="@+id/view4"
+            android:layout_width="50dp"
+            android:layout_height="3dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView12"
+            style="@style/TextTile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/th_m_v_o_playlist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view4" />
+
+        <ImageView
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView12"
+            app:srcCompat="@drawable/baseline_close_24" />
+
+        <TextView
+            android:id="@+id/textView31"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/ch_n_playlist_th_m_b_i_h_t_v_o"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+        <LinearLayout
+            android:id="@+id/btn_add_playlist_user"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_heart_user"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/textView31"
+            app:layout_constraintTop_toBottomOf="@+id/textView31">
+
+            <ImageView
+                android:id="@+id/imageView9"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_add_circle" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView32"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/t_o_playlist"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:fontFamily="@font/product_sans_regular"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_add_playlist_user"
+            app:layout_constraintStart_toEndOf="@+id/btn_add_playlist_user"
+            app:layout_constraintTop_toTopOf="@+id/btn_add_playlist_user" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv_add_playlist_user"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_add_playlist_user"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_playlist_list_user" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>

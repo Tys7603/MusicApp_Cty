@@ -4,16 +4,20 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import com.example.musicapp.data.source.local.database.SongDatabase
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.musicapp.data.model.Song
+import com.example.musicapp.data.source.local.database.SongDatabase
 import com.example.musicapp.data.source.local.entry.SongEntryLocal
 
 class SongDao(val context: Context) {
     private val sqlData: SQLiteDatabase = SongDatabase(context).writableDatabase
 
     @SuppressLint("Recycle", "Range")
-    fun getData(query: String, vararg selections: String): ArrayList<Song> {
-        val songs = ArrayList<Song>()
+    fun getData(query: String, vararg selections: String): LiveData<ArrayList<Song>> {
+        val songs = MutableLiveData<ArrayList<Song>>()
+        val songList = arrayListOf<Song>()
         val cursor = sqlData.rawQuery(query, selections)
         while (cursor.moveToNext()) {
             val song = Song(
@@ -25,9 +29,10 @@ class SongDao(val context: Context) {
                 cursor.getString(cursor.getColumnIndex(SongEntryLocal.COLUMN_SONG_NAME_ARTIST)),
                 1
             )
-            songs.add(song)
+            songList.add(song)
         }
         cursor.close()
+        songs.value = songList
         return songs
     }
 
@@ -41,11 +46,11 @@ class SongDao(val context: Context) {
         return sqlData.insert(SongEntryLocal.TABLE_NAME, null, values)
     }
 
-    fun readSongs() : ArrayList<Song> {
+    fun readSongs() : LiveData<ArrayList<Song>> {
         return getData("SELECT * FROM ${SongEntryLocal.TABLE_NAME}")
     }
 
-    fun deleteSong (songId : String) : Int {
-        return sqlData.delete(SongEntryLocal.TABLE_NAME, "${SongEntryLocal.COLUMN_SONG_ID} = ? ", arrayOf(songId))
+    fun deleteSong (songId : Int) : Int {
+        return sqlData.delete(SongEntryLocal.TABLE_NAME, "${SongEntryLocal.COLUMN_SONG_ID} = ? ", arrayOf(songId.toString()))
     }
 }

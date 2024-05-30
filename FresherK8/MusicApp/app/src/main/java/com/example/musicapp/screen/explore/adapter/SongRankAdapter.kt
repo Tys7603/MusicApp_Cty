@@ -1,43 +1,57 @@
 package com.example.musicapp.screen.explore.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.ItemSongRankBinding
 import com.example.musicapp.data.model.SongRank
 import com.example.musicapp.shared.extension.setAdapterLinearVertical
+import com.example.musicapp.shared.utils.GenericDiffCallback
 
-class SongRankAdapter : ListAdapter<SongRank, SongRankAdapter.ViewHolder>(MovieDiffCallBack()) {
+class SongRankAdapter(
+    private val mListener: (ArrayList<Song>, Int, String) -> Unit
+) : ListAdapter<SongRank, SongRankAdapter.SongRankViewHolder>(GenericDiffCallback<SongRank>()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongRankViewHolder {
         val binding =
             ItemSongRankBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+        return SongRankViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SongRankViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
 
-    class ViewHolder(val binding: ItemSongRankBinding) :
+    inner class SongRankViewHolder(val binding: ItemSongRankBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        private val adapter = SubSongRankAdapter(::onItemSubClick)
 
         fun bind(songRank: SongRank) {
+            binding.rcvSocialRank.setAdapterLinearVertical(adapter)
+            adapter.submitList(songRank.songs)
             binding.songRank = songRank
-            binding.rcvSocialRank.setAdapterLinearVertical(SubSongRankAdapter(songRank.songs))
+            binding.btnPlaySongRank.setOnClickListener {
+                mListener.invoke(songRank.songs, 0, songRank.rankName)
+            }
         }
     }
 
-    class MovieDiffCallBack : DiffUtil.ItemCallback<SongRank>() {
-        override fun areItemsTheSame(oldItem: SongRank, newItem: SongRank): Boolean {
-            return oldItem.rankName == newItem.rankName
-        }
-
-        override fun areContentsTheSame(oldItem: SongRank, newItem: SongRank): Boolean {
-            return oldItem == newItem
-        }
+    private fun onItemSubClick(song: ArrayList<Song>, position: Int) {
+        mListener.invoke(song, position, compareSongLists(currentList, song))
     }
 
+    private fun compareSongLists(mainList: List<SongRank>, subList: List<Song>): String {
+        val subSet = subList.toSet()
+
+        for (songRank in mainList) {
+            val songSet = songRank.songs.toSet()
+            if (songSet == subSet) {
+                return songRank.rankName
+            }
+        }
+        return ""
+    }
 }

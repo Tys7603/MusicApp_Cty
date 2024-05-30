@@ -59,5 +59,14 @@ class LoginFragment : Fragment() {
             startActivity(Intent(requireContext(), ForgotPasswordActivity::class.java))
         }
 
+        viewModel.isLoading.observe(viewLifecycleOwner){
+            if (it){
+                binding.layoutLoading.visibility = View.VISIBLE
+                binding.layoutContent.visibility = View.INVISIBLE
+            }else{
+                binding.layoutLoading.visibility = View.INVISIBLE
+                binding.layoutContent.visibility = View.VISIBLE
+            }
+        }
     }
 }

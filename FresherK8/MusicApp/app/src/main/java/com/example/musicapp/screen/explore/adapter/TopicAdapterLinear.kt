@@ -2,44 +2,44 @@ package com.example.musicapp.screen.explore.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicapp.databinding.ItemTopicBinding
 import com.example.musicapp.data.model.Topic
+import com.example.musicapp.shared.utils.GenericDiffCallback
 import kotlin.math.min
 
 class TopicAdapterLinear(
     private var mListener: (Topic) -> Unit
-) : ListAdapter<Topic, TopicAdapterLinear.ViewHolder>(MovieDiffCallBack())  {
+) : ListAdapter<Topic, TopicAdapterLinear.TopicViewHolder>(GenericDiffCallback<Topic>()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    private var itemsEnabled: Boolean = true
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopicViewHolder {
         val binding = ItemTopicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+        return TopicViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
-        return min(currentList.size, 6)
+        return currentList.size.coerceAtMost(6)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TopicViewHolder, position: Int) {
         holder.bind(currentList[position])
-        holder.itemView.setOnClickListener { mListener.invoke(currentList[position]) }
     }
 
-    class ViewHolder(private val binding: ItemTopicBinding) :
+    fun setEnableItem(enabled: Boolean) {
+        itemsEnabled = enabled
+    }
+
+    inner class TopicViewHolder(private val binding: ItemTopicBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(topic: Topic) {
             binding.topic = topic
-        }
-    }
-    class MovieDiffCallBack : DiffUtil.ItemCallback<Topic>() {
-        override fun areItemsTheSame(oldItem: Topic, newItem: Topic): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItem: Topic, newItem: Topic): Boolean {
-            return oldItem == newItem
+            binding.root.isEnabled = itemsEnabled
+            binding.root.setOnClickListener {
+                if (itemsEnabled) mListener.invoke(topic)
+            }
         }
     }
 }

@@ -1,32 +1,56 @@
 package com.example.musicapp.screen.songDetail
 
-import android.os.Build
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.Parcelable
+import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.preference.PreferenceManager
 import com.example.musicapp.R
 import com.example.musicapp.shared.utils.constant.Constant
-import com.example.musicapp.shared.utils.constant.Constant.KEY_BUNDLE_ITEM
 import com.example.musicapp.data.model.Album
 import com.example.musicapp.data.model.Playlist
+import com.example.musicapp.data.model.PlaylistUser
 import com.example.musicapp.data.model.Song
+import com.example.musicapp.data.model.SongAgain
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.ActivitySongDetailBinding
+import com.example.musicapp.screen.main.MainActivity
+import com.example.musicapp.screen.song.SongActivity
+import com.example.musicapp.screen.songDetail.adapter.SongDetailAdapter
+import com.example.musicapp.screen.user.PlaylistUserViewModel
 import com.example.musicapp.shared.extension.loadImageUrl
+import com.example.musicapp.shared.extension.setAdapterLinearVertical
+import com.example.musicapp.shared.utils.DownloadMusic
+import com.example.musicapp.shared.utils.constant.Constant.KEY_INTENT_ITEM
+import com.example.musicapp.shared.utils.constant.Constant.KEY_NAME_TAB
+import com.example.musicapp.shared.utils.constant.Constant.KEY_POSITION_SONG
+import com.example.musicapp.shared.widget.SnackBarManager
+import com.google.firebase.auth.FirebaseAuth
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.Random
 
 class SongDetailActivity : AppCompatActivity() {
+
+    private val viewModel: SongDetailViewModel by viewModel()
+    private val songAdapter = SongDetailAdapter(::onItemClick)
     private val binding by lazy {
         ActivitySongDetailBinding.inflate(layoutInflater)
     }
 
-    private val mPresenter by lazy {
-        SongListPresenter()
-    }
-    private var mSong : ArrayList<Song>? = null
+    private var mSongs: ArrayList<Song>? = arrayListOf()
+    private var mPlaylist: Playlist? = null
+    private var title : String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,71 +62,194 @@ class SongDetailActivity : AppCompatActivity() {
             insets
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            initValue()
-        }
-
+        initValue()
         handleEvent()
+        initViewModel()
+        initRecyclerView()
+        handleEventViewModel()
+    }
+
+    private fun handleEventViewModel() {
+        viewModel.songTopic.observe(this) {
+            handlerPostDelay(it)
+        }
+        viewModel.songPlaylist.observe(this) {
+            handlerPostDelay(it)
+        }
+        viewModel.songAlbum.observe(this) {
+            handlerPostDelay(it)
+        }
+        viewModel.songsLove.observe(this) {
+            handlerPostDelay(it)
+        }
+        viewModel.playlistsSongUser.observe(this){
+            handlerPostDelay(it)
+        }
+        viewModel.isUserLogin.observe(this) {
+            if (it) {
+                viewModel.isInsertPlaylist.observe(this) { isInserted ->
+                    val message = if (isInserted) {
+                        "Đã thêm vào playlist yêu thích"
+                    } else {
+                        "Đã tồn tại trong playlist yêu thích"
+                    }
+                    SnackBarManager.showMessage(binding.btnAddPlaylistDetail, message)
+                }
+            } else {
+                SnackBarManager.showMessage(binding.btnAddPlaylistDetail, "Bạn chưa đăng nhập")
+            }
+        }
+    }
+
+    private fun initViewModel() {
+        binding.songDetailViewModel = viewModel
+        binding.lifecycleOwner = this
+    }
+
+    private fun initRecyclerView() {
+        binding.rcvPlaylistActivity.setAdapterLinearVertical(songAdapter)
+        binding.rcvPlaylistActivity.isNestedScrollingEnabled = false
     }
 
     private fun handleEvent() {
         binding.imgBackPlaylistActivity.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
+        binding.btnAddPlaylistDetail.setOnClickListener {
+            mPlaylist?.id?.let { viewModel.insertPlaylist(it) }
+        }
+        binding.btnShuffleDetail.setOnClickListener { startShuffle() }
+        binding.btnPlayPlaylistActivity.setOnClickListener { startSongMusic() }
+        binding.btnDowPlaylistActivity.setOnClickListener { downloadListSong() }
+        binding.btnExplore.setOnClickListener { startExplore() }
     }
 
+    private fun startExplore() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra(Constant.KEY_SONG_USER, true)
+        startActivity(intent)
+    }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun downloadListSong() {
+        mSongs?.let {
+            for (song in mSongs!!) {
+                DownloadMusic.downloadMusic(this, song)
+            }
+        }
+        Toast.makeText(this, Constant.KEY_DOWN, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun startSongMusic() {
+        onStartPosition(0, false)
+    }
+
+    private fun startShuffle() {
+        onStartPosition(0, true)
+    }
+
+    @SuppressLint("SetTextI18n")
     private fun initValue() {
-        val bundle = intent.getBundleExtra(KEY_BUNDLE_ITEM)
-        when(val item = bundle?.getParcelable(Constant.KEY_INTENT_ITEM, Parcelable::class.java)){
-
+        when (val item = intent.getParcelableExtra<Parcelable>(KEY_INTENT_ITEM)) {
             is Playlist -> {
                 item.image.let { binding.imgSongActivity.loadImageUrl(it) }
                 item.image.let { binding.imgBgPlaylistActivity.loadImageUrl(it) }
                 binding.tvNamePlaylistActivity.text = item.name
                 binding.tvNameArtistPlaylistActivity.text = item.nameArtist
-//                mPresenter.getListSongPlaylist(item.id)
+                viewModel.fetchSongPlaylist(item.id)
+                mPlaylist = item
+                title = item.name
             }
 
             is Album -> {
+                binding.btnAddPlaylistDetail.visibility = View.GONE
                 item.albumImage.let { binding.imgSongActivity.loadImageUrl(it) }
                 item.albumImage.let { binding.imgBgPlaylistActivity.loadImageUrl(it) }
                 binding.tvNamePlaylistActivity.text = item.albumName
                 binding.tvNameArtistPlaylistActivity.text = item.nameArtist
-//                mPresenter.getListSongPlaylist(item.albumId)
+                viewModel.fetchSongAlbum(item.albumId)
+                title = item.albumName
             }
 
             is Topic -> {
+                binding.btnAddPlaylistDetail.visibility = View.GONE
                 item.image.let { binding.imgSongActivity.loadImageUrl(it) }
                 item.image.let { binding.imgBgPlaylistActivity.loadImageUrl(it) }
                 binding.tvNamePlaylistActivity.text = item.name
                 binding.tvNameArtistPlaylistActivity.text = ""
-//                mPresenter.getListSongTopic(item.id)
+                viewModel.fetchSongTopic(item.id)
+                title = item.name
+            }
+
+            is Song -> {
+                val user = FirebaseAuth.getInstance().currentUser
+                binding.btnAddPlaylistDetail.visibility = View.GONE
+                item.image.let { binding.imgSongActivity.loadImageUrl(it) }
+                item.image.let { binding.imgBgPlaylistActivity.loadImageUrl(it) }
+                binding.tvNamePlaylistActivity.text = user?.email + USER
+                binding.tvNameArtistPlaylistActivity.text = user?.email
+                user?.uid?.let { viewModel.fetchSongLove(it) }
+                title =  user?.email + USER
+            }
+
+            is PlaylistUser -> {
+                binding.btnAddPlaylistDetail.visibility = View.GONE
+                item.songImage.let { binding.imgSongActivity.loadImageUrl(it) }
+                item.songImage.let { binding.imgBgPlaylistActivity.loadImageUrl(it) }
+                binding.tvNamePlaylistActivity.text = item.playlistUserName
+                binding.tvNameArtistPlaylistActivity.text = item.nameArtist
+                viewModel.fetchPlaylistsSongUser(item.playlistUserId)
+                title =  item.playlistUserName
             }
         }
+        showLoading()
     }
 
+    private fun showLoading() {
+        binding.layoutSongUserLoading.visibility = View.VISIBLE
+        binding.layoutSongUserEmpty.visibility = View.GONE
+    }
 
-//    @SuppressLint("SetTextI18n")
-//    override fun onListSong(songs: ArrayList<Song>) {
-//        val adapter = SongDetailAdapter(songs, this)
-//        binding.rcvPlaylistActivity.layoutManager = LinearLayoutManager(this)
-//        binding.rcvPlaylistActivity.adapter = adapter
-//        binding.tvQuantitySongPlaylistActivity.text = songs.size.toString() + SONG
-//        binding.rcvPlaylistActivity.isNestedScrollingEnabled = false
-//        mSong = songs
-//    }
-//
-//    companion object{
-//        const val SONG = " bài hát"
-//    }
-//
-//    override fun onItemClick(item: Any) {
-//        val intent = Intent(this, SongActivity::class.java)
-//        intent.putExtra(ConstantBase.KEY_POSITION_SONG, item as Int)
-//        intent.putParcelableArrayListExtra(KEY_INTENT_ITEM, mSong)
-//        startActivity(intent)
-//    }
+    @SuppressLint("SetTextI18n")
+    private fun initQuantitySong(songs: ArrayList<Song>) {
+        val quantity = if (songs.isNotEmpty()) {
+            songs.size
+        } else {
+            0
+        }
+        binding.tvQuantitySongPlaylistActivity.text = "$quantity $SONG"
+    }
 
+    companion object {
+        const val SONG = " bài hát"
+        const val USER = "'s Favorites"
+    }
+
+    private fun onItemClick(song: Song, position: Int) {
+        onStartPosition(position, false)
+    }
+
+    private fun onStartPosition(position: Int, isShuffle: Boolean) {
+        val intent = Intent(this, SongActivity::class.java)
+        intent.putExtra(KEY_POSITION_SONG, position)
+        intent.putExtra(KEY_NAME_TAB, title)
+        if (isShuffle) intent.putParcelableArrayListExtra(
+            KEY_INTENT_ITEM,
+            mSongs?.shuffled(Random()) as ArrayList<Song>
+        )
+        else intent.putParcelableArrayListExtra(KEY_INTENT_ITEM, mSongs)
+        startActivity(intent)
+    }
+
+    private fun handlerPostDelay(songs: ArrayList<Song>) {
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.layoutSongUserLoading.visibility = View.GONE
+            if (songs.isNotEmpty()) {
+                songAdapter.submitList(songs)
+                mSongs = songs
+                initQuantitySong(songs)
+            } else {
+                binding.layoutSongUserEmpty.visibility = View.VISIBLE
+            }
+        }, 1000)
+    }
 }

@@ -3,9 +3,8 @@ package com.example.musicapp.screen.topic
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.musicapp.data.model.Topic
-import com.example.musicapp.data.repositories.TopicRepository
+import com.example.musicapp.data.repositories.topicRepository.TopicRepository
 import com.example.musicapp.shared.base.BaseViewModel
 import com.example.musicapp.shared.utils.scheduler.DataResult
 

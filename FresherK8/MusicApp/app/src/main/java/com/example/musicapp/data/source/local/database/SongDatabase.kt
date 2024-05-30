@@ -11,7 +11,7 @@ class SongDatabase(
 
     override fun onCreate(sql: SQLiteDatabase?) {
         val song = "CREATE TABLE ${SongEntryLocal.TABLE_NAME}(" +
-                "${SongEntryLocal.COLUMN_SONG_ID} PRIMARY KEY,"+
+                "${SongEntryLocal.COLUMN_SONG_ID} INTEGER PRIMARY KEY,"+
                 "${SongEntryLocal.COLUMN_SONG_NAME} TEXT," +
                 "${SongEntryLocal.COLUMN_SONG_IMAGE} TEXT," +
                 "${SongEntryLocal.COLUMN_SONG_FILE_PATH} TEXT," +
