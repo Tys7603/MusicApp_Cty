@@ -1,11 +1,15 @@
 package com.example.musicapp.screen.account.phone
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.addTextChangedListener
 import com.example.musicapp.R
 import com.example.musicapp.databinding.ActivityPhoneLoginBinding
 import com.google.firebase.FirebaseException
@@ -34,13 +38,44 @@ class PhoneLoginActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
+        binding.btnSenCode.isEnabled = false
         handlerEvent()
+        listenerOnTextChange()
+    }
+
+    private fun listenerOnTextChange() {
+        binding.etPhone.addTextChangedListener ( object : TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                changeBackgroundButton(s?.length ?: 0)
+            }
+            override fun afterTextChanged(s: Editable?) = Unit
+        } )
+    }
+
+    private fun changeBackgroundButton(count : Int){
+        if (count > 0){
+            binding.btnSenCode.isEnabled = true
+            binding.btnSenCode.setBackgroundColor(getColor(R.color.teal))
+        }else{
+            binding.btnSenCode.isEnabled = false
+            binding.btnSenCode.setBackgroundColor(getColor(R.color.gray))
+        }
+        binding.tvShowError.visibility = View.GONE
+    }
+
+    private fun checkValidateShowMessage(count : Int){
+        if (count == 9){
+            senCodeVerifyPhoneNumber(binding.etPhone.text.toString().trim())
+            binding.tvShowError.visibility = View.GONE
+        }else{
+            binding.tvShowError.visibility = View.VISIBLE
+        }
     }
 
     private fun handlerEvent() {
         binding.imgBackPhone.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
-        binding.btnSenCode.setOnClickListener { senCodeVerifyPhoneNumber(binding.etPhone.text.toString().trim()) }
+        binding.btnSenCode.setOnClickListener { checkValidateShowMessage(binding.etPhone.length()) }
     }
 
     private fun senCodeVerifyPhoneNumber(phone : String) {

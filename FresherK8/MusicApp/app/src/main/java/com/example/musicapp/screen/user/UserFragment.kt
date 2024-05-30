@@ -49,7 +49,6 @@ class UserFragment : Fragment(), BaseService {
     private val viewModelUser: PlaylistUserViewModel by viewModel()
     private val viewModelLove: PlaylistLoveViewModel by viewModel()
     private var songsLove: MutableList<Song> = mutableListOf()
-    private var user = FirebaseAuth.getInstance().currentUser
     private val playlistLoveAdapter = PlaylistLoveAdapter(::onItemClick, 2)
     private val playlistUserAdapter = PlaylistUserAdapter(::onItemClick, 2)
 
@@ -160,6 +159,7 @@ class UserFragment : Fragment(), BaseService {
                     playlistLoveAdapter.submitList(it)
                     binding.layoutSongUserEmpty.visibility = View.GONE
                     binding.layoutPlaylistLoveEmpty.visibility = View.GONE
+                    binding.rcvPlaylistLove.visibility = View.VISIBLE
                 } else {
                     binding.rcvPlaylistLove.visibility = View.INVISIBLE
                     binding.layoutSongUserEmpty.visibility = View.VISIBLE
@@ -216,6 +216,7 @@ class UserFragment : Fragment(), BaseService {
             )
         }
         binding.btnListenAgain.setOnClickListener {
+            val user = FirebaseAuth.getInstance().currentUser
             if (user != null) {
                 startSongUser(
                     Constant.AGAIN,
@@ -237,7 +238,6 @@ class UserFragment : Fragment(), BaseService {
 
     private fun logout(){
         FirebaseAuth.getInstance().signOut()
-        user = FirebaseAuth.getInstance().currentUser
         binding.layoutPlaylistUserEmpty.visibility = View.VISIBLE
         binding.layoutPlaylistLoveEmpty.visibility = View.VISIBLE
         binding.layoutSongUserEmpty.visibility = View.GONE
@@ -271,6 +271,7 @@ class UserFragment : Fragment(), BaseService {
     }
 
     private fun startSongDetail() {
+        val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
             if (songsLove.isNotEmpty()){
                 val intent = Intent(requireContext(), SongDetailActivity::class.java)
@@ -292,6 +293,7 @@ class UserFragment : Fragment(), BaseService {
     }
 
     private fun openBottomSheetCreatePlaylistFragment() {
+        val user = FirebaseAuth.getInstance().currentUser
         if (user != null){
             openBottomSheetCreatePlaylist()
         }else{
@@ -300,6 +302,7 @@ class UserFragment : Fragment(), BaseService {
     }
 
     private fun openBottomSheetCheckUser() {
+        val user = FirebaseAuth.getInstance().currentUser
         if (user != null){
             openBottomSheet()
         }else{
@@ -308,8 +311,26 @@ class UserFragment : Fragment(), BaseService {
     }
 
     private fun openBottomSheetLogin() {
-        val bottomSheetLogin = BottomSheetLogin()
+        val bottomSheetLogin = BottomSheetLogin(::onLoginGoogle)
         bottomSheetLogin.show(parentFragmentManager, bottomSheetLogin.tag)
+    }
+
+    private fun onLoginGoogle(boolean: Boolean) {
+       if (boolean){
+           binding.layoutLoginGoogle.visibility = View.VISIBLE
+           binding.scroll.visibility = View.INVISIBLE
+           binding.includeLayout1.root.visibility = View.INVISIBLE
+       }else{
+           viewModel.initValueUser()
+           fetchData()
+           viewModel.fetchSongLocal()
+           viewModel.fetchSongAgain()
+           viewModel.fetchSongLove()
+           binding.layoutLoginGoogle.visibility = View.GONE
+           binding.scroll.visibility = View.VISIBLE
+           binding.includeLayout1.root.visibility = View.VISIBLE
+           binding.layoutPlaylistLoveEmpty.visibility = View.GONE
+       }
     }
 
     private fun openBottomSheet() {
@@ -364,8 +385,9 @@ class UserFragment : Fragment(), BaseService {
     }
 
     private fun onItemClickBottomSheetLove() {
+        val user = FirebaseAuth.getInstance().currentUser
         if (user != null){
-            viewModelLove.fetchPlaylists(user!!.uid)
+            viewModelLove.fetchPlaylists(user.uid)
         }
     }
 
@@ -373,7 +395,6 @@ class UserFragment : Fragment(), BaseService {
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null){
             viewModelUser.fetchPlaylistsUser(user.uid)
-            Log.d("TAG", "onItemClickBottomSheetUser: ")
         }
     }
 

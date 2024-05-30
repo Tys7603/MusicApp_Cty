@@ -69,7 +69,7 @@ class BottomSheetSongDetail(
     }
 
     private fun openBottomSheetLogin(){
-        val bottomSheetLogin = BottomSheetLogin()
+        val bottomSheetLogin = BottomSheetLogin{}
         bottomSheetLogin.show(parentFragmentManager, bottomSheetLogin.tag)
     }
 }

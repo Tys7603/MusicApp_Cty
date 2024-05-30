@@ -53,7 +53,7 @@ class UserViewModel (private val musicRepository: MusicRepository) : BaseViewMod
         }
     }
 
-    private fun fetchSongLove() {
+    fun fetchSongLove() {
         val user = FirebaseAuth.getInstance().currentUser
         user?.let {
             fetchDataWithSync(
@@ -70,7 +70,7 @@ class UserViewModel (private val musicRepository: MusicRepository) : BaseViewMod
         }
     }
 
-    private fun fetchSongAgain() {
+    fun fetchSongAgain() {
         val user = FirebaseAuth.getInstance().currentUser
         user?.let {
             fetchDataWithSync(
