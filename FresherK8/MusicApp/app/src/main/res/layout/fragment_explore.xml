@@ -12,341 +12,351 @@
         <import type="android.view.View" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="16dp"
+            android:id="@+id/constraintLayout3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ymusic_logo" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:id="@+id/btn_search"
+                    android:id="@+id/imageView4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_search" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ymusic_logo" />
 
-            </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    <ImageView
+                        android:id="@+id/btn_search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_search" />
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/nestedScrollView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="8dp"
-            android:fillViewport="true"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/include_layout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+                </LinearLayout>
 
-            <LinearLayout
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/nestedScrollView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="8dp"
+                android:fillViewport="true"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/include_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/tv_add_album"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:fontFamily="@font/product_sans_regular"
+                            android:text="@string/add"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_title_new"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/tv_title_new" />
+
+                        <TextView
+                            android:id="@+id/tv_add_loving"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:fontFamily="@font/product_sans_regular"
+                            android:text="@string/add"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_title_loved"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/tv_title_loved" />
+
+                        <TextView
+                            android:id="@+id/tv_add_mood"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:fontFamily="@font/product_sans_regular"
+                            android:text="@string/add"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_title_mood"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/tv_title_mood" />
+
+                        <TextView
+                            android:id="@+id/tv_add_topic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:fontFamily="@font/product_sans_regular"
+                            android:text="@string/add"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_title_category"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/tv_title_category" />
+
+                        <TextView
+                            android:id="@+id/tv_add_listen_again"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:fontFamily="@font/product_sans_regular"
+                            android:text="@string/add"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_title_playlist"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/tv_title_playlist" />
+
+                        <TextView
+                            android:id="@+id/tv_title_playlist"
+                            style="@style/TextTile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/you_listen"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rcv_playlist"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:minHeight="200dp"
+                            android:orientation="horizontal"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_title_playlist"
+                            tools:itemCount="6"
+                            tools:listitem="@layout/item_play_list">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                        <TextView
+                            android:id="@+id/tv_title_category"
+                            style="@style/TextTile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/category"
+                            app:layout_constraintStart_toStartOf="@+id/tv_title_playlist"
+                            app:layout_constraintTop_toBottomOf="@+id/rcv_playlist" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rcv_category"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:minHeight="232dp"
+                            android:orientation="horizontal"
+                            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_title_category"
+                            app:spanCount="2"
+                            tools:itemCount="5"
+                            tools:listitem="@layout/item_category" />
+
+
+                        <TextView
+                            android:id="@+id/textView121"
+                            style="@style/TextTile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/topic"
+                            app:layout_constraintStart_toStartOf="@+id/tv_title_playlist"
+                            app:layout_constraintTop_toBottomOf="@+id/rcv_category" />
+
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rcv_topic"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:minHeight="200dp"
+                            android:orientation="horizontal"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView121"
+                            tools:itemCount="5"
+                            tools:listitem="@layout/item_topic">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                        <TextView
+                            android:id="@+id/tv_listen_again"
+                            style="@style/TextTile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/listen_again"
+                            android:visibility="@{exploreViewModel.isUserLogin() ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintStart_toStartOf="@+id/tv_title_category"
+                            app:layout_constraintTop_toBottomOf="@+id/rcv_topic" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rcv_listen_again"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:minHeight="130dp"
+                            android:orientation="horizontal"
+                            android:visibility="@{exploreViewModel.isUserLogin() ? View.VISIBLE  : View.GONE}"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_listen_again"
+                            tools:itemCount="7"
+                            tools:listitem="@layout/item_song_agian" />
+
+                        <TextView
+                            android:id="@+id/tv_title_rank"
+                            style="@style/TextTile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/social_rank"
+                            app:layout_constraintStart_toStartOf="@+id/tv_listen_again"
+                            app:layout_constraintTop_toBottomOf="@+id/rcv_listen_again" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rcv_song_rank"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_title_rank" />
+
+                        <TextView
+                            android:id="@+id/tv_title_mood"
+                            style="@style/TextTile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/mood_today"
+                            app:layout_constraintStart_toStartOf="@+id/tv_title_rank"
+                            app:layout_constraintTop_toBottomOf="@+id/rcv_song_rank" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rcv_album_mood_today"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_title_mood">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                        <TextView
+                            android:id="@+id/tv_title_loved"
+                            style="@style/TextTile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/doing_love"
+                            app:layout_constraintStart_toStartOf="@+id/tv_title_mood"
+                            app:layout_constraintTop_toBottomOf="@+id/rcv_album_mood_today" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rcv_album_love"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_title_loved" />
+
+                        <TextView
+                            android:id="@+id/tv_title_new"
+                            style="@style/TextTile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/album_new"
+                            app:layout_constraintStart_toStartOf="@+id/tv_title_loved"
+                            app:layout_constraintTop_toBottomOf="@+id/rcv_album_love" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rcv_album_new"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_title_new" />
+
+                        <TextView
+                            android:id="@+id/textView6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@{exploreViewModel.message}"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:visibility="@{exploreViewModel.isMessageSelect() ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintBottom_toBottomOf="@+id/rcv_listen_again"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_listen_again" />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+            <include
+                android:id="@+id/include_layout"
+                layout="@layout/layout_bottom_sheet_song"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/tv_add_album"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:fontFamily="@font/product_sans_regular"
-                        android:text="@string/add"
-                        android:textSize="15sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/tv_title_new"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tv_title_new" />
-
-                    <TextView
-                        android:id="@+id/tv_add_loving"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:fontFamily="@font/product_sans_regular"
-                        android:text="@string/add"
-                        android:textSize="15sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/tv_title_loved"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tv_title_loved" />
-
-                    <TextView
-                        android:id="@+id/tv_add_mood"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:fontFamily="@font/product_sans_regular"
-                        android:text="@string/add"
-                        android:textSize="15sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/tv_title_mood"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tv_title_mood" />
-
-                    <TextView
-                        android:id="@+id/tv_add_topic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:fontFamily="@font/product_sans_regular"
-                        android:text="@string/add"
-                        android:textSize="15sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/tv_title_category"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tv_title_category" />
-
-                    <TextView
-                        android:id="@+id/tv_add_listen_again"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:fontFamily="@font/product_sans_regular"
-                        android:text="@string/add"
-                        android:textSize="15sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/tv_title_playlist"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tv_title_playlist" />
-
-                    <TextView
-                        android:id="@+id/tv_title_playlist"
-                        style="@style/TextTile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/you_listen"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcv_playlist"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:minHeight="200dp"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_title_playlist"
-                        tools:itemCount="6"
-                        tools:listitem="@layout/item_play_list">
-
-                    </androidx.recyclerview.widget.RecyclerView>
-
-                    <TextView
-                        android:id="@+id/tv_title_category"
-                        style="@style/TextTile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/category"
-                        app:layout_constraintStart_toStartOf="@+id/tv_title_playlist"
-                        app:layout_constraintTop_toBottomOf="@+id/rcv_playlist" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcv_category"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:minHeight="232dp"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_title_category"
-                        app:spanCount="2"
-                        tools:itemCount="5"
-                        tools:listitem="@layout/item_category" />
-
-
-                    <TextView
-                        android:id="@+id/textView121"
-                        style="@style/TextTile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/topic"
-                        app:layout_constraintStart_toStartOf="@+id/tv_title_playlist"
-                        app:layout_constraintTop_toBottomOf="@+id/rcv_category" />
-
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcv_topic"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:minHeight="200dp"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView121"
-                        tools:itemCount="5"
-                        tools:listitem="@layout/item_topic">
-
-                    </androidx.recyclerview.widget.RecyclerView>
-
-                    <TextView
-                        android:id="@+id/tv_listen_again"
-                        style="@style/TextTile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/listen_again"
-                        android:visibility="@{exploreViewModel.isUserLogin() ? View.VISIBLE : View.GONE}"
-                        app:layout_constraintStart_toStartOf="@+id/tv_title_category"
-                        app:layout_constraintTop_toBottomOf="@+id/rcv_topic" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcv_listen_again"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:minHeight="130dp"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal"
-                        android:visibility="@{exploreViewModel.isUserLogin() ? View.VISIBLE  : View.GONE}"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_listen_again"
-                        tools:itemCount="7"
-                        tools:listitem="@layout/item_song_agian" />
-
-                    <TextView
-                        android:id="@+id/tv_title_rank"
-                        style="@style/TextTile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/social_rank"
-                        app:layout_constraintStart_toStartOf="@+id/tv_listen_again"
-                        app:layout_constraintTop_toBottomOf="@+id/rcv_listen_again" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcv_song_rank"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_title_rank" />
-
-                    <TextView
-                        android:id="@+id/tv_title_mood"
-                        style="@style/TextTile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/mood_today"
-                        app:layout_constraintStart_toStartOf="@+id/tv_title_rank"
-                        app:layout_constraintTop_toBottomOf="@+id/rcv_song_rank" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcv_album_mood_today"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_title_mood">
-
-                    </androidx.recyclerview.widget.RecyclerView>
-
-                    <TextView
-                        android:id="@+id/tv_title_loved"
-                        style="@style/TextTile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/doing_love"
-                        app:layout_constraintStart_toStartOf="@+id/tv_title_mood"
-                        app:layout_constraintTop_toBottomOf="@+id/rcv_album_mood_today" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcv_album_love"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_title_loved" />
-
-                    <TextView
-                        android:id="@+id/tv_title_new"
-                        style="@style/TextTile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/album_new"
-                        app:layout_constraintStart_toStartOf="@+id/tv_title_loved"
-                        app:layout_constraintTop_toBottomOf="@+id/rcv_album_love" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcv_album_new"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_title_new" />
-
-                    <TextView
-                        android:id="@+id/textView6"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@{exploreViewModel.message}"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        android:visibility="@{exploreViewModel.isMessageSelect() ? View.VISIBLE : View.GONE}"
-                        app:layout_constraintBottom_toBottomOf="@+id/rcv_listen_again"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_listen_again" />
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
-
-        <include
-            android:id="@+id/include_layout"
-            layout="@layout/layout_bottom_sheet_song"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

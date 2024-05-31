@@ -22,9 +22,10 @@ class MusicViewModel(private val musicRepository: MusicRepository) : BaseViewMod
         fetchData()
     }
 
-    private fun fetchData() {
+    fun fetchData() {
         fetchSong()
         fetchSongLove()
+        Log.d("TAG", "fetchData: ")
     }
 
     private fun fetchSong() {

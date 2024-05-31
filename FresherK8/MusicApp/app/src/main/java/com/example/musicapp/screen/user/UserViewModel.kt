@@ -34,6 +34,10 @@ class UserViewModel (private val musicRepository: MusicRepository) : BaseViewMod
     val songsAgain: LiveData<ArrayList<SongAgain>> = _songsAgain
 
     init {
+       fetchData()
+    }
+
+    fun fetchData(){
         initValueUser()
         fetchSongLove()
         fetchSongLocal()

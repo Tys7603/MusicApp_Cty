@@ -27,7 +27,12 @@
         android:theme="@style/Theme.MusicApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
+
+
+    <activity
             android:name=".screen.account.phone.PhoneLoginActivity"
             android:exported="false" />
 
@@ -74,6 +79,8 @@
         <activity
             android:name=".screen.main.MainActivity"
             android:exported="false"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:screenOrientation="portrait" />
         <activity
             android:name=".screen.songDetail.SongDetailActivity"

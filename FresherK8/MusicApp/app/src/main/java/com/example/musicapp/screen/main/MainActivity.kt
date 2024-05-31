@@ -32,6 +32,11 @@ import com.example.musicapp.shared.utils.constant.Constant.KEY_REFRESH_LYRIC
 
 
 class MainActivity : AppCompatActivity(), OnChangeListener {
+    private val musicFragment = MusicFragment()
+    private val exploreFragment = ExploreFragment()
+    private val musicVideoFragment = MusicVideoFragment()
+    private val userFragment = MusicFragment()
+
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
