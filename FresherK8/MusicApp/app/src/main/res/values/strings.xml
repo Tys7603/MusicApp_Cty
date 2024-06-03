@@ -91,4 +91,10 @@
     <string name="your_web_client_id">826716371935-5pi266e6tbgavs5pptl873kmhl87h309.apps.googleusercontent.com</string>
     <string name="default_web_client_id">826716371935-o6kmkc8gmvrifukhm0hg0q7061gvsd59.apps.googleusercontent.com</string>
     <string name="login">Login ...</string>
+    <string name="x_c_th_c_m_otp">Xác thực mã OTP</string>
+    <string name="nh_p_m_otp_ti_p_t_c">Nhập mã OTP để tiếp tục</string>
+    <string name="otp">OTP</string>
+    <string name="g_i_l_i_m">Gửi lại mã :&#160;</string>
+    <string name="_60">60</string>
+    <string name="gi_y">&#160;giây</string>
 </resources>

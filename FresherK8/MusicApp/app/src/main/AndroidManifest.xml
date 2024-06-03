@@ -14,6 +14,9 @@
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission
+        android:name="android.permission.RECEIVE_MMS"
+        tools:ignore="PermissionImpliesUnsupportedChromeOsHardware" />
 
     <application
         android:name=".shared.utils.di.MyApplication"
@@ -27,12 +30,18 @@
         android:theme="@style/Theme.MusicApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".screen.account.phone.VerifyPhoneActivity"
+            android:exported="false" />
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-        <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.facebook.sdk.ClientToken"
+            android:value="@string/facebook_client_token" />
 
-
-    <activity
+        <activity
             android:name=".screen.account.phone.PhoneLoginActivity"
             android:exported="false" />
 
@@ -78,9 +87,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".screen.main.MainActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:exported="false"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:screenOrientation="portrait" />
         <activity
             android:name=".screen.songDetail.SongDetailActivity"
@@ -94,6 +102,18 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- URI scheme and host -->
+                <data
+                    android:host="6ztfh0rs-3000.asse.devtunnels.ms"
+                    android:pathPattern="/music"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 
