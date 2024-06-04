@@ -16,6 +16,8 @@ data class MusicVideo(
     val musicVideoTime: String,
     @SerializedName("music_video_proposal_new")
     val musicVideoProposalNew: Int,
+    @SerializedName("artist_id")
+    val artistId: Int,
     @SerializedName("artist_name")
     val artistName: String,
     @SerializedName("artist_image")

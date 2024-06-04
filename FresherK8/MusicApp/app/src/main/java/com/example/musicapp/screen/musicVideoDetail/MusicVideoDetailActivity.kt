@@ -1,6 +1,7 @@
 package com.example.musicapp.screen.musicVideoDetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +15,7 @@ import com.example.musicapp.shared.extension.setAdapterLinearVertical
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.shared.widget.CustomPlayerUiController
 import com.example.musicapp.shared.widget.SnackBarManager
+import com.google.firebase.auth.FirebaseAuth
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerCallback
@@ -28,7 +30,8 @@ class MusicVideoDetailActivity : AppCompatActivity() {
     private var mMusicVideo: MusicVideo? = null
     private var mMusicVideos: MutableList<MusicVideo> = mutableListOf()
     private var positionMusicVideo = 0
-    private var customPlayerUiController : CustomPlayerUiController? = null
+    private var customPlayerUiController: CustomPlayerUiController? = null
+    private var isFollow = false
     private val binding by lazy {
         ActivityMusicVideoDetailBinding.inflate(layoutInflater)
     }
@@ -45,14 +48,16 @@ class MusicVideoDetailActivity : AppCompatActivity() {
         initViewModel()
         handlerEvent()
         getBundlerValue()
+        checkFollowTheArtist()
         initRecyclerView()
         handlerEventViewModel()
         initPlayerYoutube()
         showLayout(true)
     }
 
-    private fun handlerEvent() {
-        binding.btnFollow.setOnClickListener { SnackBarManager.showMessage(binding.imageView13, "Tính năng phá triển sau") }
+    companion object {
+        const val FOLLOW = "Theo dõi"
+        const val UN_FOLLOW = "Bỏ theo dõi"
     }
 
     private fun getBundlerValue() {
@@ -60,6 +65,13 @@ class MusicVideoDetailActivity : AppCompatActivity() {
             binding.musicVideo = it
             mMusicVideo = it
             viewModel.fetchMusicVideoDetail(it.musicVideoId)
+        }
+    }
+
+    private fun checkFollowTheArtist() {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null && mMusicVideo != null) {
+            viewModel.checkFollowTheArtist(user.uid, mMusicVideo!!.artistId)
         }
     }
 
@@ -79,6 +91,61 @@ class MusicVideoDetailActivity : AppCompatActivity() {
             musicVideoAdapter.submitList(modifiedList)
             mMusicVideos = it
             mMusicVideos.add(0, mMusicVideo!!)
+        }
+
+        viewModel.isFollow.observe(this) {
+            binding.tvFollow.text = if (it) UN_FOLLOW else FOLLOW
+            isFollow = it
+            showLoadingFollow(false)
+        }
+
+        viewModel.isInsert.observe(this) {
+            if (it) checkFollowTheArtist()
+            else {
+                SnackBarManager.showMessage(binding.imageView13, "Theo dõi thất bại")
+                showLoadingFollow(false)
+            }
+        }
+
+        viewModel.isDelete.observe(this) {
+            if (it) checkFollowTheArtist()
+            else {
+                SnackBarManager.showMessage(binding.imageView13, "Bỏ theo dõi thất bại")
+                showLoadingFollow(false)
+            }
+        }
+    }
+
+    private fun handlerEvent() {
+        binding.btnFollow.setOnClickListener {
+            followTheArtist()
+        }
+    }
+
+    private fun followTheArtist() {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null && mMusicVideo != null) {
+            if (isFollow) {
+                viewModel.deleteFollowTheArtist(user.uid, mMusicVideo!!.artistId)
+            } else {
+                viewModel.insertFollowTheArtist(user.uid, mMusicVideo!!.artistId)
+            }
+            showLoadingFollow(true)
+        } else {
+            SnackBarManager.showMessage(binding.imageView13, "Chưa đăng nhập")
+        }
+    }
+
+    private fun showLoadingFollow(boolean: Boolean) {
+        if (boolean) {
+            binding.tvFollow.visibility = View.INVISIBLE
+            binding.pbFollow.visibility = View.VISIBLE
+            binding.btnFollow.setOnClickListener(null)
+        } else {
+            binding.tvFollow.visibility = View.VISIBLE
+            binding.pbFollow.visibility = View.INVISIBLE
+            binding.btnFollow.setOnClickListener { followTheArtist() }
+
         }
     }
 
@@ -115,14 +182,15 @@ class MusicVideoDetailActivity : AppCompatActivity() {
         binding.youtubePlayerView.initialize(listener, options)
     }
 
-    private fun onClickItem(musicVideo: MusicVideo, position : Int) {
+    private fun onClickItem(musicVideo: MusicVideo, position: Int) {
         showLayout(true)
         getYouTubePlayerWhenReady(musicVideo)
+        checkFollowTheArtist()
         positionMusicVideo = position
         customPlayerUiController!!.updateUI()
     }
 
-    private fun getYouTubePlayerWhenReady(musicVideo: MusicVideo){
+    private fun getYouTubePlayerWhenReady(musicVideo: MusicVideo) {
         binding.youtubePlayerView.getYouTubePlayerWhenReady(object : YouTubePlayerCallback {
             override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
                 youTubePlayer.pause()
@@ -141,43 +209,45 @@ class MusicVideoDetailActivity : AppCompatActivity() {
         mMusicVideo = musicVideo
     }
 
-    private fun onClickController(enum : Constant.ClickControllerPlayerUi){
-        when(enum){
+    private fun onClickController(enum: Constant.ClickControllerPlayerUi) {
+        when (enum) {
             Constant.ClickControllerPlayerUi.ON_BACK -> {
                 onBackPressedDispatcher.onBackPressed()
             }
+
             Constant.ClickControllerPlayerUi.ON_NEXT_VIDEO -> {
                 nextVideoMusic()
             }
+
             Constant.ClickControllerPlayerUi.ON_BACK_VIDEO -> {
                 backVideoMusic()
             }
         }
     }
 
-    private fun nextVideoMusic(){
-        positionMusicVideo ++
-        if (positionMusicVideo >= mMusicVideos.size){
-           positionMusicVideo = 0
+    private fun nextVideoMusic() {
+        positionMusicVideo++
+        if (positionMusicVideo >= mMusicVideos.size) {
+            positionMusicVideo = 0
         }
         mMusicVideos.getOrNull(positionMusicVideo)?.let { getYouTubePlayerWhenReady(it) }
         customPlayerUiController!!.updateUI()
     }
 
-    private fun backVideoMusic(){
-        positionMusicVideo --
-        if (positionMusicVideo < 0){
-           positionMusicVideo = mMusicVideos.size - 1
+    private fun backVideoMusic() {
+        positionMusicVideo--
+        if (positionMusicVideo < 0) {
+            positionMusicVideo = mMusicVideos.size - 1
         }
         getYouTubePlayerWhenReady(mMusicVideos[positionMusicVideo])
         customPlayerUiController!!.updateUI()
     }
 
-    private fun showLayout(isShow : Boolean){
-        if (isShow){
+    private fun showLayout(isShow: Boolean) {
+        if (isShow) {
             binding.includeLayoutMvDetail.visibility = View.VISIBLE
             binding.layoutMvDetail.visibility = View.GONE
-        }else{
+        } else {
             binding.includeLayoutMvDetail.visibility = View.GONE
             binding.layoutMvDetail.visibility = View.VISIBLE
         }

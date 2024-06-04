@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 20, 2024 lúc 12:45 PM
+-- Thời gian đã tạo: Th6 04, 2024 lúc 11:41 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -123,6 +123,30 @@ INSERT INTO `category` (`category_id`, `category_name`, `category_image`) VALUES
 (4, 'Chill Out', 'https://avatar-ex-swe.nixcdn.com/topic/thumb/2021/03/09/2/9/3/f/1615284927743_org.jpg'),
 (5, 'Gym', 'https://avatar-ex-swe.nixcdn.com/topic/thumb/2022/10/31/7/f/c/2/1667207540646_org.jpg'),
 (6, 'V-Rap', 'https://avatar-ex-swe.nixcdn.com/topic/mobile/2024/04/16/f/d/3/d/1713237576082_org.jpg');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `follow`
+--
+
+CREATE TABLE `follow` (
+  `follow_id` int(11) NOT NULL,
+  `user_id` varchar(100) NOT NULL,
+  `artist_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `follow`
+--
+
+INSERT INTO `follow` (`follow_id`, `user_id`, `artist_id`) VALUES
+(27, 'NrZk7AA9LmfTQF1t3CbkQgeGYVh1', 3),
+(26, 'NrZk7AA9LmfTQF1t3CbkQgeGYVh1', 8),
+(24, 'QSZqSss49HOyRaPzQymitz8P2942', 3),
+(20, 'QSZqSss49HOyRaPzQymitz8P2942', 4),
+(11, 'QSZqSss49HOyRaPzQymitz8P2942', 5),
+(25, 'QSZqSss49HOyRaPzQymitz8P2942', 10);
 
 -- --------------------------------------------------------
 
@@ -423,8 +447,16 @@ INSERT INTO `playlist_user` (`playlist_user_id`, `playlist_user_name`, `user_id`
 (2, 'Rap', 'ZCt6n9uDFjZ9lOOtPataEGxngfr2'),
 (6, 'Nhạc đi tắm', 'QSZqSss49HOyRaPzQymitz8P2942'),
 (7, 'Here Where Go', 'QSZqSss49HOyRaPzQymitz8P2942'),
-(32, 'a', 'QSZqSss49HOyRaPzQymitz8P2942'),
-(33, 'Nhạc chơi game', 'QSZqSss49HOyRaPzQymitz8P2942');
+(33, 'Nhạc chơi game', 'QSZqSss49HOyRaPzQymitz8P2942'),
+(42, 'abc', 'XMe0wL5W9wMYZEpdae30GwG15JD3'),
+(51, 'Rap', 'NrZk7AA9LmfTQF1t3CbkQgeGYVh1'),
+(52, 'rap', '5M0tL4Wx4DbSyoy50BtML8eNoqY2'),
+(53, 'abc', '5M0tL4Wx4DbSyoy50BtML8eNoqY2'),
+(55, 'ra', 'ftQTNjkDsbg7EzgUtCfKUOZFm0i1'),
+(56, 'b', 'ftQTNjkDsbg7EzgUtCfKUOZFm0i1'),
+(59, 'a', 'pLWxZlIzKjTGVseUq9Iek03ioNf2'),
+(62, 'Rap', 'boCsxQUcmfNsvWQ7CU8SSsbSmkA3'),
+(63, 'Nhac di tam', 'boCsxQUcmfNsvWQ7CU8SSsbSmkA3');
 
 -- --------------------------------------------------------
 
@@ -443,8 +475,8 @@ CREATE TABLE `playlist_user_love` (
 --
 
 INSERT INTO `playlist_user_love` (`playlist_user_love_id`, `user_id`, `playlist_id`) VALUES
-(5, 'QSZqSss49HOyRaPzQymitz8P2942', 1),
-(6, 'QSZqSss49HOyRaPzQymitz8P2942', 4),
+(25, 'boCsxQUcmfNsvWQ7CU8SSsbSmkA3', 4),
+(24, 'NrZk7AA9LmfTQF1t3CbkQgeGYVh1', 2),
 (2, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 5);
 
 -- --------------------------------------------------------
@@ -469,8 +501,11 @@ INSERT INTO `playlist_user_song` (`playlist_user_song_id`, `playlist_user_id`, `
 (4, 2, 4),
 (3, 2, 7),
 (8, 6, 4),
-(11, 32, 5),
-(12, 33, 5);
+(13, 6, 6),
+(14, 7, 4),
+(12, 33, 5),
+(15, 51, 1),
+(16, 51, 7);
 
 -- --------------------------------------------------------
 
@@ -517,16 +552,16 @@ CREATE TABLE `song` (
 --
 
 INSERT INTO `song` (`song_id`, `song_name`, `song_image`, `song_url`, `album_id`, `topic_id`, `playlist_id`, `song_listen`, `download`) VALUES
-(1, 'Chạy Ngay Đi', 'https://upload.wikimedia.org/wikipedia/vi/thumb/8/85/Chay_ngay_di.png/220px-Chay_ngay_di.png', 'https://archive.org/download/muon-anh-dau-winno-hustlang-robber-13672897_202404/ChayNgayDi-SonTungMTP-5468704.mp3', 9, 27, 1, 100, 1),
-(2, 'Buồn Hay Vui (Feat. Rpt Mck, Obito & Ronboogz) ', 'https://photo-resize-zmp3.zadn.vn/w600_r1x1_jpeg/cover/6/d/a/a/6daaea74ed8423b2a0e769011d6d3eb3.jpg', 'https://archive.org/download/muon-anh-dau-winno-hustlang-robber-13672897_202404/BuonHayVuiFeatRptMckObitoRonboogz-VSOULRPTMCKObitoRonboogz-13159599.mp3', 11, 29, 1, 80, 1),
-(3, 'Bảo Tàng', 'https://i1.sndcdn.com/artworks-GjgUcervqHm9-0-t500x500.jpg', 'https://archive.org/download/muon-anh-dau-winno-hustlang-robber-13672897_202404/BaoTang-LowG-12625032.mp3', 13, 29, 1, 57, 1),
-(4, 'KPI', 'https://photo-resize-zmp3.zadn.vn/w360_r1x1_jpeg/avatars/c/2/a/1/c2a154106353063625c9412ed20443a0.jpg', 'https://archive.org/download/muon-anh-dau-winno-hustlang-robber-13672897_202404/KPI-HIEUTHUHAI-11966370.mp3', 12, 18, 4, 34, 0),
-(5, 'Simp Gái 808', 'https://i.ytimg.com/vi/d2Jb2LgAsYw/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDLzfDXYR1uPb8N60QDnLvKs1YpbA', 'https://archive.org/download/muon-anh-dau-winno-hustlang-robber-13672897_202404/SimpGai808-LowG-11976517.mp3', 13, 29, 5, 35, 0),
-(6, 'Thư Gửi Mẹ', 'https://i.ytimg.com/vi/KZYAW1plg_M/maxresdefault.jpg', 'https://archive.org/download/muon-anh-dau-winno-hustlang-robber-13672897_202404/ThuGuiMe-Tez-13565635.mp3', 14, 30, 5, 54, 0),
-(7, 'Đừng Làm Nó Phức Tạp', 'https://bazaarvietnam.vn/wp-content/uploads/2024/01/Harpers-Bazaar-tlinh-mo-bat-2024-voi-MV-dung-lam-no-phuc-tap_03.jpg', 'https://archive.org/download/muon-anh-dau-winno-hustlang-robber-13672897_202404/DungLamNoPhucTap-tlinh-13521882.mp3', 15, 29, 5, 54, 0),
-(8, 'Chị Ngã Em Nâng', 'https://i1.sndcdn.com/artworks-000441954789-d6haiq-t500x500.jpg', 'https://archive.org/download/muon-anh-dau-winno-hustlang-robber-13672897_202404/ChiNgaEmNang-BichPhuong-5758252.mp3', 16, 11, 3, 43, 0),
-(9, 'Tình Yêu Giữa Mùa Đông', 'https://photo-resize-zmp3.zmdcdn.me/w256_r1x1_jpeg/avatars/3/e/3e602dd0ab83a3a8c3f32309bb9a88f9_1460456703.jpg', 'https://archive.org/download/tinh-yeu-giua-mua-dong-phan-manh-quynh-3700927_20240423/TinhYeuGiuaMuaDong-PhanManhQuynh-3700927.mp3', 8, 13, 4, 100, 0),
-(10, 'Vợ Người Ta', 'https://avatar-ex-swe.nixcdn.com/song/2018/05/10/6/5/d/f/1525966962511_640.jpg', 'https://archive.org/download/tinh-yeu-giua-mua-dong-phan-manh-quynh-3700927_20240423/VoNguoiTa-PhanManhQuynh-4109355.mp3', 8, 22, 2, 30, 0);
+(1, 'Chạy Ngay Đi', 'https://upload.wikimedia.org/wikipedia/vi/thumb/8/85/Chay_ngay_di.png/220px-Chay_ngay_di.png', 'https://res.cloudinary.com/dgdb5znxn/video/upload/v1716820665/music/ChayNgayDi-SonTungMTP-5468704_xdbnmx.mp3', 9, 27, 1, 100, 1),
+(2, 'Buồn Hay Vui (Feat. Rpt Mck, Obito & Ronboogz) ', 'https://photo-resize-zmp3.zadn.vn/w600_r1x1_jpeg/cover/6/d/a/a/6daaea74ed8423b2a0e769011d6d3eb3.jpg', 'https://res.cloudinary.com/dgdb5znxn/video/upload/v1716821863/music/BuonHayVuiFeatRptMckObitoRonboogz-VSOULRPTMCKObitoRonboogz-13159599_hngovf.mp3', 11, 29, 1, 80, 1),
+(3, 'Bảo Tàng', 'https://i1.sndcdn.com/artworks-GjgUcervqHm9-0-t500x500.jpg', 'https://res.cloudinary.com/dgdb5znxn/video/upload/v1716821865/music/BaoTang-LowG-12625032_hegemq.mp3', 13, 29, 1, 57, 1),
+(4, 'KPI', 'https://photo-resize-zmp3.zadn.vn/w360_r1x1_jpeg/avatars/c/2/a/1/c2a154106353063625c9412ed20443a0.jpg', 'https://res.cloudinary.com/dgdb5znxn/video/upload/v1716821881/music/KPI-HIEUTHUHAI-11966370_jn3qtt.mp3', 12, 18, 4, 34, 0),
+(5, 'Simp Gái 808', 'https://i.ytimg.com/vi/d2Jb2LgAsYw/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDLzfDXYR1uPb8N60QDnLvKs1YpbA', 'https://res.cloudinary.com/dgdb5znxn/video/upload/v1716821915/music/SimpGai808-LowG-11976517_kgirbn.mp3', 13, 29, 5, 35, 0),
+(6, 'Thư Gửi Mẹ', 'https://i.ytimg.com/vi/KZYAW1plg_M/maxresdefault.jpg', 'https://res.cloudinary.com/dgdb5znxn/video/upload/v1716821893/music/ThuGuiMe-Tez-13565635_vucb06.mp3', 14, 30, 5, 54, 0),
+(7, 'Đừng Làm Nó Phức Tạp', 'https://bazaarvietnam.vn/wp-content/uploads/2024/01/Harpers-Bazaar-tlinh-mo-bat-2024-voi-MV-dung-lam-no-phuc-tap_03.jpg', 'https://res.cloudinary.com/dgdb5znxn/video/upload/v1716822066/music/DungLamNoPhucTap-tlinh-13521882_wxypgw.mp3', 15, 29, 5, 54, 0),
+(8, 'Chị Ngã Em Nâng', 'https://i1.sndcdn.com/artworks-000441954789-d6haiq-t500x500.jpg', 'https://res.cloudinary.com/dgdb5znxn/video/upload/v1716823020/music/ChiNgaEmNang-BichPhuong-5758252_rmwglm.mp3', 16, 11, 3, 43, 0),
+(9, 'Tình Yêu Giữa Mùa Đông', 'https://photo-resize-zmp3.zmdcdn.me/w256_r1x1_jpeg/avatars/3/e/3e602dd0ab83a3a8c3f32309bb9a88f9_1460456703.jpg', 'https://res.cloudinary.com/dgdb5znxn/video/upload/v1716823385/music/TinhYeuGiuaMuaDong-PhanManhQuynh-3700927_lxcpuq.mp3', 8, 13, 4, 100, 0),
+(10, 'Vợ Người Ta', 'https://avatar-ex-swe.nixcdn.com/song/2018/05/10/6/5/d/f/1525966962511_640.jpg', 'https://res.cloudinary.com/dgdb5znxn/video/upload/v1716823253/music/VoNguoiTa-PhanManhQuynh-4109355_gjhkwn.mp3', 8, 22, 2, 30, 0);
 
 -- --------------------------------------------------------
 
@@ -536,6 +571,7 @@ INSERT INTO `song` (`song_id`, `song_name`, `song_image`, `song_url`, `album_id`
 
 CREATE TABLE `song_again` (
   `song_again_id` int(11) NOT NULL,
+  `date_listen` datetime NOT NULL DEFAULT current_timestamp(),
   `song_id` int(11) NOT NULL,
   `user_id` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -544,8 +580,22 @@ CREATE TABLE `song_again` (
 -- Đang đổ dữ liệu cho bảng `song_again`
 --
 
-INSERT INTO `song_again` (`song_again_id`, `song_id`, `user_id`) VALUES
-(10, 2, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2');
+INSERT INTO `song_again` (`song_again_id`, `date_listen`, `song_id`, `user_id`) VALUES
+(17, '2024-05-23 15:28:46', 3, 'QSZqSss49HOyRaPzQymitz8P2942'),
+(18, '2024-05-23 15:29:46', 4, 'QSZqSss49HOyRaPzQymitz8P2942'),
+(19, '2024-05-23 15:31:21', 6, 'QSZqSss49HOyRaPzQymitz8P2942'),
+(20, '2024-05-23 15:50:44', 7, 'QSZqSss49HOyRaPzQymitz8P2942'),
+(21, '2024-05-23 15:53:20', 8, 'QSZqSss49HOyRaPzQymitz8P2942'),
+(25, '2024-05-23 16:49:07', 9, 'QSZqSss49HOyRaPzQymitz8P2942'),
+(26, '2024-05-23 16:50:03', 10, 'QSZqSss49HOyRaPzQymitz8P2942'),
+(27, '2024-05-23 16:51:29', 1, 'QSZqSss49HOyRaPzQymitz8P2942'),
+(28, '2024-05-23 16:51:49', 2, 'QSZqSss49HOyRaPzQymitz8P2942'),
+(29, '2024-05-23 16:56:38', 5, 'QSZqSss49HOyRaPzQymitz8P2942'),
+(30, '2024-05-27 15:48:35', 7, 'NrZk7AA9LmfTQF1t3CbkQgeGYVh1'),
+(31, '2024-05-27 17:40:32', 3, 'NrZk7AA9LmfTQF1t3CbkQgeGYVh1'),
+(32, '2024-05-30 16:08:09', 2, 'boCsxQUcmfNsvWQ7CU8SSsbSmkA3'),
+(33, '2024-05-30 16:20:09', 3, 'boCsxQUcmfNsvWQ7CU8SSsbSmkA3'),
+(34, '2024-05-30 16:20:59', 4, 'boCsxQUcmfNsvWQ7CU8SSsbSmkA3');
 
 -- --------------------------------------------------------
 
@@ -564,27 +614,9 @@ CREATE TABLE `song_love` (
 --
 
 INSERT INTO `song_love` (`song_love_id`, `user_id`, `song_id`) VALUES
-(51, '3i0hJyaL2kNBKjLrT8t8uPhxsa32', 2),
-(11, '7oEPyI8hGqUB45vZNkMv3tsWahB2', 2),
-(48, 'Kct8HgBtVsaLhXE5J8FBfMPEFWr2', 1),
-(59, 'QSZqSss49HOyRaPzQymitz8P2942', 1),
-(54, 'QSZqSss49HOyRaPzQymitz8P2942', 2),
-(71, 'QSZqSss49HOyRaPzQymitz8P2942', 4),
-(69, 'QSZqSss49HOyRaPzQymitz8P2942', 5),
-(60, 'QSZqSss49HOyRaPzQymitz8P2942', 6),
-(70, 'QSZqSss49HOyRaPzQymitz8P2942', 7),
-(72, 'QSZqSss49HOyRaPzQymitz8P2942', 9),
-(73, 'QSZqSss49HOyRaPzQymitz8P2942', 9),
-(45, 'XMe0wL5W9wMYZEpdae30GwG15JD3', 1),
-(46, 'XMe0wL5W9wMYZEpdae30GwG15JD3', 2),
-(47, 'XMe0wL5W9wMYZEpdae30GwG15JD3', 3),
-(13, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 3),
-(20, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 4),
-(14, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 5),
-(15, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 6),
-(16, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 7),
-(21, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 8),
-(35, 'ZCt6n9uDFjZ9lOOtPataEGxngfr2', 10);
+(143, 'boCsxQUcmfNsvWQ7CU8SSsbSmkA3', 4),
+(135, 'QSZqSss49HOyRaPzQymitz8P2942', 1),
+(126, 'QSZqSss49HOyRaPzQymitz8P2942', 4);
 
 -- --------------------------------------------------------
 
@@ -684,9 +716,14 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`user_id`) VALUES
 ('2LKuuAWZX7W1iQk0Fy8qakkoLde2'),
 ('3i0hJyaL2kNBKjLrT8t8uPhxsa32'),
+('47FfQjwGwXfk0CLI7uOTNRMRdjH3'),
+('5M0tL4Wx4DbSyoy50BtML8eNoqY2'),
+('7G4ZjOr8IRT5QnTLvoocHBNrwS62'),
 ('7oEPyI8hGqUB45vZNkMv3tsWahB2'),
 ('aeBg8o0lO7aEeGsqyWqvaMhZvu13'),
 ('boCsxQUcmfNsvWQ7CU8SSsbSmkA3'),
+('Clgz1Ye9WXeXg4Qk3ZP9exz0ROo1'),
+('EILuLROK3rf5SbsMK1nOKr2R1713'),
 ('Fcdj4N26i8PpzzpQCFFSqw5BHLx2'),
 ('ftQTNjkDsbg7EzgUtCfKUOZFm0i1'),
 ('GxUfF3C40NeUQsrJhdJeTD4xWxx1'),
@@ -695,9 +732,14 @@ INSERT INTO `user` (`user_id`) VALUES
 ('Kct8HgBtVsaLhXE5J8FBfMPEFWr2'),
 ('LrBLAMC8kQfNhBP2dq0PTnrAOEz2'),
 ('mFjqHF12ifQh8t0bOVL0NkeyMIf1'),
+('N10KwXknfkUdhg7dyl9bKgMwVXc2'),
+('NrZk7AA9LmfTQF1t3CbkQgeGYVh1'),
+('pLWxZlIzKjTGVseUq9Iek03ioNf2'),
+('PTUouSNklLYkEpiTExqaJ08zpgQ2'),
 ('QRig9dL8kaYE02jFwnpAeKAFXNd2'),
 ('QSZqSss49HOyRaPzQymitz8P2942'),
 ('tbWSmMgy1Uc4igHWLkA2WANhhUp2'),
+('tlYMgkr1HMhR81FusghOksELJKl1'),
 ('XMe0wL5W9wMYZEpdae30GwG15JD3'),
 ('ZCt6n9uDFjZ9lOOtPataEGxngfr2');
 
@@ -730,6 +772,14 @@ ALTER TABLE `artist`
 --
 ALTER TABLE `category`
   ADD PRIMARY KEY (`category_id`);
+
+--
+-- Chỉ mục cho bảng `follow`
+--
+ALTER TABLE `follow`
+  ADD PRIMARY KEY (`follow_id`),
+  ADD KEY `user_id` (`user_id`,`artist_id`),
+  ADD KEY `artist_id` (`artist_id`);
 
 --
 -- Chỉ mục cho bảng `lyric`
@@ -855,6 +905,12 @@ ALTER TABLE `category`
   MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT cho bảng `follow`
+--
+ALTER TABLE `follow`
+  MODIFY `follow_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
 -- AUTO_INCREMENT cho bảng `lyric`
 --
 ALTER TABLE `lyric`
@@ -870,19 +926,19 @@ ALTER TABLE `playlist`
 -- AUTO_INCREMENT cho bảng `playlist_user`
 --
 ALTER TABLE `playlist_user`
-  MODIFY `playlist_user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `playlist_user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT cho bảng `playlist_user_love`
 --
 ALTER TABLE `playlist_user_love`
-  MODIFY `playlist_user_love_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `playlist_user_love_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT cho bảng `playlist_user_song`
 --
 ALTER TABLE `playlist_user_song`
-  MODIFY `playlist_user_song_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `playlist_user_song_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT cho bảng `rank`
@@ -900,13 +956,13 @@ ALTER TABLE `song`
 -- AUTO_INCREMENT cho bảng `song_again`
 --
 ALTER TABLE `song_again`
-  MODIFY `song_again_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `song_again_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT cho bảng `song_love`
 --
 ALTER TABLE `song_love`
-  MODIFY `song_love_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
+  MODIFY `song_love_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
 
 --
 -- AUTO_INCREMENT cho bảng `song_rank`
@@ -930,6 +986,13 @@ ALTER TABLE `topic`
 ALTER TABLE `album_love`
   ADD CONSTRAINT `album_love_ibfk_2` FOREIGN KEY (`song_id`) REFERENCES `song` (`song_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `album_love_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `follow`
+--
+ALTER TABLE `follow`
+  ADD CONSTRAINT `follow_ibfk_1` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`artist_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `follow_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `lyric`

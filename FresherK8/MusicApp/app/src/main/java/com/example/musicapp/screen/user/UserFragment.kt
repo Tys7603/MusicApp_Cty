@@ -21,6 +21,7 @@ import com.example.musicapp.data.model.PlaylistUser
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.FragmentUserBinding
 import com.example.musicapp.screen.base.BaseService
+import com.example.musicapp.screen.follow.FollowActivity
 import com.example.musicapp.screen.main.MainActivity
 import com.example.musicapp.screen.music.MusicViewModel
 import com.example.musicapp.screen.songDetail.SongDetailActivity
@@ -239,6 +240,7 @@ class UserFragment : Fragment(), BaseService, SwipeRefreshLayout.OnRefreshListen
         binding.btnLove.setOnClickListener { startSongDetail() }
         binding.btnLogin.setOnClickListener { openBottomSheetLogin() }
         binding.includeLayout1.btnLayoutBottomPause.setOnClickListener { onCheckPlayMusic() }
+        binding.btnFollow.setOnClickListener { startActivity(Intent(requireContext(), FollowActivity::class.java)) }
     }
 
     private fun logout(){

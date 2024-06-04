@@ -2,14 +2,14 @@ const queryDatabase = require("../database/database.js");
 
 const searchModel = async (keyword) => {
   const query = `
-  SELECT 'song' AS type, s.song_id as id, s.song_name as name, s.song_image as image, s.song_url as url, a.name_artist as artist, NULL as song_count
+  SELECT 'song' AS type, s.song_id as id, s.song_name as name, s.song_image as image, s.song_url as url, a.name_artist as artist, NULL as song_count, null as artist_id
   FROM song as s
   INNER JOIN Album as a ON s.album_id = a.album_id
   WHERE s.song_name LIKE CONCAT('%', ?, '%')
 
   UNION
 
-  SELECT 'playlist' AS type, pl.playlist_id as id, pl.playlist_name as name, pl.playlist_image as image, NULL as url, GROUP_CONCAT(a.name_artist SEPARATOR ', ') as artist, COUNT(s.song_id) as song_count
+  SELECT 'playlist' AS type, pl.playlist_id as id, pl.playlist_name as name, pl.playlist_image as image, NULL as url, GROUP_CONCAT(a.name_artist SEPARATOR ', ') as artist, COUNT(s.song_id) as song_count, null as artist_id
   FROM Playlist as pl
   LEFT JOIN Song as s ON s.playlist_id = pl.playlist_id
   RIGHT JOIN Album as a ON s.album_id = a.album_id
@@ -18,14 +18,14 @@ const searchModel = async (keyword) => {
 
   UNION
 
-  SELECT 'music_video' AS type, mv.music_video_id as id, mv.music_video_name as name, ar.artist_image as image, mv.music_video_time as url, ar.artist_name as artist, mv.music_video_image as song_count
+  SELECT 'music_video' AS type, mv.music_video_id as id, mv.music_video_name as name, ar.artist_image as image, mv.music_video_time as url, ar.artist_name as artist, mv.music_video_image as song_count, ar.artist_id as artist_id
   FROM Music_Video as mv
   INNER JOIN Artist as ar ON mv.artist_id = ar.artist_id
   WHERE mv.music_video_name LIKE CONCAT('%', ?, '%')
 
   UNION
 
-  SELECT 'album' AS type, a.album_id as id, a.album_name as name, a.album_image as image, null as url, a.name_artist as artist, COUNT(s.song_id) as song_count
+  SELECT 'album' AS type, a.album_id as id, a.album_name as name, a.album_image as image, null as url, a.name_artist as artist, COUNT(s.song_id) as song_count, null as artist_id
   FROM Album as a
   LEFT JOIN Song as s ON s.album_id = a.album_id
   WHERE a.album_name LIKE CONCAT('%', ?, '%')

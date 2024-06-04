@@ -173,6 +173,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
                             android:layout_marginEnd="8dp"
                             android:ellipsize="end"
                             android:fontFamily="@font/product_sans_regular"
@@ -180,7 +181,6 @@
                             android:text="@{userViewModel.isLogin() ? userViewModel.userName : @string/are_you_dont_login , default = @string/are_you_dont_login}"
                             android:textColor="@color/black"
                             android:textSize="15sp"
-                            app:layout_constraintBottom_toBottomOf="@+id/img_avatar"
                             app:layout_constraintEnd_toStartOf="@+id/btn_login"
                             app:layout_constraintStart_toEndOf="@+id/img_avatar"
                             app:layout_constraintTop_toTopOf="@+id/img_avatar" />
@@ -209,6 +209,34 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/img_avatar"
                             app:srcCompat="@drawable/baseline_manage_accounts_24" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/btn_follow"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="@+id/img_avatar"
+                            app:layout_constraintStart_toStartOf="@+id/textView22"
+                            app:layout_constraintTop_toBottomOf="@+id/textView22">
+
+                            <TextView
+                                android:id="@+id/tv_quantity_follow"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{String.valueOf(userViewModel.isQuantity)}"
+                                app:layout_constraintBottom_toTopOf="@+id/textView48"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_chainStyle="packed" />
+
+                            <TextView
+                                android:id="@+id/textView48"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Đang theo dõi"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/tv_quantity_follow" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/layout_playlist_love"

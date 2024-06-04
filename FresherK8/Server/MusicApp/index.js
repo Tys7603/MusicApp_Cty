@@ -11,7 +11,6 @@ app.use((req, res, next) => {
   console.log("🚀 ~ file: index.js:59 ~ app.use ~ req:", req.method + req.url);
   next();
 });
-//
 
 var playListRouter = require('../MusicApp/routers/playlistRoter.js')
 var topicRouter = require('./routers/topicRouter.js')
@@ -24,6 +23,7 @@ var userRouter = require('./routers/userRouter.js')
 var musicVideoRouter = require('./routers/musicVideoRouter.js')
 var lyricRouter = require('./routers/lyric.router.js')
 var searchRouter = require('./routers/search.router.js')
+var followRouter = require('./routers/follow_router.js')
 
 // routers
 app.use("/api", playListRouter)
@@ -37,6 +37,7 @@ app.use("/api", userRouter)
 app.use("/api", musicVideoRouter)
 app.use("/api", lyricRouter)
 app.use("/api", searchRouter)
+app.use("/api", followRouter)
 
 app.get("/music" , (req, res) => {
   res.send("Halo")
