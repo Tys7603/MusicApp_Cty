@@ -24,10 +24,18 @@ const quantityFollowTheArtistByUser = async (userId) => {
 
 // Lấy danh sách nghệ sĩ đã theo dõi theo id người dùng
 const getFollowTheArtistByUser = async (userId) => {
-    const query = ` SELECT *, COUNT(f.artist_id) as follow_count FROM FOLLOW as f
-    INNER JOIN ARTIST as a ON f.artist_id  = a.artist_id
-    WHERE user_id = ?
-    `
+    const query =  `SELECT 
+    follow1.follow_id,
+    artist.artist_id,
+    artist.artist_name,
+    artist.artist_image,
+    COUNT(follow2.follow_id) AS follower_count
+    FROM artist
+    JOIN follow AS follow1 ON artist.artist_id = follow1.artist_id
+    LEFT JOIN follow AS follow2 ON artist.artist_id = follow2.artist_id
+    WHERE follow1.user_id = ?
+    GROUP BY artist.artist_id`
+
    return await queryDatabase(query, [userId])
 }
 

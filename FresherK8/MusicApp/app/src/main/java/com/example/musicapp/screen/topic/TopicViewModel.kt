@@ -31,5 +31,4 @@ class TopicViewModel(private val topicRepository: TopicRepository) : BaseViewMod
             onError = { exception.value = it }
         )
     }
-
 }

@@ -2,6 +2,7 @@ package com.example.musicapp.shared.utils.di
 
 import com.example.musicapp.screen.account.singup.SingUpViewModel
 import com.example.musicapp.screen.explore.ExploreViewModel
+import com.example.musicapp.screen.follow.FollowViewModel
 import com.example.musicapp.screen.lyrics.LyricViewModel
 import com.example.musicapp.screen.music.MusicViewModel
 import com.example.musicapp.screen.musicVideo.MusicVideoViewModel
@@ -33,4 +34,5 @@ val viewModelModule = module {
     viewModel { SongDetailViewModel(get()) }
     viewModel { LyricViewModel(get()) }
     viewModel { SearchViewModel(get()) }
+    viewModel { FollowViewModel(get()) }
 }

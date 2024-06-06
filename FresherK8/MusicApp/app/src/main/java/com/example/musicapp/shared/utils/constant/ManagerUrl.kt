@@ -52,7 +52,7 @@ object ManagerUrl {
     const val INSERT_ARTIST = "follow"
     const val CHECK_USER_FOLLOW_ARTIST = "followed/{userId}/{artistId}"
     const val GET_QUANTITY_USER_FOLLOW_ARTIST= "follow/quantity/{userId}"
-    const val GET_USER_FOLLOW_ARTIST = "follow/{userId}"
+    const val GET_USER_FOLLOW_ARTIST = "follows/{userId}"
     const val DELETE_USER_FOLLOW_ARTIST = "follow/{userId}/{artistId}"
 
     // lyric

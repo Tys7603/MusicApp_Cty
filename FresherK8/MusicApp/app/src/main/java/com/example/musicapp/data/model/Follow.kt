@@ -15,6 +15,8 @@ data class Follow (
     val artistImage : String,
     @SerializedName("quantity")
     val quantity : Int,
+    @SerializedName("follower_count")
+    val quantityFollow : Int,
     @SerializedName("isFollow")
     val isFollow : Int
 )

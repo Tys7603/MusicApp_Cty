@@ -98,4 +98,6 @@
     <string name="_60">60</string>
     <string name="gi_y">&#160;giây</string>
     <string name="ang_theo_d_i">Đang theo dõi</string>
+    <string name="_100_ng_i_theo_d_i">&#160;người theo dõi</string>
+    <string name="b_theo_d_i">Bỏ theo dõi</string>
 </resources>
