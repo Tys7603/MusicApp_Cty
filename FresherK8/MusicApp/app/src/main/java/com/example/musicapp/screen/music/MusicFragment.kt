@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.musicapp.R
 import com.example.musicapp.shared.utils.constant.Constant.KEY_SONG
 import com.example.musicapp.databinding.FragmentMusicBinding
@@ -52,10 +53,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MusicFragment : Fragment(), BaseService {
+class MusicFragment : Fragment(), BaseService, SwipeRefreshLayout.OnRefreshListener {
 
     private val viewModel: MusicViewModel by viewModel()
-
     private val binding by lazy {
         FragmentMusicBinding.inflate(layoutInflater)
     }
@@ -111,11 +111,17 @@ class MusicFragment : Fragment(), BaseService {
         setUpViewModel()
         initViewModel()
         enableButton(false)
+        setUpReFreshLayout()
         ProgressBarManager.showProgressBarPlay(
             binding.progressBarPlay,
             binding.layoutPlay,
             binding.btnPlay
         )
+    }
+
+    private fun setUpReFreshLayout(){
+        binding.main.setOnRefreshListener(this)
+        binding.main.setColorSchemeColors(resources.getColor(R.color.red))
     }
 
     private fun initMusicView() {
@@ -650,6 +656,13 @@ class MusicFragment : Fragment(), BaseService {
         const val NOT_LOGIN = "Bạn chưa đăng nhập"
         const val ADD_SONG_LOVE = "Đã thêm vào bài hát yêu thích"
         const val DELETE_SONG_LOVE = "Đã xóa bài hát khỏi yêu thích"
+    }
+
+    override fun onRefresh() {
+        viewModel.fetchData()
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.main.isRefreshing = false
+        },3000)
     }
 }
 

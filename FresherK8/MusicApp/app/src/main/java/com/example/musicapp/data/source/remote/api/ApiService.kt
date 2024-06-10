@@ -17,12 +17,14 @@ import com.example.musicapp.data.model.reponse.SongRepository
 import com.example.musicapp.data.model.reponse.SongAgainRepository
 import com.example.musicapp.data.model.reponse.SongRankRepository
 import com.example.musicapp.data.model.Status
+import com.example.musicapp.data.model.reponse.FollowRepository
 import com.example.musicapp.data.model.reponse.LyricRepository
 import com.example.musicapp.data.model.reponse.MusicVideoRepository
 import com.example.musicapp.data.model.reponse.PlaylistUserRepository
 import com.example.musicapp.data.model.reponse.SearchAllRepository
 import com.example.musicapp.data.model.reponse.SearchRepository
 import com.example.musicapp.data.model.reponse.TopicRepository
+import com.example.musicapp.shared.utils.constant.ManagerUrl.CHECK_USER_FOLLOW_ARTIST
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_PLAYLIST_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_SONG_AGAIN
 import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_SONG_LOVE
@@ -30,11 +32,13 @@ import com.example.musicapp.shared.utils.constant.ManagerUrl.CREATE_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_PLAYLIST_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_PLAYLIST_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_SONG_LOVE
+import com.example.musicapp.shared.utils.constant.ManagerUrl.DELETE_USER_FOLLOW_ARTIST
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_LYRIC_SONG_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_MUSIC_VIDEO_EXCLUDING_ID
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_PLAYLIST_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_PLAYLIST_USER
+import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_QUANTITY_USER_FOLLOW_ARTIST
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SEARCH
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SEARCH_NAME_ALL
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_ALBUM_ID
@@ -43,6 +47,8 @@ import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_BY_TOPIC_I
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_SONG_PLAYLIST_USER
 import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_TOPIC_BY_CATEGORY_ID
+import com.example.musicapp.shared.utils.constant.ManagerUrl.GET_USER_FOLLOW_ARTIST
+import com.example.musicapp.shared.utils.constant.ManagerUrl.INSERT_ARTIST
 import com.example.musicapp.shared.utils.constant.ManagerUrl.INSERT_SONG_PLAYLIST_LOVE
 import com.example.musicapp.shared.utils.constant.ManagerUrl.INSERT_SONG_PLAYLIST_USER
 import retrofit2.Response
@@ -175,10 +181,40 @@ interface ApiService {
     @GET(GET_LYRIC_SONG_ID)
     suspend fun getLyricsBySongId(@Path("songId") songId: Int): Response<LyricRepository>
 
-    //search
+    // search
     @GET(GET_SEARCH_NAME_ALL)
     suspend fun getSearchAllName(): Response<SearchAllRepository>
 
     @GET(GET_SEARCH)
-    suspend fun getSearch(@Path("keyword") keyword : String): Response<SearchRepository>
+    suspend fun getSearch(@Path("keyword") keyword: String): Response<SearchRepository>
+
+    // Artist
+    @POST(INSERT_ARTIST)
+    @FormUrlEncoded
+    suspend fun insertFollowTheArtist(
+        @Field("userId") userId: String,
+        @Field("artistId") artistId: Int
+    ): Response<Status>
+
+    @GET(CHECK_USER_FOLLOW_ARTIST)
+    suspend fun checkFollowTheArtist(
+        @Path("userId") userId: String,
+        @Path("artistId") artistId: Int
+    ): Response<FollowRepository>
+
+    @GET(GET_QUANTITY_USER_FOLLOW_ARTIST)
+    suspend fun getQuantityFollowTheArtist(
+        @Path("userId") userId: String,
+    ): Response<FollowRepository>
+
+    @GET(GET_USER_FOLLOW_ARTIST)
+    suspend fun getFollowTheArtist(
+        @Path("userId") userId: String,
+    ): Response<FollowRepository>
+
+    @DELETE(DELETE_USER_FOLLOW_ARTIST)
+    suspend fun deleteFollowTheArtist(
+        @Path("userId") userId: String,
+        @Path("artistId") artistId: Int
+    ): Response<Status>
 }

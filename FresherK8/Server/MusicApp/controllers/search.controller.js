@@ -17,16 +17,16 @@ const getListSearchController = async (req, res) => {
     search.forEach(result => {
       switch (result.type) {
         case 'song':
-          groupedResults.songs.push({ song_id: result.id, song_name: result.name, song_image : result.image, song_url : result.url, name_artist : result.artist, song_count : result.song_count });
+          groupedResults.songs.push({ song_id: result.id, song_name: result.name, song_image : result.image, song_url : result.url, name_artist : result.artist, song_count : result.song_count, artist_id : result.artist_id });
           break;
         case 'playlist':
-          groupedResults.playlists.push({ playlist_id: result.id, playlist_name: result.name, playlist_image : result.image, url : result.url, name_artist : result.artist, song_count : result.song_count });
+          groupedResults.playlists.push({ playlist_id: result.id, playlist_name: result.name, playlist_image : result.image, url : result.url, name_artist : result.artist, song_count : result.song_count, artist_id : result.artist_id });
           break;
         case 'music_video':
-          groupedResults.music_videos.push({ music_video_id: result.id, music_video_name: result.name, artist_image : result.image, music_video_time : result.url, artist_name : result.artist, music_video_image : result.song_count });
+          groupedResults.music_videos.push({ music_video_id: result.id, music_video_name: result.name, artist_image : result.image, music_video_time : result.url, artist_name : result.artist, music_video_image : result.song_count, artist_id : result.artist_id });
           break;
         case 'album':
-          groupedResults.albums.push({ album_id: result.id, album_name: result.name, album_image : result.image, url : result.url, name_artist : result.artist, song_count : result.song_count });
+          groupedResults.albums.push({ album_id: result.id, album_name: result.name, album_image : result.image, url : result.url, name_artist : result.artist, song_count : result.song_count, artist_id : result.artist_id });
           break;
       }
     });

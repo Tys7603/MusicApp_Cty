@@ -48,6 +48,13 @@ object ManagerUrl {
     const val GET_MUSIC_VIDEO = "musics/video"
     const val GET_MUSIC_VIDEO_EXCLUDING_ID = "musics/video/{musicVideoId}"
 
+    // artist
+    const val INSERT_ARTIST = "follow"
+    const val CHECK_USER_FOLLOW_ARTIST = "followed/{userId}/{artistId}"
+    const val GET_QUANTITY_USER_FOLLOW_ARTIST= "follow/quantity/{userId}"
+    const val GET_USER_FOLLOW_ARTIST = "follows/{userId}"
+    const val DELETE_USER_FOLLOW_ARTIST = "follow/{userId}/{artistId}"
+
     // lyric
     const val GET_LYRIC_SONG_ID = "lyrics/{songId}"
 

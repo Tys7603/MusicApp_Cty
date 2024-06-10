@@ -1,5 +1,6 @@
 package com.example.musicapp.screen.account.phone
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -57,11 +58,18 @@ class PhoneLoginActivity : AppCompatActivity() {
         if (count > 0){
             binding.btnSenCode.isEnabled = true
             binding.btnSenCode.setBackgroundColor(getColor(R.color.teal))
+            binding.btnSenCode.setTextColor(getColor(R.color.white))
         }else{
             binding.btnSenCode.isEnabled = false
             binding.btnSenCode.setBackgroundColor(getColor(R.color.gray))
+            binding.btnSenCode.setTextColor(getColor(R.color.black))
         }
         binding.tvShowError.visibility = View.GONE
+    }
+
+    private fun handlerEvent() {
+        binding.imgBackPhone.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        binding.btnSenCode.setOnClickListener { checkValidateShowMessage(binding.etPhone.length()) }
     }
 
     private fun checkValidateShowMessage(count : Int){
@@ -71,11 +79,6 @@ class PhoneLoginActivity : AppCompatActivity() {
         }else{
             binding.tvShowError.visibility = View.VISIBLE
         }
-    }
-
-    private fun handlerEvent() {
-        binding.imgBackPhone.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
-        binding.btnSenCode.setOnClickListener { checkValidateShowMessage(binding.etPhone.length()) }
     }
 
     private fun senCodeVerifyPhoneNumber(phone : String) {
@@ -93,7 +96,7 @@ class PhoneLoginActivity : AppCompatActivity() {
 
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
 //            signInWithPhoneAuthCredential(credential)
-            Log.d("PhoneLoginActivity", "onVerificationCompleted: ")
+           startActivity(Intent(this@PhoneLoginActivity, VerifyPhoneActivity::class.java))
         }
 
         override fun onVerificationFailed(e: FirebaseException) {

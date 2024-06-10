@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.musicapp.data.model.Song
+import com.example.musicapp.data.repositories.followRepository.FollowRepository
 import com.example.musicapp.data.repositories.musicRepository.MusicRepository
 import com.example.musicapp.shared.base.BaseViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -18,11 +19,14 @@ class MusicViewModel(private val musicRepository: MusicRepository) : BaseViewMod
     private val _isAddSongLove = MutableLiveData<Boolean>()
     val isAddSongLove: LiveData<Boolean> = _isAddSongLove
 
+    private val _isQuantity = MutableLiveData<Int>()
+    val isQuantity: LiveData<Int> = _isQuantity
+
     init {
         fetchData()
     }
 
-    private fun fetchData() {
+    fun fetchData() {
         fetchSong()
         fetchSongLove()
     }

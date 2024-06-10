@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.data.model.SongAgain
+import com.example.musicapp.data.repositories.followRepository.FollowRepository
 import com.example.musicapp.data.repositories.musicRepository.MusicRepository
 import com.example.musicapp.shared.base.BaseViewModel
 import com.example.musicapp.shared.utils.constant.Constant
@@ -13,7 +14,7 @@ import com.example.musicapp.shared.utils.scheduler.DataResult
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
-class UserViewModel (private val musicRepository: MusicRepository) : BaseViewModel() {
+class UserViewModel (private val musicRepository: MusicRepository, private val followRepository: FollowRepository) : BaseViewModel() {
 
     private val _isLogin = MutableLiveData<Boolean>()
     val isLogin : LiveData<Boolean> = _isLogin
@@ -33,11 +34,19 @@ class UserViewModel (private val musicRepository: MusicRepository) : BaseViewMod
     private val _songsAgain = MutableLiveData<ArrayList<SongAgain>>()
     val songsAgain: LiveData<ArrayList<SongAgain>> = _songsAgain
 
+    private val _isQuantity = MutableLiveData<Int>()
+    val isQuantity: LiveData<Int> = _isQuantity
+
     init {
+       fetchData()
+    }
+
+    fun fetchData(){
         initValueUser()
         fetchSongLove()
         fetchSongLocal()
         fetchSongAgain()
+        fetchQuantityFollow()
     }
 
     fun initValueUser(){
@@ -52,6 +61,21 @@ class UserViewModel (private val musicRepository: MusicRepository) : BaseViewMod
             _isLogin.value = false
         }
     }
+
+    private fun fetchQuantityFollow() {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null ) {
+            launchTaskSync(
+                onRequest = { followRepository.getQuantityFollowTheArtist(user.uid) },
+                onSuccess = { _isQuantity.value = it },
+                onFailure = { Log.e("MusicViewModel", "Failed: $it") },
+                onError = { exception.value = it }
+            )
+        }else{
+            _isQuantity.value = 0
+        }
+    }
+
 
     fun fetchSongLove() {
         val user = FirebaseAuth.getInstance().currentUser

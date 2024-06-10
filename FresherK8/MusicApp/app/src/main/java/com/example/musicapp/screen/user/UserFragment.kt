@@ -14,12 +14,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.musicapp.R
 import com.example.musicapp.data.model.Playlist
 import com.example.musicapp.data.model.PlaylistUser
 import com.example.musicapp.data.model.Song
 import com.example.musicapp.databinding.FragmentUserBinding
 import com.example.musicapp.screen.base.BaseService
+import com.example.musicapp.screen.follow.FollowActivity
 import com.example.musicapp.screen.main.MainActivity
 import com.example.musicapp.screen.music.MusicViewModel
 import com.example.musicapp.screen.songDetail.SongDetailActivity
@@ -41,7 +43,7 @@ import com.google.firebase.auth.FirebaseAuth
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class UserFragment : Fragment(), BaseService {
+class UserFragment : Fragment(), BaseService, SwipeRefreshLayout.OnRefreshListener {
     private val viewModelMusic: MusicViewModel by viewModel()
     private var musicService: MusicService? = null
     private var isServiceBound = false
@@ -91,12 +93,16 @@ class UserFragment : Fragment(), BaseService {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         handleEvent()
-        initViewModel()
         initMusicView()
         initRecyclerView()
-        handleEventViewModel()
         showLoading()
         showProgressBar(true)
+        setUpReFreshLayout()
+    }
+
+    private fun setUpReFreshLayout(){
+        binding.main.setOnRefreshListener(this)
+        binding.main.setColorSchemeColors(resources.getColor(R.color.red))
     }
 
     private fun showProgressBar(boolean: Boolean){
@@ -234,6 +240,7 @@ class UserFragment : Fragment(), BaseService {
         binding.btnLove.setOnClickListener { startSongDetail() }
         binding.btnLogin.setOnClickListener { openBottomSheetLogin() }
         binding.includeLayout1.btnLayoutBottomPause.setOnClickListener { onCheckPlayMusic() }
+        binding.btnFollow.setOnClickListener { startActivity(Intent(requireContext(), FollowActivity::class.java)) }
     }
 
     private fun logout(){
@@ -433,6 +440,8 @@ class UserFragment : Fragment(), BaseService {
         initSongView()
         val intent = Intent(activity, MusicService::class.java)
         activity?.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        handleEventViewModel()
+        initViewModel()
         viewModel.initValueUser()
         fetchData()
         viewModel.fetchSongLocal()
@@ -456,5 +465,17 @@ class UserFragment : Fragment(), BaseService {
             isServiceBound = false
         }
         musicService = null
+    }
+
+    override fun onRefresh() {
+        val user = FirebaseAuth.getInstance().currentUser
+        viewModel.fetchData()
+        user?.let {
+            viewModelUser.fetchPlaylistsUser(user.uid)
+            viewModelLove.fetchPlaylists(user.uid)
+        }
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.main.isRefreshing = false
+        },3000)
     }
 }

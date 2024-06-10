@@ -55,7 +55,7 @@ class ExploreViewModel(private val exploreRepository: ExploreRepository) : BaseV
         fetchData()
     }
 
-    private fun fetchData() {
+    fun fetchData() {
         fetchAlbumNew()
         fetchCategories()
         fetchAlbumLove()

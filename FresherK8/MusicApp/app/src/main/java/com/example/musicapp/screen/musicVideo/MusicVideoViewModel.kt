@@ -20,7 +20,7 @@ class MusicVideoViewModel (private val musicVideoRepository: MusicVideoRepositor
         fetchData()
     }
 
-    private fun fetchData() {
+    fun fetchData() {
         fetchMusicVideo()
         fetchCategory()
     }

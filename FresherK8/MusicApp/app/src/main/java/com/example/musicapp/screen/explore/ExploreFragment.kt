@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.musicapp.R
 import com.example.musicapp.shared.utils.constant.Constant
 import com.example.musicapp.data.model.Album
@@ -52,7 +53,7 @@ import com.google.gson.Gson
 import java.util.Random
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ExploreFragment : Fragment(), BaseService {
+class ExploreFragment : Fragment(), BaseService, SwipeRefreshLayout.OnRefreshListener {
     private val viewModel: ExploreViewModel by viewModel()
     private val viewModelMusic: MusicViewModel by viewModel()
     private var musicService: MusicService? = null
@@ -105,8 +106,14 @@ class ExploreFragment : Fragment(), BaseService {
         setAdapterView()
         handlerEvent()
         initAdapterDefault()
+        setUpReFreshLayout()
         showProgressBar(true)
 
+    }
+
+    private fun setUpReFreshLayout(){
+        binding.main.setOnRefreshListener(this)
+        binding.main.setColorSchemeColors(resources.getColor(R.color.red))
     }
 
     private fun showProgressBar(boolean: Boolean){
@@ -172,7 +179,7 @@ class ExploreFragment : Fragment(), BaseService {
 
         viewModel.topics.observe(viewLifecycleOwner) {
             handlerPostDelay {
-                topicAdapter.submitList(it.shuffled() as ArrayList<Topic>)
+                topicAdapter.submitList(it)
                 topicAdapter.setEnableItem(true)
             }
         }
@@ -408,5 +415,11 @@ class ExploreFragment : Fragment(), BaseService {
     override fun onBackMusic() = Unit
 
     override fun onPlayMusic() = Unit
+    override fun onRefresh() {
+        viewModel.fetchData()
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.main.isRefreshing = false
+        },3000)
+    }
 }
 

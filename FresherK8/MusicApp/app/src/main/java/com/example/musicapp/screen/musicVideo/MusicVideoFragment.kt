@@ -14,6 +14,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.musicapp.R
 import com.example.musicapp.data.model.MusicVideo
 import com.example.musicapp.data.model.Topic
 import com.example.musicapp.databinding.FragmentMusicVideoBinding
@@ -35,7 +37,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.chromecast.chromecastsend
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class MusicVideoFragment : Fragment() {
+class MusicVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var musicService: MusicService? = null
     private var isServiceBound = false
     private val viewModel: MusicVideoViewModel by viewModel()
@@ -80,6 +82,12 @@ class MusicVideoFragment : Fragment() {
         handleEvent()
         checkVisibilityLayout(false)
         setUpChromeCast()
+        setUpReFreshLayout()
+    }
+
+    private fun setUpReFreshLayout(){
+        binding.main.setOnRefreshListener(this)
+        binding.main.setColorSchemeColors(resources.getColor(R.color.red))
     }
 
     private fun setUpChromeCast() {
@@ -247,5 +255,13 @@ class MusicVideoFragment : Fragment() {
         const val ALL = "Tất cả"
         const val NEW_PROPOSAL = "Đề xuất mới"
         const val CODE = 1
+    }
+
+    override fun onRefresh() {
+        viewModel.fetchData()
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.main.isRefreshing = false
+            scrollToFirstItem()
+        },3000)
     }
 }

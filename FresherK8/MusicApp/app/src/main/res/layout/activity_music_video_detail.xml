@@ -31,7 +31,7 @@
             android:id="@+id/layout_mv_detail"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -108,13 +108,23 @@
                             app:layout_constraintTop_toTopOf="@+id/textView20">
 
                             <TextView
+                                android:id="@+id/tv_follow"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginEnd="10dp"
                                 android:padding="5dp"
                                 android:text="@string/theo_d_i"
-                                android:textColor="@color/white" />
+                                android:textColor="@color/white"
+                                android:visibility="visible" />
+
+                            <ProgressBar
+                                android:id="@+id/pb_follow"
+                                style="?android:attr/progressBarStyle"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                android:visibility="gone" />
                         </androidx.cardview.widget.CardView>
 
                         <TextView
@@ -149,6 +159,7 @@
             layout="@layout/layout_music_video_detail"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
